@@ -1,6 +1,8 @@
-# Sequence Kit Embedded Wallet React Starter Boilerplate
+# Sequence Purchased Minting Api Boilerplate
 
-Starter Sequence Embedded Wallet boilerplate that uses [Sequence Kit](https://github.com/0xsequence/kit) with React.
+## Coming soon!
+
+Starter Sequence boilerplate demonstrating how to perform primary sales of NFTs using Sequence.
 
 ## Quickstart
 
