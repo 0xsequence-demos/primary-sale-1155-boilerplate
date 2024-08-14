@@ -1,4 +1,4 @@
-# Sequence Purchased Minting Api Boilerplate
+# Sequence Primary Drop Sale Boilerplate
 
 ## Coming soon!
 
