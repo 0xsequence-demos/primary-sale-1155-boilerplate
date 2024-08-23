@@ -3,6 +3,7 @@ import { getDefaultWaasConnectors, KitProvider } from "@0xsequence/kit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createConfig, http, WagmiProvider } from "wagmi";
 import chains from "./utils/chains";
+import { KitCheckoutProvider } from "@0xsequence/kit-checkout";
 const queryClient = new QueryClient();
 
 const App = () => {
@@ -48,7 +49,9 @@ const App = () => {
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <KitProvider config={kitConfig}>
-          <Home />
+          <KitCheckoutProvider>
+            <Home />
+          </KitCheckoutProvider>
         </KitProvider>
       </QueryClientProvider>
     </WagmiProvider>

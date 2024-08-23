@@ -8,14 +8,23 @@ import Connected from "./components/blockchain/Connected";
 const Home = () => {
   const { isConnected } = useAccount();
 
+  const Content = () => {
+    if (!isConnected) {
+      return <NotConnected />;
+    }
+
+    return <Connected />;
+  };
+
   return (
     <div>
       <h1>Sequence Primary Drop Sale Boilerplate</h1>
       <h2 className="homepage__marginBtNormal">Embedded Wallet</h2>
-      {isConnected ? <Connected /> : <NotConnected />}
+      <Content />
       <footer className="homepage__footer">
         <Text>
-          Want to learn more? Read the{" "}
+          Want to learn more?{" "}
+          {/* Read the{" "}
           <a
             href={
               "https://docs.sequence.xyz/solutions/wallets/sequence-kit/overview/"
@@ -25,7 +34,8 @@ const Home = () => {
           >
             docs
           </a>
-          !
+          ! */}
+          Docs Coming Soon
         </Text>
       </footer>
     </div>
