@@ -117,7 +117,7 @@ export const BuyWithCreditCardButton = ({
 
   return (
     <>
-      <h1>{isPendingSendTxn ? "Pending" : "Nothing to see"}</h1>
+      <span>{isPendingSendTxn ? "Pending" : "Nothing to see"}</span>
       {error && <span>{JSON.stringify(error)}</span>}
       {txnData && (<a href={`https://www.okx.com/es-la/web3/explorer/amoy/tx/${txnData}`}>Click to view transaction in explorer: {txnData} (For chain Amoy)</a>)}
       <Button
