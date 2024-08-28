@@ -6,9 +6,10 @@ import chains from "./utils/chains";
 import { KitCheckoutProvider } from "@0xsequence/kit-checkout";
 const queryClient = new QueryClient();
 
+export const projectAccessKey = import.meta.env.VITE_PROJECT_ACCESS_KEY;
+export const projectId = import.meta.env.VITE_PROJECT_ID;
 const App = () => {
   // Get your own keys on sequence.build
-  const projectAccessKey = import.meta.env.VITE_PROJECT_ACCESS_KEY;
   const waasConfigKey = import.meta.env.VITE_WAAS_CONFIG_KEY;
   const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
   const appleClientId = import.meta.env.VITE_APPLE_CLIENT_ID;

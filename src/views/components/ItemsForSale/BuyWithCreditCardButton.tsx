@@ -7,11 +7,15 @@ import {
   useWalletClient,
   useAccount,
   useReadContract,
+  useSendTransaction,
+  useSwitchChain,
 } from "wagmi";
+import { ERC20 } from "../../../ERC20/ERC20";
 
 import { SALES_CONTRACT_ABI } from "../../constants/abi";
 import { SALES_CONTRACT_ADDRESS, CHAIN_ID } from "../../constants";
 import { useSalesCurrency } from "../../hooks/useSalesCurrency";
+import { useEffect } from "react";
 
 interface BuyWithCreditCardButtonProps {
   tokenId: string;
@@ -28,9 +32,17 @@ export const BuyWithCreditCardButton = ({
   const { triggerCheckout } = useCheckoutModal();
   const publicClient = usePublicClient();
   const { data: walletClient } = useWalletClient();
-  const { address: userAddress } = useAccount();
+  const { address: userAddress, chainId: chainIdUser } = useAccount();
+  const {
+    data: txnData,
+    sendTransaction,
+    isPending: isPendingSendTxn,
+    error,
+    reset,
+  } = useSendTransaction();
   const { data: currencyData, isLoading: currencyIsLoading } =
     useSalesCurrency();
+  const { switchChainAsync } = useSwitchChain();
 
   interface TokenSaleDetailData {
     cost: bigint;
@@ -51,7 +63,7 @@ export const BuyWithCreditCardButton = ({
     (tokenSaleDetailsData as TokenSaleDetailData)?.cost || 0n
   ).toString();
 
-  const onClickBuy = () => {
+  const onClickBuy = async () => {
     if (!publicClient || !walletClient || !userAddress || !currencyData) {
       return;
     }
@@ -69,66 +81,54 @@ export const BuyWithCreditCardButton = ({
      * @dev tokenIds must be sorted ascending without duplicates.
      * @dev An empty proof is supplied when no proof is required.
      */
+    const allowance = await ERC20.getAllowance(currencyData.address, userAddress, SALES_CONTRACT_ADDRESS, chainId);
 
+    if (!allowance || allowance === 0n) {
+      const res = await ERC20.approveInfinite(currencyData.address, SALES_CONTRACT_ADDRESS, walletClient);
+    }
     const calldata = encodeFunctionData({
       abi: SALES_CONTRACT_ABI,
       functionName: "mint",
       args: [
         userAddress,
         [BigInt(tokenId)],
+        // Amount of nfts that are going to be purchased
         [BigInt(1)],
         toHex(0),
         currencyData.address,
-        BigInt(currencyPrice),
+        // Here the exact price of the NFTs must be established (USDC = 6 decimals) (Native currency = 18 decimals)
+        BigInt(10000),
         [toHex(0, { size: 32 })],
       ],
     });
 
-    // https://dev.sequence.build/project/424/contracts/1088?view=read
-    const checkoutSettings: CheckoutSettings = {
-      creditCardCheckout: {
-        chainId,
-        contractAddress: SALES_CONTRACT_ADDRESS,
-        recipientAddress: userAddress || "",
-        currencyQuantity: currencyPrice,
-        currencySymbol: currencyData.symbol,
-        currencyAddress: currencyData.address,
-        currencyDecimals: String(currencyData.decimals),
-        nftId: String(tokenId),
-        nftAddress: collectionAddress,
-        nftQuantity: "1",
-        nftDecimals: "0",
-        approvedSpenderAddress: SALES_CONTRACT_ADDRESS,
-        calldata,
-        isDev: location.hostname === "localhost",
-        onSuccess: async (txnHash: string) => {
-          await publicClient?.waitForTransactionReceipt({
-            hash: txnHash as Hex,
-            confirmations: 5,
-          });
-          // clear collection balance to show updated owned amount
-          queryClient.invalidateQueries({
-            queryKey: ["collectionBalance"],
-          });
-        },
-        onError: (error: Error) => {
-          console.error(error);
-        },
-      },
+    const transactionParameters = {
+      to: SALES_CONTRACT_ADDRESS as `0x${string}`,
+      data: calldata,
+      value: BigInt(0),
     };
 
-    triggerCheckout(checkoutSettings);
+    sendTransaction(transactionParameters);
   };
 
+  useEffect(() => {
+    switchChainAsync({ chainId: 80002 });
+  }, [])
+
   return (
-    <Button
-      loading={currencyIsLoading || tokenSaleDetailsDataIsLoading}
-      size="sm"
-      variant="primary"
-      label="Purchase (Credit card)"
-      shape="square"
-      width="full"
-      onClick={onClickBuy}
-    />
+    <>
+      <h1>{isPendingSendTxn ? "Pending" : "Nothing to see"}</h1>
+      {error && <span>{JSON.stringify(error)}</span>}
+      {txnData && (<a href={`https://www.okx.com/es-la/web3/explorer/amoy/tx/${txnData}`}>Click to view transaction in explorer: {txnData} (For chain Amoy)</a>)}
+      <Button
+        loading={currencyIsLoading || tokenSaleDetailsDataIsLoading}
+        size="sm"
+        variant="primary"
+        label="Purchase (Crypto)"
+        shape="square"
+        width="full"
+        onClick={onClickBuy}
+      />
+    </>
   );
 };
