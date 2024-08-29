@@ -1,14 +1,13 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { ERC20 } from '../../ERC20/ERC20';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { ERC20 } from "../../ERC20/ERC20";
 
 export const BigIntReplacer = (_: any, value: any) =>
-  typeof value === 'bigint' ? { type: 'bigint', v: value.toString() } : value;
+  typeof value === "bigint" ? { type: "bigint", v: value.toString() } : value;
 
-// JSON.parse({...}, BigIntReviver)
 export const BigIntReviver = (_: any, value: any) =>
-  value?.type === 'bigint' ? BigInt(value.v) : value;
+  value?.type === "bigint" ? BigInt(value.v) : value;
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery } from "@tanstack/react-query";
 
 interface Props {
   spenderAddress: string;
@@ -22,7 +21,7 @@ export const useERC20Approval = (
   arg: Partial<Props & { disabled?: boolean }>,
 ) =>
   useQuery({
-    queryKey: ['orderERC20Checks', JSON.stringify(arg, BigIntReplacer)],
+    queryKey: ["orderERC20Checks", JSON.stringify(arg, BigIntReplacer)],
     queryFn: () =>
       getERC20BalanceAndApprovals({
         spenderAddress: arg.spenderAddress!,

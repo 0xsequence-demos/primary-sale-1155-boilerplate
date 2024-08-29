@@ -37,7 +37,7 @@ const Connected = () => {
     chainId: number;
   }) => {
     const isMobile = useMediaQuery("isMobile");
-    
+
     return (
       <Box
         justifyContent="space-between"
@@ -113,7 +113,11 @@ const Connected = () => {
       {chainId && (
         <Collapsible label="Stuff for Nerds">
           <Box gap="1" flexDirection="column">
-            <AddressDisplay label="User Address" address={userAddress} chainId={chainId}/>
+            <AddressDisplay
+              label="User Address"
+              address={userAddress}
+              chainId={chainId}
+            />
             <AddressDisplay
               label="Sales Contract"
               address={SALES_CONTRACT_ADDRESS}

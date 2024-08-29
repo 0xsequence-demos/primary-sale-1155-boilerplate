@@ -1,6 +1,6 @@
 import { ERC20_ABI } from "./ERC20_abi";
 import { getPublicClient } from "./rpcClients";
-import { getContract, WalletClient, Hex } from 'viem';
+import { getContract, WalletClient, Hex } from "viem";
 
 interface ContractInstanceParams {
   contractAddress: string;

@@ -1,12 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { getERC20Contract } from './getERC20Contract';
-import { ERC20_ABI } from './ERC20_abi';
-import { ethers } from 'ethers';
-import type { Hex } from 'viem';
-import { encodeFunctionData } from 'viem';
-import type { GetWalletClientData } from 'wagmi/query';
+import { getERC20Contract } from "./getERC20Contract";
+import { ERC20_ABI } from "./ERC20_abi";
+import { ethers } from "ethers";
+import type { Hex } from "viem";
+import { encodeFunctionData } from "viem";
+import type { GetWalletClientData } from "wagmi/query";
 
 export class ERC20 {
   static approve = async (
@@ -19,7 +17,7 @@ export class ERC20 {
       chain: signer.chain,
       address: erc20Address as Hex,
       abi: ERC20_ABI,
-      functionName: 'approve',
+      functionName: "approve",
       args: [spender as Hex, amount],
     });
 
@@ -29,7 +27,7 @@ export class ERC20 {
   static approve_data = (spender: string, amount: bigint): string => {
     return encodeFunctionData({
       abi: ERC20_ABI,
-      functionName: 'approve',
+      functionName: "approve",
       args: [spender as Hex, amount],
     });
   };
@@ -43,7 +41,7 @@ export class ERC20 {
       chain: signer.chain,
       address: erc20Address as Hex,
       abi: ERC20_ABI,
-      functionName: 'approve',
+      functionName: "approve",
       args: [spender as Hex, BigInt(ethers.constants.MaxUint256.toString())],
     });
 
@@ -53,7 +51,7 @@ export class ERC20 {
   static approveInfinite_data = (spender: string): string => {
     return encodeFunctionData({
       abi: ERC20_ABI,
-      functionName: 'approve',
+      functionName: "approve",
       args: [spender as Hex, BigInt(ethers.constants.MaxUint256.toString())],
     });
   };

@@ -1,6 +1,6 @@
-import { useQueryClient } from "@tanstack/react-query";
-import { useCheckoutModal, CheckoutSettings } from "@0xsequence/kit-checkout";
-import { Chain, encodeFunctionData, Hex, toHex } from "viem";
+// import { useQueryClient } from "@tanstack/react-query";
+// import { useCheckoutModal } from "@0xsequence/kit-checkout";
+import { encodeFunctionData, toHex } from "viem";
 import { Box, Button, Text } from "@0xsequence/design-system";
 import {
   usePublicClient,
@@ -25,32 +25,34 @@ interface BuyWithCryptoCardButtonProps {
 
 export const BuyWithCryptoCardButton = ({
   tokenId,
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars*/
   collectionAddress,
   chainId,
 }: BuyWithCryptoCardButtonProps) => {
-  const queryClient = useQueryClient();
-  const { triggerCheckout } = useCheckoutModal();
+  // const queryClient = useQueryClient();
+  // const { triggerCheckout } = useCheckoutModal();
   const publicClient = usePublicClient();
   const { data: walletClient } = useWalletClient();
   const { address: userAddress, chainId: chainIdUser } = useAccount();
-  const [chainInfo, setChainInfo] = useState<{[key: string] : any}>({});
-  const { 
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+  const [chainInfo, setChainInfo] = useState<{ [key: string]: any }>({});
+  const {
     data: txnData,
     sendTransaction,
     isPending: isPendingSendTxn,
     error,
-    reset,
+    // reset,
   } = useSendTransaction();
   const { data: currencyData, isLoading: currencyIsLoading } =
     useSalesCurrency();
-  // const { switchChainAsync } = useSwitchChain();
+  const { switchChainAsync } = useSwitchChain();
 
-  interface TokenSaleDetailData {
-    cost: bigint;
-  }
+  // interface TokenSaleDetailData {
+  //   cost: bigint;
+  // }
 
   const {
-    data: tokenSaleDetailsData,
+    // data: tokenSaleDetailsData,
     isLoading: tokenSaleDetailsDataIsLoading,
   } = useReadContract({
     abi: SALES_CONTRACT_ABI,
@@ -60,12 +62,23 @@ export const BuyWithCryptoCardButton = ({
     args: [BigInt(tokenId)],
   });
 
-  const currencyPrice = (
-    (tokenSaleDetailsData as TokenSaleDetailData)?.cost || 0n
-  ).toString();
+  // const currencyPrice = (
+  //   (tokenSaleDetailsData as TokenSaleDetailData)?.cost || 0n
+  // ).toString();
 
   const onClickBuy = async () => {
-    if (!publicClient || !walletClient || !userAddress || !currencyData || isPendingSendTxn) {
+    if (
+      !publicClient ||
+      !walletClient ||
+      !userAddress ||
+      !currencyData ||
+      isPendingSendTxn
+    ) {
+      return;
+    }
+
+    if (chainIdUser != 80002) {
+      await switchChainAsync({ chainId: 80002 });
       return;
     }
 
@@ -82,10 +95,19 @@ export const BuyWithCryptoCardButton = ({
      * @dev tokenIds must be sorted ascending without duplicates.
      * @dev An empty proof is supplied when no proof is required.
      */
-    const allowance = await ERC20.getAllowance(currencyData.address, userAddress, SALES_CONTRACT_ADDRESS, chainId);
+    const allowance = await ERC20.getAllowance(
+      currencyData.address,
+      userAddress,
+      SALES_CONTRACT_ADDRESS,
+      chainId,
+    );
 
     if (!allowance || allowance === 0n) {
-      const res = await ERC20.approveInfinite(currencyData.address, SALES_CONTRACT_ADDRESS, walletClient);
+      await ERC20.approveInfinite(
+        currencyData.address,
+        SALES_CONTRACT_ADDRESS,
+        walletClient,
+      );
     }
     const calldata = encodeFunctionData({
       abi: SALES_CONTRACT_ABI,
@@ -116,7 +138,7 @@ export const BuyWithCryptoCardButton = ({
     if (!chainId) return;
     const chainInfoResponse = getChain(chainId);
     if (chainInfoResponse) {
-      setChainInfo(chainInfoResponse)
+      setChainInfo(chainInfoResponse);
     }
   }, [chainId]);
 
@@ -128,11 +150,13 @@ export const BuyWithCryptoCardButton = ({
           <Text variant="large" color="text100">
             Purchase Completed Succesfully
           </Text>
-          <a href={`${chainInfo.explorerUrl}/tx/${txnData}`} target="_blank" rel="noopener noreferrer">
-            <span>
-              View transaction in explorer
-            </span>
-            <br/>
+          <a
+            href={`${chainInfo.explorerUrl}/tx/${txnData}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span>View transaction in explorer</span>
+            <br />
             <span>(Chain {chainInfo.name})</span>
           </a>
         </Box>
@@ -141,7 +165,13 @@ export const BuyWithCryptoCardButton = ({
         loading={currencyIsLoading || tokenSaleDetailsDataIsLoading}
         size="sm"
         variant="primary"
-        label={!isPendingSendTxn ? "Purchase" : "Purchasing..."}
+        label={
+          chainIdUser != 80002
+            ? "Switch chain to buy"
+            : !isPendingSendTxn
+              ? "Purchase"
+              : "Purchasing..."
+        }
         shape="square"
         width="full"
         onClick={onClickBuy}

@@ -87,7 +87,7 @@ export const useCollectionBalance = (args: UseCollectionBalanceArgs) => {
     queryKey: ["collectionBalance", args],
     queryFn: () => getCollectionBalance(indexerClient, args),
     retry: true,
-    // The query is considered stale after 30 seconds (staleTime), 
+    // The query is considered stale after 30 seconds (staleTime),
     // so it will automatically refetch every 30 seconds to update the data.
     staleTime: time.oneSecond * 30,
     enabled: !!args.chainId && !!args.accountAddress && !!args.contractAddress,
