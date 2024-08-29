@@ -1,7 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useCheckoutModal, CheckoutSettings } from "@0xsequence/kit-checkout";
-import { encodeFunctionData, Hex, toHex } from "viem";
-import { Button } from "@0xsequence/design-system";
+import { Chain, encodeFunctionData, Hex, toHex } from "viem";
+import { Box, Button, Text } from "@0xsequence/design-system";
 import {
   usePublicClient,
   useWalletClient,
@@ -15,25 +15,26 @@ import { ERC20 } from "../../../ERC20/ERC20";
 import { SALES_CONTRACT_ABI } from "../../constants/abi";
 import { SALES_CONTRACT_ADDRESS, CHAIN_ID } from "../../constants";
 import { useSalesCurrency } from "../../hooks/useSalesCurrency";
-import { useEffect } from "react";
-
-interface BuyWithCreditCardButtonProps {
+import { useEffect, useState } from "react";
+import { getChain } from "../../../ERC20/getChain";
+interface BuyWithCryptoCardButtonProps {
   tokenId: string;
   collectionAddress: string;
   chainId: number;
 }
 
-export const BuyWithCreditCardButton = ({
+export const BuyWithCryptoCardButton = ({
   tokenId,
   collectionAddress,
   chainId,
-}: BuyWithCreditCardButtonProps) => {
+}: BuyWithCryptoCardButtonProps) => {
   const queryClient = useQueryClient();
   const { triggerCheckout } = useCheckoutModal();
   const publicClient = usePublicClient();
   const { data: walletClient } = useWalletClient();
   const { address: userAddress, chainId: chainIdUser } = useAccount();
-  const {
+  const [chainInfo, setChainInfo] = useState<{[key: string] : any}>({});
+  const { 
     data: txnData,
     sendTransaction,
     isPending: isPendingSendTxn,
@@ -42,7 +43,7 @@ export const BuyWithCreditCardButton = ({
   } = useSendTransaction();
   const { data: currencyData, isLoading: currencyIsLoading } =
     useSalesCurrency();
-  const { switchChainAsync } = useSwitchChain();
+  // const { switchChainAsync } = useSwitchChain();
 
   interface TokenSaleDetailData {
     cost: bigint;
@@ -64,7 +65,7 @@ export const BuyWithCreditCardButton = ({
   ).toString();
 
   const onClickBuy = async () => {
-    if (!publicClient || !walletClient || !userAddress || !currencyData) {
+    if (!publicClient || !walletClient || !userAddress || !currencyData || isPendingSendTxn) {
       return;
     }
 
@@ -112,19 +113,35 @@ export const BuyWithCreditCardButton = ({
   };
 
   useEffect(() => {
-    switchChainAsync({ chainId: 80002 });
-  }, [])
+    if (!chainId) return;
+    const chainInfoResponse = getChain(chainId);
+    if (chainInfoResponse) {
+      setChainInfo(chainInfoResponse)
+    }
+  }, [chainId]);
 
   return (
     <>
-      <span>{isPendingSendTxn ? "Pending" : "Nothing to see"}</span>
       {error && <span>{JSON.stringify(error)}</span>}
-      {txnData && (<a href={`https://www.okx.com/es-la/web3/explorer/amoy/tx/${txnData}`}>Click to view transaction in explorer: {txnData} (For chain Amoy)</a>)}
+      {txnData && (
+        <Box display="flex" flexDirection="column" marginBottom="3">
+          <Text variant="large" color="text100">
+            Purchase Completed Succesfully
+          </Text>
+          <a href={`${chainInfo.explorerUrl}/tx/${txnData}`} target="_blank" rel="noopener noreferrer">
+            <span>
+              View transaction in explorer
+            </span>
+            <br/>
+            <span>(Chain {chainInfo.name})</span>
+          </a>
+        </Box>
+      )}
       <Button
         loading={currencyIsLoading || tokenSaleDetailsDataIsLoading}
         size="sm"
         variant="primary"
-        label="Purchase (Crypto)"
+        label={!isPendingSendTxn ? "Purchase" : "Purchasing..."}
         shape="square"
         width="full"
         onClick={onClickBuy}

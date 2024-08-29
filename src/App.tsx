@@ -24,7 +24,7 @@ const App = () => {
     appleClientId,
     appleRedirectURI,
     /* Arbitrum sepolia chainId */
-    defaultChainId: 421614,
+    defaultChainId: 80002,
     appName: "Kit Starter",
     projectAccessKey,
   });

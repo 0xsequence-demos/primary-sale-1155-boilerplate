@@ -7,7 +7,7 @@ import {
 } from "@0xsequence/design-system";
 import { useAccount } from "wagmi";
 
-import { BuyWithCreditCardButton } from "./BuyWithCreditCardButton";
+import { BuyWithCryptoCardButton } from "./BuyWithCreditCardButton";
 import CollectibleTileImage from "../CollectibleTileImage";
 import { CollectibleCardContent } from "./CollectibleCardContent";
 import { useTokenMetadata, useCollectionBalance } from "../../hooks/data";
@@ -102,7 +102,7 @@ export const ItemsForSale = ({
                 />
               </Box>
               <Box marginTop="1">
-                <BuyWithCreditCardButton
+                <BuyWithCryptoCardButton
                   chainId={chainId}
                   collectionAddress={NFT_TOKEN_ADDRESS}
                   tokenId={tokenMetadata.tokenId}

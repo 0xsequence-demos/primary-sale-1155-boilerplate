@@ -1,4 +1,4 @@
-import { Card, Image } from "@0xsequence/design-system";
+import { Image } from "@0xsequence/design-system";
 
 interface CollectibleTileImageProps {
   imageUrl?: string;
@@ -6,18 +6,15 @@ interface CollectibleTileImageProps {
 
 const CollectibleTileImage = ({ imageUrl }: CollectibleTileImageProps) => {
   return (
-    <Card
-      padding="0"
-      aspectRatio="1/1"
-      justifyContent="center"
-      alignItems="center"
-      overflow="hidden"
-      borderRadius="sm"
-      background="backgroundSecondary"
-      width="full"
-    >
-      <Image style={{ width: "100%" }} src={imageUrl} />
-    </Card>
+    <Image
+      style={{
+        width: "298px",
+        height: "298px",
+        objectFit: "cover",
+        objectPosition: "center",
+      }}
+      src={imageUrl}
+    />
   );
 };
 
