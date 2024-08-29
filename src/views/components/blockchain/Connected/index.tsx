@@ -18,9 +18,10 @@ import {
 } from "../../../constants";
 import { useContractInfo } from "../../../hooks/data";
 import { useSalesCurrency } from "../../../hooks/useSalesCurrency";
+import { getChain } from "../../../../ERC20/getChain";
 
 const Connected = () => {
-  const { address: userAddress } = useAccount();
+  const { address: userAddress, chainId } = useAccount();
   const { disconnect } = useDisconnect();
   const { data: contractInfoData, isLoading: contractInfoIsLoading } =
     useContractInfo(CHAIN_ID, NFT_TOKEN_ADDRESS);
@@ -29,12 +30,14 @@ const Connected = () => {
   const AddressDisplay = ({
     label,
     address,
+    chainId,
   }: {
     label: string;
     address: string | Hex | undefined;
+    chainId: number;
   }) => {
     const isMobile = useMediaQuery("isMobile");
-
+    
     return (
       <Box
         justifyContent="space-between"
@@ -47,7 +50,7 @@ const Connected = () => {
           variant="normal"
           as="a"
           color="text100"
-          href={`https://polygonscan.com/address/${address}`}
+          href={`${getChain(chainId)?.explorerUrl}/address/${address}`}
           target="_blank"
           rel="noreferrer"
           ellipsis
@@ -107,23 +110,28 @@ const Connected = () => {
         )}
       </Collapsible>
 
-      <Collapsible label="Stuff for Nerds">
-        <Box gap="1" flexDirection="column">
-          <AddressDisplay label="User Address" address={userAddress} />
-          <AddressDisplay
-            label="Sales Contract"
-            address={SALES_CONTRACT_ADDRESS}
-          />
-          <AddressDisplay
-            label="NFT token Contract"
-            address={NFT_TOKEN_ADDRESS}
-          />
-          <AddressDisplay
-            label="Payment currency Address"
-            address={currencyData?.address || ""}
-          />
-        </Box>
-      </Collapsible>
+      {chainId && (
+        <Collapsible label="Stuff for Nerds">
+          <Box gap="1" flexDirection="column">
+            <AddressDisplay label="User Address" address={userAddress} chainId={chainId}/>
+            <AddressDisplay
+              label="Sales Contract"
+              address={SALES_CONTRACT_ADDRESS}
+              chainId={chainId}
+            />
+            <AddressDisplay
+              label="NFT token Contract"
+              address={NFT_TOKEN_ADDRESS}
+              chainId={chainId}
+            />
+            <AddressDisplay
+              label="Payment currency Address"
+              address={currencyData?.address || ""}
+              chainId={chainId}
+            />
+          </Box>
+        </Collapsible>
+      )}
 
       <ItemsForSale chainId={CHAIN_ID} collectionAddress={NFT_TOKEN_ADDRESS} />
 
