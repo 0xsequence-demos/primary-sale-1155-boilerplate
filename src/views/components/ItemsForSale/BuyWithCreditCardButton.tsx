@@ -13,15 +13,10 @@ import {
 import { ERC20 } from "../../../ERC20/ERC20";
 
 import { SALES_CONTRACT_ABI } from "../../constants/abi";
-import {
-  SALES_CONTRACT_ADDRESS_AMOY,
-  CHAIN_ID_AMOY,
-  CHAIN_ID_ARBITRUM_SEPOLIA,
-  SALES_CONTRACT_ADDRESS_ARBITRUM_SEPOLIA,
-} from "../../constants";
 import { useSalesCurrency } from "../../hooks/useSalesCurrency";
 import { useEffect, useState } from "react";
 import { getChain } from "../../../ERC20/getChain";
+import { getChainId, getSalesContractAddress } from "../../../utils/primarySellHelpers";
 interface BuyWithCryptoCardButtonProps {
   tokenId: string;
   collectionAddress: string;
@@ -47,7 +42,7 @@ export const BuyWithCryptoCardButton = ({
     sendTransaction,
     isPending: isPendingSendTxn,
     error,
-    // reset,
+    reset,
   } = useSendTransaction();
   const { data: currencyData, isLoading: currencyIsLoading } =
     useSalesCurrency(chainId);
@@ -63,18 +58,8 @@ export const BuyWithCryptoCardButton = ({
   } = useReadContract({
     abi: SALES_CONTRACT_ABI,
     functionName: "tokenSaleDetails",
-    chainId:
-      chainId === CHAIN_ID_AMOY
-        ? CHAIN_ID_AMOY
-        : chainId === CHAIN_ID_ARBITRUM_SEPOLIA
-          ? CHAIN_ID_ARBITRUM_SEPOLIA
-          : CHAIN_ID_AMOY,
-    address:
-      chainId === CHAIN_ID_AMOY
-        ? SALES_CONTRACT_ADDRESS_AMOY
-        : chainId === CHAIN_ID_ARBITRUM_SEPOLIA
-          ? SALES_CONTRACT_ADDRESS_ARBITRUM_SEPOLIA
-          : SALES_CONTRACT_ADDRESS_AMOY,
+    chainId: getChainId(chainId),
+    address: getSalesContractAddress(chainId),
     args: [BigInt(tokenId)],
   });
 
@@ -114,18 +99,14 @@ export const BuyWithCryptoCardButton = ({
     const allowance = await ERC20.getAllowance(
       currencyData.address,
       userAddress,
-      chainId === CHAIN_ID_AMOY
-        ? SALES_CONTRACT_ADDRESS_AMOY
-        : SALES_CONTRACT_ADDRESS_ARBITRUM_SEPOLIA,
+      getSalesContractAddress(chainId),
       chainId,
     );
 
     if (!allowance || allowance === 0n) {
       await ERC20.approveInfinite(
         currencyData.address,
-        chainId === CHAIN_ID_AMOY
-          ? SALES_CONTRACT_ADDRESS_AMOY
-          : SALES_CONTRACT_ADDRESS_ARBITRUM_SEPOLIA,
+        getSalesContractAddress(chainId),
         walletClient,
       );
     }
@@ -147,10 +128,7 @@ export const BuyWithCryptoCardButton = ({
     });
 
     const transactionParameters = {
-      to:
-        chainId === CHAIN_ID_AMOY
-          ? SALES_CONTRACT_ADDRESS_AMOY
-          : (SALES_CONTRACT_ADDRESS_ARBITRUM_SEPOLIA as `0x${string}`),
+      to: getSalesContractAddress(chainId),
       data: calldata,
       value: BigInt(0),
     };
@@ -160,6 +138,7 @@ export const BuyWithCryptoCardButton = ({
 
   useEffect(() => {
     if (!chainId) return;
+    reset();
     const chainInfoResponse = getChain(chainId);
     if (chainInfoResponse) {
       setChainInfo(chainInfoResponse);

@@ -12,8 +12,9 @@ import CollectibleTileImage from "../CollectibleTileImage";
 import { CollectibleCardContent } from "./CollectibleCardContent";
 import { useTokenMetadata, useCollectionBalance } from "../../hooks/data";
 import { useSalesCurrency } from "../../hooks/useSalesCurrency";
-import { itemsForSales, NFT_TOKEN_ADDRESS_AMOY } from "../../constants";
+import { itemsForSales } from "../../constants";
 import { TokenMetadata } from "@0xsequence/indexer";
+import { getNftTokenAddress } from "../../../utils/primarySellHelpers";
 
 interface ItemsForSaleProps {
   collectionAddress: string;
@@ -105,7 +106,7 @@ export const ItemsForSale = ({
               <Box marginTop="1">
                 <BuyWithCryptoCardButton
                   chainId={chainId}
-                  collectionAddress={NFT_TOKEN_ADDRESS_AMOY}
+                  collectionAddress={getNftTokenAddress(chainId)}
                   tokenId={tokenMetadata.tokenId}
                 />
               </Box>

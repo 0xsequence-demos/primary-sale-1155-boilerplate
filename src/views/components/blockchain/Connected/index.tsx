@@ -11,31 +11,21 @@ import { Hex } from "viem";
 import { useAccount, useDisconnect } from "wagmi";
 
 import { ItemsForSale } from "../../ItemsForSale";
-import {
-  SALES_CONTRACT_ADDRESS_AMOY,
-  NFT_TOKEN_ADDRESS_AMOY,
-  CHAIN_ID_AMOY,
-  CHAIN_ID_ARBITRUM_SEPOLIA,
-  NFT_TOKEN_ADDRESS_ARBITRUM_SEPOLIA,
-} from "../../../constants";
 import { useContractInfo } from "../../../hooks/data";
 import { useSalesCurrency } from "../../../hooks/useSalesCurrency";
 import { getChain } from "../../../../ERC20/getChain";
 import SwitchNetwork from "./SwitchNetwork";
+import { getChainId, getNftTokenAddress, getSalesContractAddress } from "../../../../utils/primarySellHelpers";
 
 const Connected = () => {
   const { address: userAddress, chainId, chain } = useAccount();
   const { disconnect } = useDisconnect();
   const { data: contractInfoData, isLoading: contractInfoIsLoading } =
     useContractInfo(
-      chainId === CHAIN_ID_AMOY ? CHAIN_ID_AMOY : CHAIN_ID_ARBITRUM_SEPOLIA,
-      chainId === CHAIN_ID_AMOY
-        ? NFT_TOKEN_ADDRESS_AMOY
-        : chainId === CHAIN_ID_ARBITRUM_SEPOLIA
-          ? NFT_TOKEN_ADDRESS_ARBITRUM_SEPOLIA
-          : NFT_TOKEN_ADDRESS_AMOY,
+      getChainId(chainId),
+      getNftTokenAddress(chainId),
     );
-  const { data: currencyData } = useSalesCurrency(chainId || CHAIN_ID_AMOY);
+  const { data: currencyData } = useSalesCurrency(getChainId(chainId));
 
   const AddressDisplay = ({
     label,
@@ -131,12 +121,12 @@ const Connected = () => {
             />
             <AddressDisplay
               label="Sales Contract"
-              address={SALES_CONTRACT_ADDRESS_AMOY}
+              address={getSalesContractAddress(chainId)}
               chainId={chainId}
             />
             <AddressDisplay
               label="NFT token Contract"
-              address={NFT_TOKEN_ADDRESS_AMOY}
+              address={getNftTokenAddress(chainId)}
               chainId={chainId}
             />
             <AddressDisplay
@@ -149,14 +139,8 @@ const Connected = () => {
       )}
 
       <ItemsForSale
-        chainId={chainId || CHAIN_ID_AMOY}
-        collectionAddress={
-          chainId === CHAIN_ID_AMOY
-            ? NFT_TOKEN_ADDRESS_AMOY
-            : chainId === CHAIN_ID_ARBITRUM_SEPOLIA
-              ? NFT_TOKEN_ADDRESS_ARBITRUM_SEPOLIA
-              : NFT_TOKEN_ADDRESS_AMOY
-        }
+        chainId={getChainId(chainId)}
+        collectionAddress={getNftTokenAddress(chainId)}
       />
 
       <Button label="Disconnect" onClick={disconnect} />
