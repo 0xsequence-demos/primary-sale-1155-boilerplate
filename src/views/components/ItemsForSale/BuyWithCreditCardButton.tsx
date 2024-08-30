@@ -8,12 +8,17 @@ import {
   useAccount,
   useReadContract,
   useSendTransaction,
-  useSwitchChain,
+  // useSwitchChain,
 } from "wagmi";
 import { ERC20 } from "../../../ERC20/ERC20";
 
 import { SALES_CONTRACT_ABI } from "../../constants/abi";
-import { SALES_CONTRACT_ADDRESS, CHAIN_ID } from "../../constants";
+import {
+  SALES_CONTRACT_ADDRESS_AMOY,
+  CHAIN_ID_AMOY,
+  CHAIN_ID_ARBITRUM_SEPOLIA,
+  SALES_CONTRACT_ADDRESS_ARBITRUM_SEPOLIA,
+} from "../../constants";
 import { useSalesCurrency } from "../../hooks/useSalesCurrency";
 import { useEffect, useState } from "react";
 import { getChain } from "../../../ERC20/getChain";
@@ -33,6 +38,7 @@ export const BuyWithCryptoCardButton = ({
   // const { triggerCheckout } = useCheckoutModal();
   const publicClient = usePublicClient();
   const { data: walletClient } = useWalletClient();
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars*/
   const { address: userAddress, chainId: chainIdUser } = useAccount();
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   const [chainInfo, setChainInfo] = useState<{ [key: string]: any }>({});
@@ -44,8 +50,8 @@ export const BuyWithCryptoCardButton = ({
     // reset,
   } = useSendTransaction();
   const { data: currencyData, isLoading: currencyIsLoading } =
-    useSalesCurrency();
-  const { switchChainAsync } = useSwitchChain();
+    useSalesCurrency(chainId);
+  // const { switchChainAsync } = useSwitchChain();
 
   // interface TokenSaleDetailData {
   //   cost: bigint;
@@ -57,8 +63,18 @@ export const BuyWithCryptoCardButton = ({
   } = useReadContract({
     abi: SALES_CONTRACT_ABI,
     functionName: "tokenSaleDetails",
-    chainId: CHAIN_ID,
-    address: SALES_CONTRACT_ADDRESS,
+    chainId:
+      chainId === CHAIN_ID_AMOY
+        ? CHAIN_ID_AMOY
+        : chainId === CHAIN_ID_ARBITRUM_SEPOLIA
+          ? CHAIN_ID_ARBITRUM_SEPOLIA
+          : CHAIN_ID_AMOY,
+    address:
+      chainId === CHAIN_ID_AMOY
+        ? SALES_CONTRACT_ADDRESS_AMOY
+        : chainId === CHAIN_ID_ARBITRUM_SEPOLIA
+          ? SALES_CONTRACT_ADDRESS_ARBITRUM_SEPOLIA
+          : SALES_CONTRACT_ADDRESS_AMOY,
     args: [BigInt(tokenId)],
   });
 
@@ -77,10 +93,10 @@ export const BuyWithCryptoCardButton = ({
       return;
     }
 
-    if (chainIdUser != 80002) {
-      await switchChainAsync({ chainId: 80002 });
-      return;
-    }
+    // if (chainIdUser != 80002) {
+    //   await switchChainAsync({ chainId: 80002 });
+    //   return;
+    // }
 
     /**
      * Mint tokens.
@@ -98,17 +114,22 @@ export const BuyWithCryptoCardButton = ({
     const allowance = await ERC20.getAllowance(
       currencyData.address,
       userAddress,
-      SALES_CONTRACT_ADDRESS,
+      chainId === CHAIN_ID_AMOY
+        ? SALES_CONTRACT_ADDRESS_AMOY
+        : SALES_CONTRACT_ADDRESS_ARBITRUM_SEPOLIA,
       chainId,
     );
 
     if (!allowance || allowance === 0n) {
       await ERC20.approveInfinite(
         currencyData.address,
-        SALES_CONTRACT_ADDRESS,
+        chainId === CHAIN_ID_AMOY
+          ? SALES_CONTRACT_ADDRESS_AMOY
+          : SALES_CONTRACT_ADDRESS_ARBITRUM_SEPOLIA,
         walletClient,
       );
     }
+
     const calldata = encodeFunctionData({
       abi: SALES_CONTRACT_ABI,
       functionName: "mint",
@@ -126,7 +147,10 @@ export const BuyWithCryptoCardButton = ({
     });
 
     const transactionParameters = {
-      to: SALES_CONTRACT_ADDRESS as `0x${string}`,
+      to:
+        chainId === CHAIN_ID_AMOY
+          ? SALES_CONTRACT_ADDRESS_AMOY
+          : (SALES_CONTRACT_ADDRESS_ARBITRUM_SEPOLIA as `0x${string}`),
       data: calldata,
       value: BigInt(0),
     };
@@ -165,13 +189,7 @@ export const BuyWithCryptoCardButton = ({
         loading={currencyIsLoading || tokenSaleDetailsDataIsLoading}
         size="sm"
         variant="primary"
-        label={
-          chainIdUser != 80002
-            ? "Switch chain to buy"
-            : !isPendingSendTxn
-              ? "Purchase"
-              : "Purchasing..."
-        }
+        label={!isPendingSendTxn ? "Purchase" : "Purchasing..."}
         shape="square"
         width="full"
         onClick={onClickBuy}

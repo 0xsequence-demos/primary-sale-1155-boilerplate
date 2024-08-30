@@ -12,20 +12,30 @@ import { useAccount, useDisconnect } from "wagmi";
 
 import { ItemsForSale } from "../../ItemsForSale";
 import {
-  NFT_TOKEN_ADDRESS,
-  SALES_CONTRACT_ADDRESS,
-  CHAIN_ID,
+  SALES_CONTRACT_ADDRESS_AMOY,
+  NFT_TOKEN_ADDRESS_AMOY,
+  CHAIN_ID_AMOY,
+  CHAIN_ID_ARBITRUM_SEPOLIA,
+  NFT_TOKEN_ADDRESS_ARBITRUM_SEPOLIA,
 } from "../../../constants";
 import { useContractInfo } from "../../../hooks/data";
 import { useSalesCurrency } from "../../../hooks/useSalesCurrency";
 import { getChain } from "../../../../ERC20/getChain";
+import SwitchNetwork from "./SwitchNetwork";
 
 const Connected = () => {
-  const { address: userAddress, chainId } = useAccount();
+  const { address: userAddress, chainId, chain } = useAccount();
   const { disconnect } = useDisconnect();
   const { data: contractInfoData, isLoading: contractInfoIsLoading } =
-    useContractInfo(CHAIN_ID, NFT_TOKEN_ADDRESS);
-  const { data: currencyData } = useSalesCurrency();
+    useContractInfo(
+      chainId === CHAIN_ID_AMOY ? CHAIN_ID_AMOY : CHAIN_ID_ARBITRUM_SEPOLIA,
+      chainId === CHAIN_ID_AMOY
+        ? NFT_TOKEN_ADDRESS_AMOY
+        : chainId === CHAIN_ID_ARBITRUM_SEPOLIA
+          ? NFT_TOKEN_ADDRESS_ARBITRUM_SEPOLIA
+          : NFT_TOKEN_ADDRESS_AMOY,
+    );
+  const { data: currencyData } = useSalesCurrency(chainId || CHAIN_ID_AMOY);
 
   const AddressDisplay = ({
     label,
@@ -73,6 +83,7 @@ const Connected = () => {
       gap="3"
       style={{ width: "100%", maxWidth: 700, margin: "0 auto" }}
     >
+      {chain && <SwitchNetwork chain={chain} />}
       <Collapsible label="Collection Info">
         {contractInfoIsLoading ? (
           <Box justifyContent="center" alignItems="center">
@@ -120,12 +131,12 @@ const Connected = () => {
             />
             <AddressDisplay
               label="Sales Contract"
-              address={SALES_CONTRACT_ADDRESS}
+              address={SALES_CONTRACT_ADDRESS_AMOY}
               chainId={chainId}
             />
             <AddressDisplay
               label="NFT token Contract"
-              address={NFT_TOKEN_ADDRESS}
+              address={NFT_TOKEN_ADDRESS_AMOY}
               chainId={chainId}
             />
             <AddressDisplay
@@ -137,7 +148,16 @@ const Connected = () => {
         </Collapsible>
       )}
 
-      <ItemsForSale chainId={CHAIN_ID} collectionAddress={NFT_TOKEN_ADDRESS} />
+      <ItemsForSale
+        chainId={chainId || CHAIN_ID_AMOY}
+        collectionAddress={
+          chainId === CHAIN_ID_AMOY
+            ? NFT_TOKEN_ADDRESS_AMOY
+            : chainId === CHAIN_ID_ARBITRUM_SEPOLIA
+              ? NFT_TOKEN_ADDRESS_ARBITRUM_SEPOLIA
+              : NFT_TOKEN_ADDRESS_AMOY
+        }
+      />
 
       <Button label="Disconnect" onClick={disconnect} />
     </Card>

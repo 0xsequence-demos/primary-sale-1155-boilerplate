@@ -2,7 +2,12 @@ import { Box, Text, TokenImage, Skeleton } from "@0xsequence/design-system";
 import { formatUnits } from "viem";
 import { useReadContract } from "wagmi";
 
-import { SALES_CONTRACT_ADDRESS, CHAIN_ID } from "../../constants";
+import {
+  SALES_CONTRACT_ADDRESS_AMOY,
+  CHAIN_ID_AMOY,
+  CHAIN_ID_ARBITRUM_SEPOLIA,
+  SALES_CONTRACT_ADDRESS_ARBITRUM_SEPOLIA,
+} from "../../constants";
 import { SALES_CONTRACT_ABI } from "../../constants/abi";
 
 interface CollectibleCardContentProps {
@@ -11,6 +16,7 @@ interface CollectibleCardContentProps {
   name: string;
   decimals: number;
   logoURI?: string;
+  chainId: number;
 }
 
 interface TokenSaleDetailsData {
@@ -23,6 +29,7 @@ export const CollectibleCardContent = ({
   logoURI,
   name,
   decimals,
+  chainId,
 }: CollectibleCardContentProps) => {
   const {
     data: tokenSaleDetailsData,
@@ -30,8 +37,12 @@ export const CollectibleCardContent = ({
   } = useReadContract({
     abi: SALES_CONTRACT_ABI,
     functionName: "tokenSaleDetails",
-    chainId: CHAIN_ID,
-    address: SALES_CONTRACT_ADDRESS,
+    chainId:
+      chainId === CHAIN_ID_AMOY ? CHAIN_ID_AMOY : CHAIN_ID_ARBITRUM_SEPOLIA,
+    address:
+      chainId === CHAIN_ID_AMOY
+        ? SALES_CONTRACT_ADDRESS_AMOY
+        : SALES_CONTRACT_ADDRESS_ARBITRUM_SEPOLIA,
     args: [BigInt(tokenId)],
   });
 

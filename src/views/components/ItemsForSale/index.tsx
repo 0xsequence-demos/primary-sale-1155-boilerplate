@@ -12,7 +12,7 @@ import CollectibleTileImage from "../CollectibleTileImage";
 import { CollectibleCardContent } from "./CollectibleCardContent";
 import { useTokenMetadata, useCollectionBalance } from "../../hooks/data";
 import { useSalesCurrency } from "../../hooks/useSalesCurrency";
-import { itemsForSales, NFT_TOKEN_ADDRESS } from "../../constants";
+import { itemsForSales, NFT_TOKEN_ADDRESS_AMOY } from "../../constants";
 import { TokenMetadata } from "@0xsequence/indexer";
 
 interface ItemsForSaleProps {
@@ -43,7 +43,7 @@ export const ItemsForSale = ({
     );
 
   const { data: currencyData, isLoading: currencyIsLoading } =
-    useSalesCurrency();
+    useSalesCurrency(chainId);
 
   const isLoading =
     tokenMetadatasLoading || collectionBalanceIsLoading || currencyIsLoading;
@@ -99,12 +99,13 @@ export const ItemsForSale = ({
                   logoURI={currencyData?.logoURI}
                   name={tokenMetadata?.name || ""}
                   decimals={currencyData?.decimals || 0}
+                  chainId={chainId}
                 />
               </Box>
               <Box marginTop="1">
                 <BuyWithCryptoCardButton
                   chainId={chainId}
-                  collectionAddress={NFT_TOKEN_ADDRESS}
+                  collectionAddress={NFT_TOKEN_ADDRESS_AMOY}
                   tokenId={tokenMetadata.tokenId}
                 />
               </Box>
