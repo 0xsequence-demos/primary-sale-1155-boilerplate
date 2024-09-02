@@ -18,8 +18,12 @@ const Home = () => {
 
   return (
     <div>
-      <h1>Sequence Primary Drop Sale Boilerplate</h1>
-      <h2 className="homepage__marginBtNormal">Embedded Wallet</h2>
+      {!isConnected && (
+        <>
+          <h1>Sequence Primary Drop Sale Boilerplate</h1>
+          <h2 className="homepage__marginBtNormal">Embedded Wallet</h2>
+        </>
+      )}
       <Content />
       <footer className="homepage__footer">
         <Text>

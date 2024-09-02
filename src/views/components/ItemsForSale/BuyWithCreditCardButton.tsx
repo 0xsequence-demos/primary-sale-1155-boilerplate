@@ -1,11 +1,9 @@
-// import { useQueryClient } from "@tanstack/react-query";
-// import { useCheckoutModal } from "@0xsequence/kit-checkout";
-import { encodeFunctionData, toHex } from "viem";
-import { Box, Button, Text } from "@0xsequence/design-system";
+import { encodeFunctionData, SendTransactionErrorType, toHex } from "viem";
 import {
   usePublicClient,
   useWalletClient,
   useAccount,
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars*/
   useReadContract,
   useSendTransaction,
   // useSwitchChain,
@@ -16,11 +14,16 @@ import { SALES_CONTRACT_ABI } from "../../constants/abi";
 import { useSalesCurrency } from "../../hooks/useSalesCurrency";
 import { useEffect, useState } from "react";
 import { getChain } from "../../../ERC20/getChain";
-import { getChainId, getSalesContractAddress } from "../../../utils/primarySellHelpers";
+import { getSalesContractAddress } from "../../../utils/primarySellHelpers";
+import { toast } from "react-toastify";
 interface BuyWithCryptoCardButtonProps {
   tokenId: string;
   collectionAddress: string;
   chainId: number;
+  amount: number;
+  resetAmount: () => void;
+  setTxExplorerUrl: (url: string) => void;
+  setTxError: (error: SendTransactionErrorType | null) => void;
 }
 
 export const BuyWithCryptoCardButton = ({
@@ -28,9 +31,11 @@ export const BuyWithCryptoCardButton = ({
   /* eslint-disable-next-line @typescript-eslint/no-unused-vars*/
   collectionAddress,
   chainId,
+  amount,
+  resetAmount,
+  setTxExplorerUrl,
+  setTxError,
 }: BuyWithCryptoCardButtonProps) => {
-  // const queryClient = useQueryClient();
-  // const { triggerCheckout } = useCheckoutModal();
   const publicClient = usePublicClient();
   const { data: walletClient } = useWalletClient();
   /* eslint-disable-next-line @typescript-eslint/no-unused-vars*/
@@ -44,28 +49,9 @@ export const BuyWithCryptoCardButton = ({
     error,
     reset,
   } = useSendTransaction();
+  /* eslint-disable-next-line @typescript-eslint/no-unused-vars*/
   const { data: currencyData, isLoading: currencyIsLoading } =
     useSalesCurrency(chainId);
-  // const { switchChainAsync } = useSwitchChain();
-
-  // interface TokenSaleDetailData {
-  //   cost: bigint;
-  // }
-
-  const {
-    // data: tokenSaleDetailsData,
-    isLoading: tokenSaleDetailsDataIsLoading,
-  } = useReadContract({
-    abi: SALES_CONTRACT_ABI,
-    functionName: "tokenSaleDetails",
-    chainId: getChainId(chainId),
-    address: getSalesContractAddress(chainId),
-    args: [BigInt(tokenId)],
-  });
-
-  // const currencyPrice = (
-  //   (tokenSaleDetailsData as TokenSaleDetailData)?.cost || 0n
-  // ).toString();
 
   const onClickBuy = async () => {
     if (
@@ -73,15 +59,11 @@ export const BuyWithCryptoCardButton = ({
       !walletClient ||
       !userAddress ||
       !currencyData ||
-      isPendingSendTxn
+      isPendingSendTxn ||
+      amount <= 0
     ) {
       return;
     }
-
-    // if (chainIdUser != 80002) {
-    //   await switchChainAsync({ chainId: 80002 });
-    //   return;
-    // }
 
     /**
      * Mint tokens.
@@ -96,6 +78,9 @@ export const BuyWithCryptoCardButton = ({
      * @dev tokenIds must be sorted ascending without duplicates.
      * @dev An empty proof is supplied when no proof is required.
      */
+
+    setTxError(null);
+    setTxExplorerUrl("");
     const allowance = await ERC20.getAllowance(
       currencyData.address,
       userAddress,
@@ -118,11 +103,11 @@ export const BuyWithCryptoCardButton = ({
         userAddress,
         [BigInt(tokenId)],
         // Amount of nfts that are going to be purchased
-        [BigInt(1)],
+        [BigInt(amount)],
         toHex(0),
         currencyData.address,
         // Here the exact price of the NFTs must be established (USDC = 6 decimals) (Native currency = 18 decimals)
-        BigInt(10000),
+        BigInt(amount * 10000),
         [toHex(0, { size: 32 })],
       ],
     });
@@ -143,36 +128,60 @@ export const BuyWithCryptoCardButton = ({
     if (chainInfoResponse) {
       setChainInfo(chainInfoResponse);
     }
+    /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, [chainId]);
+
+  useEffect(() => {
+    if (!error) return;
+    setTxError(error as SendTransactionErrorType);
+    /* eslint-disable-next-line react-hooks/exhaustive-deps */
+  }, [error]);
+
+  useEffect(() => {
+    if (!txnData) return;
+    resetAmount();
+    toast(
+      <div>
+        Purchase Completed Successfully.{" "}
+        <a
+          href={`${chainInfo.explorerUrl}/tx/${txnData}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            color: "rgba(32, 129, 226, 1)",
+            textDecoration: "underline",
+          }}
+        >
+          View transaction in explorer
+        </a>
+      </div>,
+    );
+    setTxExplorerUrl(`${chainInfo.explorerUrl}/tx/${txnData}`);
+    /* eslint-disable-next-line react-hooks/exhaustive-deps */
+  }, [txnData]);
 
   return (
     <>
-      {error && <span>{JSON.stringify(error)}</span>}
-      {txnData && (
-        <Box display="flex" flexDirection="column" marginBottom="3">
-          <Text variant="large" color="text100">
-            Purchase Completed Succesfully
-          </Text>
-          <a
-            href={`${chainInfo.explorerUrl}/tx/${txnData}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <span>View transaction in explorer</span>
-            <br />
-            <span>(Chain {chainInfo.name})</span>
-          </a>
-        </Box>
-      )}
-      <Button
-        loading={currencyIsLoading || tokenSaleDetailsDataIsLoading}
-        size="sm"
-        variant="primary"
-        label={!isPendingSendTxn ? "Purchase" : "Purchasing..."}
-        shape="square"
-        width="full"
+      <button
+        style={{
+          backgroundColor: "rgba(32, 129, 226, 1)",
+          padding: "12px 6px",
+          borderRadius: "0.75rem",
+          width: "100%",
+          transition: "background-color 0.3s ease",
+          border: "none",
+          outline: "none",
+        }}
+        onMouseOver={(e) =>
+          (e.currentTarget.style.backgroundColor = "rgba(25, 100, 176, 1)")
+        }
+        onMouseOut={(e) =>
+          (e.currentTarget.style.backgroundColor = "rgba(32, 129, 226, 1)")
+        }
         onClick={onClickBuy}
-      />
+      >
+        {!isPendingSendTxn ? "Purchase" : "Purchasing..."}
+      </button>
     </>
   );
 };

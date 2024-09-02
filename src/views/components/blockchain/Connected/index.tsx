@@ -3,6 +3,7 @@ import {
   Button,
   Card,
   Collapsible,
+  Image,
   Spinner,
   Text,
   useMediaQuery,
@@ -15,16 +16,17 @@ import { useContractInfo } from "../../../hooks/data";
 import { useSalesCurrency } from "../../../hooks/useSalesCurrency";
 import { getChain } from "../../../../ERC20/getChain";
 import SwitchNetwork from "./SwitchNetwork";
-import { getChainId, getNftTokenAddress, getSalesContractAddress } from "../../../../utils/primarySellHelpers";
+import {
+  getChainId,
+  getNftTokenAddress,
+  getSalesContractAddress,
+} from "../../../../utils/primarySellHelpers";
 
 const Connected = () => {
   const { address: userAddress, chainId, chain } = useAccount();
   const { disconnect } = useDisconnect();
   const { data: contractInfoData, isLoading: contractInfoIsLoading } =
-    useContractInfo(
-      getChainId(chainId),
-      getNftTokenAddress(chainId),
-    );
+    useContractInfo(getChainId(chainId), getNftTokenAddress(chainId));
   const { data: currencyData } = useSalesCurrency(getChainId(chainId));
 
   const AddressDisplay = ({
@@ -41,7 +43,7 @@ const Connected = () => {
     return (
       <Box
         justifyContent="space-between"
-        {...(isMobile ? { flexDirection: "column" } : {})}
+        {...(isMobile ? { flexDirection: "column" } : { textAlign: "left" })}
       >
         <Text variant="normal" color="text100" style={{ minWidth: 205 }}>
           {label}: &nbsp;
@@ -62,26 +64,37 @@ const Connected = () => {
   };
 
   const collectionName = contractInfoData?.name;
+  const collectionImage = contractInfoData?.extensions?.ogImage;
   const collectionDescription = contractInfoData?.extensions?.description;
 
   return (
     <Card
       justifyContent="center"
       alignItems="center"
-      width="4"
       flexDirection="column"
       gap="3"
-      style={{ width: "100%", maxWidth: 700, margin: "0 auto" }}
+      style={{ width: "100%", margin: "0 auto" }}
     >
-      {chain && <SwitchNetwork chain={chain} />}
-      <Collapsible label="Collection Info">
+      <Box display="flex" justifyContent="flex-end" style={{ width: "100%" }}>
+        {chain && <SwitchNetwork chain={chain} />}
+      </Box>
+      <Box width="full" paddingLeft="10" paddingRight="10">
         {contractInfoIsLoading ? (
           <Box justifyContent="center" alignItems="center">
             <Spinner />
           </Box>
         ) : (
           <Box gap="2" flexDirection="column">
-            <Box gap="1" flexDirection="column">
+            <h1>Sequence Primary Drop Sale Boilerplate</h1>
+            <h2 className="homepage__marginBtNormal">Embedded Wallet</h2>
+            <div>
+              <Image
+                src={collectionImage}
+                alt={collectionName}
+                style={{ width: "20rem", height: "auto" }}
+              />
+            </div>
+            <Box gap="1" flexDirection="column" textAlign="left">
               <Text
                 variant="normal"
                 color="text100"
@@ -94,7 +107,7 @@ const Connected = () => {
               </Text>
             </Box>
             {collectionDescription && (
-              <Box gap="1" flexDirection="column">
+              <Box gap="1" flexDirection="column" textAlign="left">
                 <Text
                   variant="normal"
                   color="text100"
@@ -109,7 +122,7 @@ const Connected = () => {
             )}
           </Box>
         )}
-      </Collapsible>
+      </Box>
 
       {chainId && (
         <Collapsible label="Stuff for Nerds">

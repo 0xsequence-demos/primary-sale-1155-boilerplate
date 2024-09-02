@@ -4,6 +4,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createConfig, http, WagmiProvider } from "wagmi";
 import chains from "./utils/chains";
 import { KitCheckoutProvider } from "@0xsequence/kit-checkout";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const queryClient = new QueryClient();
 
 const App = () => {
@@ -50,6 +52,18 @@ const App = () => {
       <QueryClientProvider client={queryClient}>
         <KitProvider config={kitConfig}>
           <KitCheckoutProvider>
+            <ToastContainer
+              position="bottom-right"
+              autoClose={7000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="dark"
+            />
             <Home />
           </KitCheckoutProvider>
         </KitProvider>

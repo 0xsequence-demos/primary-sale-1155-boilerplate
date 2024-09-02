@@ -18,7 +18,9 @@ export function getChainId(chainId: number | undefined): number {
   }
 }
 
-export function getSalesContractAddress(chainId: number | undefined): `0x${string}` {
+export function getSalesContractAddress(
+  chainId: number | undefined,
+): `0x${string}` {
   switch (chainId) {
     case CHAIN_ID_AMOY:
       return SALES_CONTRACT_ADDRESS_AMOY;

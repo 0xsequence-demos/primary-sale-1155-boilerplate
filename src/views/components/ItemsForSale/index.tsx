@@ -1,20 +1,11 @@
-import {
-  Box,
-  Card,
-  Text,
-  Spinner,
-  useMediaQuery,
-} from "@0xsequence/design-system";
+import { Box, Text, Spinner } from "@0xsequence/design-system";
 import { useAccount } from "wagmi";
 
-import { BuyWithCryptoCardButton } from "./BuyWithCreditCardButton";
-import CollectibleTileImage from "../CollectibleTileImage";
-import { CollectibleCardContent } from "./CollectibleCardContent";
 import { useTokenMetadata, useCollectionBalance } from "../../hooks/data";
 import { useSalesCurrency } from "../../hooks/useSalesCurrency";
 import { itemsForSales } from "../../constants";
 import { TokenMetadata } from "@0xsequence/indexer";
-import { getNftTokenAddress } from "../../../utils/primarySellHelpers";
+import { Collectible } from "./Collectible";
 
 interface ItemsForSaleProps {
   collectionAddress: string;
@@ -25,7 +16,6 @@ export const ItemsForSale = ({
   collectionAddress,
   chainId,
 }: ItemsForSaleProps) => {
-  const isMobile = useMediaQuery("isMobile");
   const { address: userAddress } = useAccount();
   const { data: collectionBalanceData, isLoading: collectionBalanceIsLoading } =
     useCollectionBalance({
@@ -66,54 +56,37 @@ export const ItemsForSale = ({
   }
 
   return (
-    <Box
-      flexDirection={"row"}
-      alignItems="center"
-      flexWrap="wrap"
-      style={{
-        width: "calc(100% + 8px)",
-      }}
-    >
-      {tokenMetadatas?.map((tokenMetadata: TokenMetadata) => {
-        const collectibleBalance = collectionBalanceData?.find(
-          (balance) => balance?.tokenID === tokenMetadata.tokenId,
-        );
+    <Box width="full">
+      <Box marginBottom="6">
+        <Text variant="xlarge" fontWeight="bold">
+          Available items
+        </Text>
+      </Box>
+      <Box
+        flexDirection={"row"}
+        alignItems="center"
+        flexWrap="wrap"
+        gap="6"
+        style={{
+          maxWidth: "50rem",
+        }}
+      >
+        {tokenMetadatas?.map((tokenMetadata: TokenMetadata) => {
+          const collectibleBalance = collectionBalanceData?.find(
+            (balance) => balance?.tokenID === tokenMetadata.tokenId,
+          );
 
-        const amountOwned: string = collectibleBalance?.balance || "0";
-
-        return (
-          <Box
-            padding="1"
-            width="full"
-            flexDirection="column"
-            style={{
-              flexBasis: isMobile ? "100%" : "50%",
-            }}
-          >
-            <Card>
-              <CollectibleTileImage imageUrl={tokenMetadata?.image || ""} />
-
-              <Box flexDirection="column" marginTop="1">
-                <CollectibleCardContent
-                  tokenId={tokenMetadata?.tokenId || ""}
-                  amountOwned={amountOwned}
-                  logoURI={currencyData?.logoURI}
-                  name={tokenMetadata?.name || ""}
-                  decimals={currencyData?.decimals || 0}
-                  chainId={chainId}
-                />
-              </Box>
-              <Box marginTop="1">
-                <BuyWithCryptoCardButton
-                  chainId={chainId}
-                  collectionAddress={getNftTokenAddress(chainId)}
-                  tokenId={tokenMetadata.tokenId}
-                />
-              </Box>
-            </Card>
-          </Box>
-        );
-      })}
+          return (
+            <Collectible
+              key={collectionAddress + tokenMetadata.tokenId}
+              collectibleBalance={collectibleBalance}
+              tokenMetadata={tokenMetadata}
+              chainId={chainId}
+              currencyData={currencyData}
+            />
+          );
+        })}
+      </Box>
     </Box>
   );
 };
