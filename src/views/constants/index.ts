@@ -14,7 +14,9 @@ export const SALES_CONTRACT_ADDRESS_ARBITRUM_SEPOLIA =
 export const NFT_TOKEN_ADDRESS_ARBITRUM_SEPOLIA =
   "0xd4bb59d0ba1f7b2beea4c6d9b9f151ee1da02665";
 export const CHAIN_ID_ARBITRUM_SEPOLIA = 421614;
-
+export const nativeTokenDecimals = 18;
+export const erc20TokenDecimals = 6;
+export const nftPrice = 0.01;
 interface SaleItem {
   tokenId: string;
 }

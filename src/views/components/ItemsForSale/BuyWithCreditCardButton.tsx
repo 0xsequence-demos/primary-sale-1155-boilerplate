@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import { getChain } from "../../../ERC20/getChain";
 import { getSalesContractAddress } from "../../../utils/primarySellHelpers";
 import { toast } from "react-toastify";
+import { erc20TokenDecimals, nativeTokenDecimals, nftPrice } from "../../constants";
 interface BuyWithCryptoCardButtonProps {
   tokenId: string;
   collectionAddress: string;
@@ -84,7 +85,11 @@ export const BuyWithCryptoCardButton = ({
      * @dev tokenIds must be sorted ascending without duplicates.
      * @dev An empty proof is supplied when no proof is required.
      */
-
+    
+    const tokenDecimals: number = currencyData.address == "0x0000000000000000000000000000000000000000" ? nativeTokenDecimals : erc20TokenDecimals;
+    const nftPriceBigInt = BigInt(nftPrice * 10 ** tokenDecimals);
+    const amountBigInt = BigInt(amount);
+    const totalPrice = nftPriceBigInt * amountBigInt;
     setTxError(null);
     setTxExplorerUrl("");
     const allowance = await ERC20.getAllowance(
@@ -113,7 +118,7 @@ export const BuyWithCryptoCardButton = ({
         toHex(0),
         currencyData.address,
         // Here the exact price of the NFTs must be established (USDC = 6 decimals) (Native currency = 18 decimals)
-        BigInt(amount * 10000),
+        totalPrice,
         [toHex(0, { size: 32 })],
       ],
     });

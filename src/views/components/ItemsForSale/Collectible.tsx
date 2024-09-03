@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { TokenMetadata } from "@0xsequence/indexer";
 import { toast } from "react-toastify";
 import { SendTransactionErrorType } from "viem";
+import { nftPrice } from "../../constants";
 
 interface CollectibleProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -87,7 +88,7 @@ export const Collectible = ({
                   color="text100"
                   style={{ textAlign: "left" }}
                 >
-                  Price: {0}
+                  Price: {nftPrice}
                 </Text>
                 {!logoURI ? (
                   <Skeleton style={{ width: 20, height: 20 }} />
