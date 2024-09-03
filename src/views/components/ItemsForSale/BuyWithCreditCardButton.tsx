@@ -4,7 +4,7 @@ import {
   useWalletClient,
   useAccount,
   /* eslint-disable-next-line @typescript-eslint/no-unused-vars*/
-  useReadContract,
+  // useReadContract,
   useSendTransaction,
   // useSwitchChain,
 } from "wagmi";
@@ -29,7 +29,7 @@ interface BuyWithCryptoCardButtonProps {
 export const BuyWithCryptoCardButton = ({
   tokenId,
   /* eslint-disable-next-line @typescript-eslint/no-unused-vars*/
-  collectionAddress,
+  // collectionAddress,
   chainId,
   amount,
   resetAmount,
@@ -39,7 +39,10 @@ export const BuyWithCryptoCardButton = ({
   const publicClient = usePublicClient();
   const { data: walletClient } = useWalletClient();
   /* eslint-disable-next-line @typescript-eslint/no-unused-vars*/
-  const { address: userAddress, chainId: chainIdUser } = useAccount();
+  const {
+    address: userAddress,
+    // chainId: chainIdUser
+  } = useAccount();
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   const [chainInfo, setChainInfo] = useState<{ [key: string]: any }>({});
   const {
@@ -50,7 +53,10 @@ export const BuyWithCryptoCardButton = ({
     reset,
   } = useSendTransaction();
   /* eslint-disable-next-line @typescript-eslint/no-unused-vars*/
-  const { data: currencyData, isLoading: currencyIsLoading } =
+  const {
+    data: currencyData,
+    // isLoading: currencyIsLoading
+  } =
     useSalesCurrency(chainId);
 
   const onClickBuy = async () => {
