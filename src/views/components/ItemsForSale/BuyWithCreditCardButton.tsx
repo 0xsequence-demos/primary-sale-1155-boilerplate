@@ -3,7 +3,6 @@ import {
   usePublicClient,
   useWalletClient,
   useAccount,
-  /* eslint-disable-next-line @typescript-eslint/no-unused-vars*/
   // useReadContract,
   useSendTransaction,
   // useSwitchChain,
@@ -16,7 +15,11 @@ import { useEffect, useState } from "react";
 import { getChain } from "../../../ERC20/getChain";
 import { getSalesContractAddress } from "../../../utils/primarySellHelpers";
 import { toast } from "react-toastify";
-import { erc20TokenDecimals, nativeTokenDecimals, nftPrice } from "../../constants";
+import {
+  erc20TokenDecimals,
+  nativeTokenDecimals,
+  nftPrice,
+} from "../../constants";
 interface BuyWithCryptoCardButtonProps {
   tokenId: string;
   collectionAddress: string;
@@ -29,7 +32,6 @@ interface BuyWithCryptoCardButtonProps {
 
 export const BuyWithCryptoCardButton = ({
   tokenId,
-  /* eslint-disable-next-line @typescript-eslint/no-unused-vars*/
   // collectionAddress,
   chainId,
   amount,
@@ -39,7 +41,6 @@ export const BuyWithCryptoCardButton = ({
 }: BuyWithCryptoCardButtonProps) => {
   const publicClient = usePublicClient();
   const { data: walletClient } = useWalletClient();
-  /* eslint-disable-next-line @typescript-eslint/no-unused-vars*/
   const {
     address: userAddress,
     // chainId: chainIdUser
@@ -53,12 +54,10 @@ export const BuyWithCryptoCardButton = ({
     error,
     reset,
   } = useSendTransaction();
-  /* eslint-disable-next-line @typescript-eslint/no-unused-vars*/
   const {
     data: currencyData,
     // isLoading: currencyIsLoading
-  } =
-    useSalesCurrency(chainId);
+  } = useSalesCurrency(chainId);
 
   const onClickBuy = async () => {
     if (
@@ -85,8 +84,11 @@ export const BuyWithCryptoCardButton = ({
      * @dev tokenIds must be sorted ascending without duplicates.
      * @dev An empty proof is supplied when no proof is required.
      */
-    
-    const tokenDecimals: number = currencyData.address == "0x0000000000000000000000000000000000000000" ? nativeTokenDecimals : erc20TokenDecimals;
+
+    const tokenDecimals: number =
+      currencyData.address == "0x0000000000000000000000000000000000000000"
+        ? nativeTokenDecimals
+        : erc20TokenDecimals;
     const nftPriceBigInt = BigInt(nftPrice * 10 ** tokenDecimals);
     const amountBigInt = BigInt(amount);
     const totalPrice = nftPriceBigInt * amountBigInt;

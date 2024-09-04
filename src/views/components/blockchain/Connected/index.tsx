@@ -9,7 +9,7 @@ import {
   useMediaQuery,
 } from "@0xsequence/design-system";
 import { Hex } from "viem";
-import { useAccount, useDisconnect } from "wagmi";
+import { useAccount, useDisconnect, useReadContract } from "wagmi";
 
 import { ItemsForSale } from "../../ItemsForSale";
 import { useContractInfo } from "../../../hooks/data";
@@ -21,6 +21,14 @@ import {
   getNftTokenAddress,
   getSalesContractAddress,
 } from "../../../../utils/primarySellHelpers";
+import { SALES_CONTRACT_ABI } from "../../../constants/abi";
+
+interface GlobalSalesDetailsData {
+  cost: bigint;
+  endtime: bigint;
+  merkleRoot: string;
+  startTime: bigint;
+}
 
 const Connected = () => {
   const { address: userAddress, chainId, chain } = useAccount();
@@ -28,6 +36,16 @@ const Connected = () => {
   const { data: contractInfoData, isLoading: contractInfoIsLoading } =
     useContractInfo(getChainId(chainId), getNftTokenAddress(chainId));
   const { data: currencyData } = useSalesCurrency(getChainId(chainId));
+
+  const {
+    data: tokenSaleDetailsData,
+    isLoading: tokenSaleDetailsDataIsLoading,
+  } = useReadContract({
+    abi: SALES_CONTRACT_ABI,
+    functionName: "globalSaleDetails",
+    chainId: chainId,
+    address: getSalesContractAddress(chainId),
+  });
 
   const AddressDisplay = ({
     label,
@@ -66,6 +84,9 @@ const Connected = () => {
   const collectionName = contractInfoData?.name;
   const collectionImage = contractInfoData?.extensions?.ogImage;
   const collectionDescription = contractInfoData?.extensions?.description;
+  const totalSupply =
+    (tokenSaleDetailsData as GlobalSalesDetailsData)?.startTime?.toString() ||
+    0;
 
   return (
     <Card
@@ -94,17 +115,33 @@ const Connected = () => {
                 style={{ width: "20rem", height: "auto" }}
               />
             </div>
-            <Box gap="1" flexDirection="column" textAlign="left">
-              <Text
-                variant="normal"
-                color="text100"
-                style={{ fontWeight: "700" }}
-              >
-                Name:
-              </Text>
-              <Text variant="normal" color="text100">
-                {collectionName}
-              </Text>
+            <Box display="flex" justifyContent="space-between">
+              <Box gap="1" flexDirection="column" textAlign="left">
+                <Text
+                  variant="normal"
+                  color="text100"
+                  style={{ fontWeight: "700" }}
+                >
+                  Name:
+                </Text>
+                <Text variant="normal" color="text100">
+                  {collectionName}
+                </Text>
+              </Box>
+              <Box>
+                {!tokenSaleDetailsDataIsLoading ? (
+                  <Text
+                    variant="normal"
+                    color="text100"
+                    style={{ fontWeight: "700" }}
+                  >
+                    Stock when the Primary Drop Sale was published:{" "}
+                    {totalSupply}
+                  </Text>
+                ) : (
+                  <Spinner />
+                )}
+              </Box>
             </Box>
             {collectionDescription && (
               <Box gap="1" flexDirection="column" textAlign="left">
