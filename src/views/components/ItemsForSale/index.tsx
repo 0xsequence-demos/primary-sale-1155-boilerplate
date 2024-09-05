@@ -3,18 +3,24 @@ import { useAccount } from "wagmi";
 
 import { useTokenMetadata, useCollectionBalance } from "../../hooks/data";
 import { useSalesCurrency } from "../../hooks/useSalesCurrency";
-import { itemsForSales } from "../../constants";
 import { TokenMetadata } from "@0xsequence/indexer";
 import { Collectible } from "./Collectible";
+import { getItemsForSale } from "../../../utils/primarySellHelpers";
 
 interface ItemsForSaleProps {
   collectionAddress: string;
   chainId: number;
+  totalMinted: string | undefined;
+  totalSupply: string | 0;
+  nftsMintedPercentaje: number;
 }
 
 export const ItemsForSale = ({
   collectionAddress,
   chainId,
+  totalMinted,
+  totalSupply,
+  nftsMintedPercentaje,
 }: ItemsForSaleProps) => {
   const { address: userAddress } = useAccount();
   const { data: collectionBalanceData, isLoading: collectionBalanceIsLoading } =
@@ -30,7 +36,7 @@ export const ItemsForSale = ({
     useTokenMetadata(
       chainId,
       collectionAddress,
-      itemsForSales.map((item) => item.tokenId),
+      getItemsForSale(chainId).map((item) => item.tokenId),
     );
 
   const { data: currencyData, isLoading: currencyIsLoading } =
@@ -67,9 +73,7 @@ export const ItemsForSale = ({
         alignItems="center"
         flexWrap="wrap"
         gap="6"
-        style={{
-          maxWidth: "50rem",
-        }}
+        marginBottom="10"
       >
         {tokenMetadatas?.map((tokenMetadata: TokenMetadata) => {
           const collectibleBalance = collectionBalanceData?.find(
@@ -83,6 +87,9 @@ export const ItemsForSale = ({
               tokenMetadata={tokenMetadata}
               chainId={chainId}
               currencyData={currencyData}
+              nftsMintedPercentaje={nftsMintedPercentaje}
+              totalSupply={totalSupply}
+              totalNftsMinted={totalMinted}
             />
           );
         })}

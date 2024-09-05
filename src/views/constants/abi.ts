@@ -53,9 +53,18 @@ export const SALES_CONTRACT_ABI = [
         internalType: "struct IERC1155SaleFunctions.SaleDetails",
         components: [
           { name: "cost", type: "uint256", internalType: "uint256" },
+          {
+            name: "supplyCap",
+            type: "uint256",
+            internalType: "uint256",
+          },
           { name: "startTime", type: "uint64", internalType: "uint64" },
           { name: "endTime", type: "uint64", internalType: "uint64" },
-          { name: "merkleRoot", type: "bytes32", internalType: "bytes32" },
+          {
+            name: "merkleRoot",
+            type: "bytes32",
+            internalType: "bytes32",
+          },
         ],
       },
     ],
@@ -96,7 +105,11 @@ export const SALES_CONTRACT_ABI = [
     name: "mint",
     inputs: [
       { name: "to", type: "address", internalType: "address" },
-      { name: "tokenIds", type: "uint256[]", internalType: "uint256[]" },
+      {
+        name: "tokenIds",
+        type: "uint256[]",
+        internalType: "uint256[]",
+      },
       { name: "amounts", type: "uint256[]", internalType: "uint256[]" },
       { name: "data", type: "bytes", internalType: "bytes" },
       {
@@ -154,7 +167,11 @@ export const SALES_CONTRACT_ABI = [
     type: "function",
     name: "setPaymentToken",
     inputs: [
-      { name: "paymentTokenAddr", type: "address", internalType: "address" },
+      {
+        name: "paymentTokenAddr",
+        type: "address",
+        internalType: "address",
+      },
     ],
     outputs: [],
     stateMutability: "nonpayable",
@@ -191,9 +208,18 @@ export const SALES_CONTRACT_ABI = [
         internalType: "struct IERC1155SaleFunctions.SaleDetails",
         components: [
           { name: "cost", type: "uint256", internalType: "uint256" },
+          {
+            name: "supplyCap",
+            type: "uint256",
+            internalType: "uint256",
+          },
           { name: "startTime", type: "uint64", internalType: "uint64" },
           { name: "endTime", type: "uint64", internalType: "uint64" },
-          { name: "merkleRoot", type: "bytes32", internalType: "bytes32" },
+          {
+            name: "merkleRoot",
+            type: "bytes32",
+            internalType: "bytes32",
+          },
         ],
       },
     ],
@@ -261,7 +287,12 @@ export const SALES_CONTRACT_ABI = [
     type: "event",
     name: "RoleAdminChanged",
     inputs: [
-      { name: "role", type: "bytes32", indexed: true, internalType: "bytes32" },
+      {
+        name: "role",
+        type: "bytes32",
+        indexed: true,
+        internalType: "bytes32",
+      },
       {
         name: "previousAdminRole",
         type: "bytes32",
@@ -281,7 +312,12 @@ export const SALES_CONTRACT_ABI = [
     type: "event",
     name: "RoleGranted",
     inputs: [
-      { name: "role", type: "bytes32", indexed: true, internalType: "bytes32" },
+      {
+        name: "role",
+        type: "bytes32",
+        indexed: true,
+        internalType: "bytes32",
+      },
       {
         name: "account",
         type: "address",
@@ -301,7 +337,12 @@ export const SALES_CONTRACT_ABI = [
     type: "event",
     name: "RoleRevoked",
     inputs: [
-      { name: "role", type: "bytes32", indexed: true, internalType: "bytes32" },
+      {
+        name: "role",
+        type: "bytes32",
+        indexed: true,
+        internalType: "bytes32",
+      },
       {
         name: "account",
         type: "address",
@@ -374,8 +415,16 @@ export const SALES_CONTRACT_ABI = [
     type: "error",
     name: "InsufficientSupply",
     inputs: [
-      { name: "currentSupply", type: "uint256", internalType: "uint256" },
-      { name: "requestedAmount", type: "uint256", internalType: "uint256" },
+      {
+        name: "currentSupply",
+        type: "uint256",
+        internalType: "uint256",
+      },
+      {
+        name: "requestedAmount",
+        type: "uint256",
+        internalType: "uint256",
+      },
       { name: "maxSupply", type: "uint256", internalType: "uint256" },
     ],
   },

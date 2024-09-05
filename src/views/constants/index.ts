@@ -17,7 +17,7 @@ export const CHAIN_ID_ARBITRUM_SEPOLIA = 421614;
 export const nativeTokenDecimals = 18;
 export const erc20TokenDecimals = 6;
 export const nftPrice = 0.01;
-interface SaleItem {
+export interface SaleItem {
   tokenId: string;
 }
 
@@ -25,34 +25,13 @@ export const itemsForSalesAmoy: SaleItem[] = [
   {
     tokenId: "0",
   },
+  {
+    tokenId: "1",
+  },
 ];
 
 export const itemsForSalesArbitrumSepolia: SaleItem[] = [
   {
     tokenId: "0",
   },
-];
-
-export const itemsForSales: SaleItem[] = [
-  {
-    tokenId: "0",
-  },
-  // {
-  //   tokenId: "1",
-  // },
-  // {
-  //   tokenId: "2",
-  // },
-  // {
-  //   tokenId: "3",
-  // },
-  // {
-  //   tokenId: "4",
-  // },
-  // {
-  //   tokenId: "5",
-  // },
-  // {
-  //   tokenId: "6",
-  // },
 ];

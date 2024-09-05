@@ -13,6 +13,9 @@ import { TokenMetadata } from "@0xsequence/indexer";
 import { toast } from "react-toastify";
 import { SendTransactionErrorType } from "viem";
 import { nftPrice } from "../../constants";
+import NftsMintedProgressBar from "../AlternativeProgressBar";
+import { NFT_TOKEN_CONTRACT_ABI } from "../../constants/nft_token_contract_abi";
+import { useReadContract } from "wagmi";
 
 interface CollectibleProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -21,6 +24,18 @@ interface CollectibleProps {
   chainId: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   currencyData: { [key: string]: any } | undefined;
+  nftsMintedPercentaje: number;
+  totalSupply: string | 0;
+  totalNftsMinted: string | undefined;
+}
+
+function calculateMintedPercentage(minted: number, totalMax: number): number {
+  if (totalMax <= 0) {
+    return 0;
+  }
+
+  const percentage = (minted / totalMax) * 100;
+  return Math.floor(percentage);
 }
 
 export const Collectible = ({
@@ -28,12 +43,25 @@ export const Collectible = ({
   tokenMetadata,
   chainId,
   currencyData,
+  nftsMintedPercentaje,
+  totalSupply,
+  totalNftsMinted,
 }: CollectibleProps) => {
   const isMobile = useMediaQuery("isMobile");
   const [amount, setAmount] = useState(0);
   const [txExplorerUrl, setTxExplorerUrl] = useState("");
   const [txError, setTxError] = useState<SendTransactionErrorType | null>(null);
   const logoURI = currencyData?.logoURI;
+  const {
+    data: nftsMinted,
+    // isLoading: nftsMintedIsLoading,
+  } = useReadContract({
+    abi: NFT_TOKEN_CONTRACT_ABI,
+    functionName: "tokenSupply",
+    chainId: chainId,
+    address: getNftTokenAddress(chainId),
+    args: [BigInt(tokenMetadata?.tokenId)],
+  });
 
   const amountOwned: string = collectibleBalance?.balance || "0";
   const increaseAmount = () => {
@@ -49,6 +77,11 @@ export const Collectible = ({
     setAmount(0);
   };
 
+  const mintedNftPercentaje = calculateMintedPercentage(
+    Number(nftsMinted),
+    Number(totalSupply),
+  );
+
   useEffect(() => {
     if (!txError || JSON.stringify(txError) === "{}") return;
     toast(`Error to purchase NFT`, { type: "error" });
@@ -63,6 +96,7 @@ export const Collectible = ({
       style={{
         flexBasis: isMobile ? "100%" : "50%",
         width: "fit-content",
+        maxWidth: "50rem",
       }}
     >
       <Card>
@@ -80,6 +114,14 @@ export const Collectible = ({
             >
               Token id: {tokenMetadata?.tokenId || ""}
             </Text>
+            <NftsMintedProgressBar
+              mintedNftsPercentaje={nftsMintedPercentaje}
+              mintedNftPercentaje={mintedNftPercentaje}
+              tokenId={tokenMetadata?.tokenId || ""}
+              mintedNft={Number(nftsMinted)}
+              mintedNfts={Number(totalNftsMinted)}
+              totalSupply={Number(totalSupply)}
+            />
             <Box display="flex" justifyContent="space-between" gap="4">
               <Box flexDirection="row" gap="2">
                 <Text

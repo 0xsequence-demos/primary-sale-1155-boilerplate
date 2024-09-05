@@ -22,12 +22,24 @@ import {
   getSalesContractAddress,
 } from "../../../../utils/primarySellHelpers";
 import { SALES_CONTRACT_ABI } from "../../../constants/abi";
+import { NFT_TOKEN_CONTRACT_ABI } from "../../../constants/nft_token_contract_abi";
+import ProgressBar from "../../ProgressBar";
+
+function calculateMintedPercentage(minted: number, totalMax: number): number {
+  if (totalMax <= 0) {
+    return 0;
+  }
+
+  const percentage = (minted / totalMax) * 100;
+  return Math.floor(percentage);
+}
 
 interface GlobalSalesDetailsData {
   cost: bigint;
   endtime: bigint;
   merkleRoot: string;
   startTime: bigint;
+  supplyCap: bigint;
 }
 
 const Connected = () => {
@@ -45,6 +57,16 @@ const Connected = () => {
     functionName: "globalSaleDetails",
     chainId: chainId,
     address: getSalesContractAddress(chainId),
+  });
+
+  const {
+    data: nftsMinted,
+    // isLoading: nftsMintedIsLoading,
+  } = useReadContract({
+    abi: NFT_TOKEN_CONTRACT_ABI,
+    functionName: "totalSupply",
+    chainId: chainId,
+    address: getNftTokenAddress(chainId),
   });
 
   const AddressDisplay = ({
@@ -85,8 +107,13 @@ const Connected = () => {
   const collectionImage = contractInfoData?.extensions?.ogImage;
   const collectionDescription = contractInfoData?.extensions?.description;
   const totalSupply =
-    (tokenSaleDetailsData as GlobalSalesDetailsData)?.startTime?.toString() ||
+    (tokenSaleDetailsData as GlobalSalesDetailsData)?.supplyCap?.toString() ||
     0;
+  const formattedNftsMinted = nftsMinted?.toString();
+  const nftsMintedPercentaje = calculateMintedPercentage(
+    Number(nftsMinted),
+    Number(totalSupply),
+  );
 
   return (
     <Card
@@ -130,14 +157,25 @@ const Connected = () => {
               </Box>
               <Box>
                 {!tokenSaleDetailsDataIsLoading ? (
-                  <Text
-                    variant="normal"
-                    color="text100"
-                    style={{ fontWeight: "700" }}
-                  >
-                    Stock when the Primary Drop Sale was published:{" "}
-                    {totalSupply}
-                  </Text>
+                  <Box display="flex" flexDirection="column" gap="4">
+                    <Box display="flex" justifyContent="space-between">
+                      <Text
+                        variant="normal"
+                        color="text100"
+                        style={{ fontWeight: "700" }}
+                      >
+                        {nftsMintedPercentaje}% Minted
+                      </Text>
+                      <Text
+                        variant="normal"
+                        color="text100"
+                        style={{ fontWeight: "700" }}
+                      >
+                        {formattedNftsMinted}/{totalSupply}
+                      </Text>
+                    </Box>
+                    <ProgressBar percentage={nftsMintedPercentaje} />
+                  </Box>
                 ) : (
                   <Spinner />
                 )}
@@ -191,6 +229,9 @@ const Connected = () => {
       <ItemsForSale
         chainId={getChainId(chainId)}
         collectionAddress={getNftTokenAddress(chainId)}
+        totalMinted={formattedNftsMinted}
+        totalSupply={totalSupply}
+        nftsMintedPercentaje={nftsMintedPercentaje}
       />
 
       <Button label="Disconnect" onClick={disconnect} />
