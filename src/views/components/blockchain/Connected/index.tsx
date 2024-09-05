@@ -24,6 +24,8 @@ import {
 import { SALES_CONTRACT_ABI } from "../../../constants/abi";
 import { NFT_TOKEN_CONTRACT_ABI } from "../../../constants/nft_token_contract_abi";
 import ProgressBar from "../../ProgressBar";
+import { ERC20_ABI } from "../../../../ERC20/ERC20_abi";
+import { erc20TokenDecimals, nativeTokenDecimals } from "../../../constants";
 
 function calculateMintedPercentage(minted: number, totalMax: number): number {
   if (totalMax <= 0) {
@@ -58,6 +60,25 @@ const Connected = () => {
     chainId: chainId,
     address: getSalesContractAddress(chainId),
   });
+
+  const {
+    data: userPaymentCurrencyBalance,
+    // isLoading: userPaymentCurrencyBalanceIsLoading,
+  } = useReadContract(
+    currencyData?.address && userAddress
+      ? {
+          abi: ERC20_ABI,
+          functionName: "balanceOf",
+          chainId: chainId,
+          address: currencyData.address as `0x${string}`,
+          args: [userAddress],
+          query: {
+            refetchInterval: 30000,
+            enabled: Boolean(currencyData?.address && userAddress),
+          },
+        }
+      : undefined,
+  );
 
   const {
     data: nftsMinted,
@@ -195,6 +216,25 @@ const Connected = () => {
                 </Text>
               </Box>
             )}
+            {userPaymentCurrencyBalance?.toString() && (
+              <Box gap="1" flexDirection="column" textAlign="left">
+                <Text
+                  variant="normal"
+                  color="text100"
+                  style={{ fontWeight: "700" }}
+                >
+                  User Payment Currency Balance:
+                </Text>
+                <Text variant="normal" color="text100">
+                  $
+                  {Number(userPaymentCurrencyBalance) /
+                    (currencyData?.address ==
+                    "0x0000000000000000000000000000000000000000"
+                      ? nativeTokenDecimals
+                      : erc20TokenDecimals)}
+                </Text>
+              </Box>
+            )}
           </Box>
         )}
       </Box>
@@ -232,6 +272,7 @@ const Connected = () => {
         totalMinted={formattedNftsMinted}
         totalSupply={totalSupply}
         nftsMintedPercentaje={nftsMintedPercentaje}
+        userPaymentCurrencyBalance={userPaymentCurrencyBalance}
       />
 
       <Button label="Disconnect" onClick={disconnect} />

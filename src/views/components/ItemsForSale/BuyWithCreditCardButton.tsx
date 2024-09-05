@@ -28,6 +28,7 @@ interface BuyWithCryptoCardButtonProps {
   resetAmount: () => void;
   setTxExplorerUrl: (url: string) => void;
   setTxError: (error: SendTransactionErrorType | null) => void;
+  userPaymentCurrencyBalance: bigint | undefined;
 }
 
 export const BuyWithCryptoCardButton = ({
@@ -38,6 +39,7 @@ export const BuyWithCryptoCardButton = ({
   resetAmount,
   setTxExplorerUrl,
   setTxError,
+  userPaymentCurrencyBalance,
 }: BuyWithCryptoCardButtonProps) => {
   const publicClient = usePublicClient();
   const { data: walletClient } = useWalletClient();
@@ -59,6 +61,14 @@ export const BuyWithCryptoCardButton = ({
     // isLoading: currencyIsLoading
   } = useSalesCurrency(chainId);
 
+  const tokenDecimals: number =
+    currencyData?.address == "0x0000000000000000000000000000000000000000"
+      ? nativeTokenDecimals
+      : erc20TokenDecimals;
+  const nftPriceBigInt = BigInt(nftPrice * 10 ** tokenDecimals);
+  const amountBigInt = BigInt(amount);
+  const totalPrice = nftPriceBigInt * amountBigInt;
+
   const onClickBuy = async () => {
     if (
       !publicClient ||
@@ -66,7 +76,9 @@ export const BuyWithCryptoCardButton = ({
       !userAddress ||
       !currencyData ||
       isPendingSendTxn ||
-      amount <= 0
+      amount <= 0 ||
+      !userPaymentCurrencyBalance ||
+      userPaymentCurrencyBalance < totalPrice
     ) {
       return;
     }
@@ -85,13 +97,6 @@ export const BuyWithCryptoCardButton = ({
      * @dev An empty proof is supplied when no proof is required.
      */
 
-    const tokenDecimals: number =
-      currencyData.address == "0x0000000000000000000000000000000000000000"
-        ? nativeTokenDecimals
-        : erc20TokenDecimals;
-    const nftPriceBigInt = BigInt(nftPrice * 10 ** tokenDecimals);
-    const amountBigInt = BigInt(amount);
-    const totalPrice = nftPriceBigInt * amountBigInt;
     setTxError(null);
     setTxExplorerUrl("");
     const allowance = await ERC20.getAllowance(
@@ -193,7 +198,11 @@ export const BuyWithCryptoCardButton = ({
         }
         onClick={onClickBuy}
       >
-        {!isPendingSendTxn ? "Purchase" : "Purchasing..."}
+        {userPaymentCurrencyBalance && userPaymentCurrencyBalance < totalPrice
+          ? "Insufficient funds"
+          : !isPendingSendTxn
+            ? "Purchase"
+            : "Purchasing..."}
       </button>
     </>
   );

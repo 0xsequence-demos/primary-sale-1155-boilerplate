@@ -27,6 +27,7 @@ interface CollectibleProps {
   nftsMintedPercentaje: number;
   totalSupply: string | 0;
   totalNftsMinted: string | undefined;
+  userPaymentCurrencyBalance: bigint | undefined;
 }
 
 function calculateMintedPercentage(minted: number, totalMax: number): number {
@@ -46,6 +47,7 @@ export const Collectible = ({
   nftsMintedPercentaje,
   totalSupply,
   totalNftsMinted,
+  userPaymentCurrencyBalance,
 }: CollectibleProps) => {
   const isMobile = useMediaQuery("isMobile");
   const [amount, setAmount] = useState(0);
@@ -211,6 +213,7 @@ export const Collectible = ({
                 resetAmount={resetAmount}
                 setTxExplorerUrl={setTxExplorerUrl}
                 setTxError={setTxError}
+                userPaymentCurrencyBalance={userPaymentCurrencyBalance}
               />
             </Box>
             {txError && JSON.stringify(txError) != "{}" && (
