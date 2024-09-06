@@ -1,8 +1,10 @@
 import {
   CHAIN_ID_AMOY,
   CHAIN_ID_ARBITRUM_SEPOLIA,
+  erc20TokenDecimals,
   itemsForSalesAmoy,
   itemsForSalesArbitrumSepolia,
+  nativeTokenDecimals,
   NFT_TOKEN_ADDRESS_AMOY,
   NFT_TOKEN_ADDRESS_ARBITRUM_SEPOLIA,
   SaleItem,
@@ -54,4 +56,17 @@ export function getItemsForSale(chainId: number | undefined): SaleItem[] {
     default:
       return itemsForSalesAmoy;
   }
+}
+
+export function getFormmatedUserPaymentCurrencyBalance(
+  userPaymentCurrencyBalance: number,
+  currencyAddress: string,
+) {
+  if (!userPaymentCurrencyBalance || !currencyAddress) return 0;
+  return (
+    userPaymentCurrencyBalance /
+    (currencyAddress == "0x0000000000000000000000000000000000000000"
+      ? 10 ** nativeTokenDecimals
+      : 10 ** erc20TokenDecimals)
+  );
 }

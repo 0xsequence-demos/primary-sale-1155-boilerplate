@@ -18,6 +18,7 @@ import { getChain } from "../../../../ERC20/getChain";
 import SwitchNetwork from "./SwitchNetwork";
 import {
   getChainId,
+  getFormmatedUserPaymentCurrencyBalance,
   getNftTokenAddress,
   getSalesContractAddress,
 } from "../../../../utils/primarySellHelpers";
@@ -25,7 +26,6 @@ import { SALES_CONTRACT_ABI } from "../../../constants/abi";
 import { NFT_TOKEN_CONTRACT_ABI } from "../../../constants/nft_token_contract_abi";
 import ProgressBar from "../../ProgressBar";
 import { ERC20_ABI } from "../../../../ERC20/ERC20_abi";
-import { erc20TokenDecimals, nativeTokenDecimals } from "../../../constants";
 
 function calculateMintedPercentage(minted: number, totalMax: number): number {
   if (totalMax <= 0) {
@@ -124,6 +124,30 @@ const Connected = () => {
     );
   };
 
+  const UserInfoDisplay = ({
+    label,
+    value,
+  }: {
+    label: string;
+    value: string | Hex | undefined;
+  }) => {
+    const isMobile = useMediaQuery("isMobile");
+
+    return (
+      <Box
+        justifyContent="space-between"
+        {...(isMobile ? { flexDirection: "column" } : { textAlign: "left" })}
+      >
+        <Text variant="normal" color="text100" style={{ minWidth: 205 }}>
+          {label}: &nbsp;
+        </Text>
+        <Text variant="normal" color="text100" ellipsis>
+          {value}
+        </Text>
+      </Box>
+    );
+  };
+
   const collectionName: string | undefined = contractInfoData?.name;
   const collectionImage = contractInfoData?.extensions?.ogImage;
   const collectionDescription = contractInfoData?.extensions?.description;
@@ -216,25 +240,6 @@ const Connected = () => {
                 </Text>
               </Box>
             )}
-            {userPaymentCurrencyBalance?.toString() && (
-              <Box gap="1" flexDirection="column" textAlign="left">
-                <Text
-                  variant="normal"
-                  color="text100"
-                  style={{ fontWeight: "700" }}
-                >
-                  User Payment Currency Balance:
-                </Text>
-                <Text variant="normal" color="text100">
-                  $
-                  {Number(userPaymentCurrencyBalance) /
-                    (currencyData?.address ==
-                    "0x0000000000000000000000000000000000000000"
-                      ? nativeTokenDecimals
-                      : erc20TokenDecimals)}
-                </Text>
-              </Box>
-            )}
           </Box>
         )}
       </Box>
@@ -263,6 +268,24 @@ const Connected = () => {
               chainId={chainId}
             />
           </Box>
+        </Collapsible>
+      )}
+      {chainId && userPaymentCurrencyBalance && userAddress && currencyData && (
+        <Collapsible label="User information">
+          <AddressDisplay
+            label="User Address"
+            address={userAddress}
+            chainId={chainId}
+          />
+          <AddressDisplay
+            label="Payment currency Address"
+            address={currencyData?.address}
+            chainId={chainId}
+          />
+          <UserInfoDisplay
+            label="User Payment Currency Balance"
+            value={`$${getFormmatedUserPaymentCurrencyBalance(Number(userPaymentCurrencyBalance), currencyData?.address)}`}
+          />
         </Collapsible>
       )}
 
