@@ -6,7 +6,22 @@ import chains from "./utils/chains";
 import { KitCheckoutProvider } from "@0xsequence/kit-checkout";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Chain, Transport } from "viem";
+import { allNetworks, findNetworkConfig } from "@0xsequence/network";
 const queryClient = new QueryClient();
+
+function getTransportConfigs(
+  chains: [Chain, ...Chain[]],
+): Record<number, Transport> {
+  return chains.reduce(
+    (acc, chain) => {
+      const network = findNetworkConfig(allNetworks, chain.id);
+      if (network) acc[chain.id] = http(network.rpcUrl);
+      return acc;
+    },
+    {} as Record<number, Transport>,
+  );
+}
 
 const App = () => {
   const projectAccessKey = import.meta.env.VITE_PROJECT_ACCESS_KEY;
@@ -30,12 +45,7 @@ const App = () => {
     projectAccessKey,
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const transports: { [key: number]: any } = {};
-
-  chains.forEach((chain) => {
-    transports[chain.id] = http();
-  });
+  const transports = getTransportConfigs(chains);
 
   const config = createConfig({
     transports,
