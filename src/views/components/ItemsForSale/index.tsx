@@ -12,7 +12,7 @@ interface ItemsForSaleProps {
   chainId: number;
   totalMinted: string | undefined;
   totalSupply: string | 0;
-  nftsMintedPercentaje: number;
+  totalMintedNftsPercentaje: number;
   userPaymentCurrencyBalance: bigint | undefined;
 }
 
@@ -21,7 +21,7 @@ export const ItemsForSale = ({
   chainId,
   totalMinted,
   totalSupply,
-  nftsMintedPercentaje,
+  totalMintedNftsPercentaje,
   userPaymentCurrencyBalance,
 }: ItemsForSaleProps) => {
   const { address: userAddress } = useAccount();
@@ -89,7 +89,7 @@ export const ItemsForSale = ({
               tokenMetadata={tokenMetadata}
               chainId={chainId}
               currencyData={currencyData}
-              nftsMintedPercentaje={nftsMintedPercentaje}
+              totalMintedNftsPercentaje={totalMintedNftsPercentaje}
               totalSupply={totalSupply}
               totalNftsMinted={totalMinted}
               userPaymentCurrencyBalance={userPaymentCurrencyBalance}

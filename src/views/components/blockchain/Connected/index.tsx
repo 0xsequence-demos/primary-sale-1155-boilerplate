@@ -124,14 +124,14 @@ const Connected = () => {
     );
   };
 
-  const collectionName = contractInfoData?.name;
+  const collectionName: string | undefined = contractInfoData?.name;
   const collectionImage = contractInfoData?.extensions?.ogImage;
   const collectionDescription = contractInfoData?.extensions?.description;
   const totalSupply =
     (tokenSaleDetailsData as GlobalSalesDetailsData)?.supplyCap?.toString() ||
     0;
   const formattedNftsMinted = nftsMinted?.toString();
-  const nftsMintedPercentaje = calculateMintedPercentage(
+  const totalMintedNftsPercentaje = calculateMintedPercentage(
     Number(nftsMinted),
     Number(totalSupply),
   );
@@ -185,7 +185,7 @@ const Connected = () => {
                         color="text100"
                         style={{ fontWeight: "700" }}
                       >
-                        {nftsMintedPercentaje}% Minted
+                        {totalMintedNftsPercentaje}% Minted
                       </Text>
                       <Text
                         variant="normal"
@@ -195,7 +195,7 @@ const Connected = () => {
                         {formattedNftsMinted}/{totalSupply}
                       </Text>
                     </Box>
-                    <ProgressBar percentage={nftsMintedPercentaje} />
+                    <ProgressBar percentage={totalMintedNftsPercentaje} />
                   </Box>
                 ) : (
                   <Spinner />
@@ -271,7 +271,7 @@ const Connected = () => {
         collectionAddress={getNftTokenAddress(chainId)}
         totalMinted={formattedNftsMinted}
         totalSupply={totalSupply}
-        nftsMintedPercentaje={nftsMintedPercentaje}
+        totalMintedNftsPercentaje={totalMintedNftsPercentaje}
         userPaymentCurrencyBalance={userPaymentCurrencyBalance}
       />
 

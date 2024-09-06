@@ -2,25 +2,25 @@ import { Box, Text } from "@0xsequence/design-system";
 
 interface NftsMintedProgressBarProps {
   mintedNftsPercentaje: number;
-  mintedNftPercentaje: number;
+  mintedNftCount: number;
   tokenId: string | number;
-  mintedNft: number;
-  mintedNfts: number;
+  totalMintedNftsPercentaje: number;
+  totalMintedNfts: number;
   totalSupply: number;
 }
 
-const nftProgressColor = "rgb(0, 123, 255)";
-const otherNftsProgressColor = "#B8B8B8";
+const mintedNftCountProgressColor = "rgb(0, 123, 255)";
+const totalMintedNftsProgressColor = "#B8B8B8";
 
 const NftsMintedProgressBar = ({
   mintedNftsPercentaje,
-  mintedNftPercentaje,
+  totalMintedNftsPercentaje,
   tokenId,
-  mintedNft,
-  mintedNfts,
+  mintedNftCount,
+  totalMintedNfts,
   totalSupply,
 }: NftsMintedProgressBarProps) => {
-  const otherNftsMintedValue = mintedNfts - mintedNft;
+  const otherNftsMintedValue = totalMintedNfts - mintedNftCount;
   return (
     <Box display="flex" flexDirection="column">
       <Text variant="normal" fontWeight="bold">
@@ -30,9 +30,9 @@ const NftsMintedProgressBar = ({
         <Text
           variant="normal"
           fontWeight="bold"
-          style={{ color: nftProgressColor }}
+          style={{ color: mintedNftCountProgressColor }}
         >
-          {`NFT #${tokenId} (${mintedNft})`}
+          {`NFT #${tokenId} (${mintedNftCount})`}
         </Text>
         <Text variant="normal" fontWeight="bold">
           {` | `}
@@ -40,7 +40,7 @@ const NftsMintedProgressBar = ({
         <Text
           variant="normal"
           fontWeight="bold"
-          style={{ color: otherNftsProgressColor }}
+          style={{ color: totalMintedNftsProgressColor }}
         >
           {`Other NFTs (${otherNftsMintedValue})`}
         </Text>
@@ -64,8 +64,8 @@ const NftsMintedProgressBar = ({
           height="full"
           borderRightRadius="lg"
           style={{
-            width: `${mintedNftsPercentaje}%`,
-            backgroundColor: otherNftsProgressColor,
+            width: `${totalMintedNftsPercentaje}%`,
+            backgroundColor: totalMintedNftsProgressColor,
             transition: "width 0.5s ease-in-out",
           }}
         ></Box>
@@ -75,8 +75,8 @@ const NftsMintedProgressBar = ({
           borderRightRadius="lg"
           left="0"
           style={{
-            width: `${mintedNftPercentaje}%`,
-            backgroundColor: nftProgressColor,
+            width: `${mintedNftsPercentaje}%`,
+            backgroundColor: mintedNftCountProgressColor,
             transition: "width 0.5s ease-in-out",
           }}
         ></Box>

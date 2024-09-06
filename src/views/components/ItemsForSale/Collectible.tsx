@@ -13,7 +13,7 @@ import { TokenMetadata } from "@0xsequence/indexer";
 import { toast } from "react-toastify";
 import { SendTransactionErrorType } from "viem";
 import { nftPrice } from "../../constants";
-import NftsMintedProgressBar from "../AlternativeProgressBar";
+import NftsMintedProgressBar from "../NftsMintedProgressBar";
 import { NFT_TOKEN_CONTRACT_ABI } from "../../constants/nft_token_contract_abi";
 import { useReadContract } from "wagmi";
 
@@ -24,7 +24,7 @@ interface CollectibleProps {
   chainId: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   currencyData: { [key: string]: any } | undefined;
-  nftsMintedPercentaje: number;
+  totalMintedNftsPercentaje: number;
   totalSupply: string | 0;
   totalNftsMinted: string | undefined;
   userPaymentCurrencyBalance: bigint | undefined;
@@ -44,7 +44,7 @@ export const Collectible = ({
   tokenMetadata,
   chainId,
   currencyData,
-  nftsMintedPercentaje,
+  totalMintedNftsPercentaje,
   totalSupply,
   totalNftsMinted,
   userPaymentCurrencyBalance,
@@ -117,11 +117,11 @@ export const Collectible = ({
               Token id: {tokenMetadata?.tokenId || ""}
             </Text>
             <NftsMintedProgressBar
-              mintedNftsPercentaje={nftsMintedPercentaje}
-              mintedNftPercentaje={mintedNftPercentaje}
+              totalMintedNftsPercentaje={totalMintedNftsPercentaje}
+              mintedNftsPercentaje={mintedNftPercentaje}
               tokenId={tokenMetadata?.tokenId || ""}
-              mintedNft={Number(nftsMinted)}
-              mintedNfts={Number(totalNftsMinted)}
+              mintedNftCount={Number(nftsMinted)}
+              totalMintedNfts={Number(totalNftsMinted)}
               totalSupply={Number(totalSupply)}
             />
             <Box display="flex" justifyContent="space-between" gap="4">

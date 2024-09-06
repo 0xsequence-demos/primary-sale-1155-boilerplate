@@ -77,7 +77,7 @@ export const BuyWithCryptoCardButton = ({
       !currencyData ||
       isPendingSendTxn ||
       amount <= 0 ||
-      !userPaymentCurrencyBalance ||
+      !userPaymentCurrencyBalance?.toString() ||
       userPaymentCurrencyBalance < totalPrice
     ) {
       return;
@@ -198,7 +198,9 @@ export const BuyWithCryptoCardButton = ({
         }
         onClick={onClickBuy}
       >
-        {userPaymentCurrencyBalance && userPaymentCurrencyBalance < totalPrice
+        {userPaymentCurrencyBalance?.toString() &&
+        (userPaymentCurrencyBalance?.toString() === "0" ||
+          userPaymentCurrencyBalance < totalPrice)
           ? "Insufficient funds"
           : !isPendingSendTxn
             ? "Purchase"
