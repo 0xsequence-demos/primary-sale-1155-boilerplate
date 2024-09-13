@@ -12,11 +12,11 @@ import { useEffect, useState } from "react";
 import { TokenMetadata } from "@0xsequence/indexer";
 import { toast } from "react-toastify";
 import { SendTransactionErrorType } from "viem";
-import { nftPrice } from "../../constants";
 import NftsMintedProgressBar from "../NftsMintedProgressBar";
-import { NFT_TOKEN_CONTRACT_ABI } from "../../constants/nft_token_contract_abi";
+import { NFT_TOKEN_CONTRACT_ABI } from "../../constants/nftTokenContractAbi";
 import { useReadContract } from "wagmi";
 import PurchaseAnimation from "../blockchain/Connected/PurchaseAnimation";
+import { formatPriceWithDecimals } from "../../../utils/primarySellHelpers";
 
 interface CollectibleProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -29,6 +29,8 @@ interface CollectibleProps {
   totalSupply: string | 0;
   totalNftsMinted: string | undefined;
   userPaymentCurrencyBalance: bigint | undefined;
+  price: bigint;
+  currencyDecimals: number | undefined;
 }
 
 function calculateMintedPercentage(minted: number, totalMax: number): number {
@@ -49,6 +51,8 @@ export const Collectible = ({
   totalSupply,
   totalNftsMinted,
   userPaymentCurrencyBalance,
+  price,
+  currencyDecimals,
 }: CollectibleProps) => {
   const isMobile = useMediaQuery("isMobile");
   const [amount, setAmount] = useState(0);
@@ -86,6 +90,10 @@ export const Collectible = ({
     Number(nftsMinted),
     Number(totalSupply),
   );
+
+  const formmatedPrice = currencyDecimals
+    ? formatPriceWithDecimals(price, currencyDecimals)
+    : 0;
 
   useEffect(() => {
     if (!txError || JSON.stringify(txError) === "{}") return;
@@ -136,7 +144,7 @@ export const Collectible = ({
                   color="text100"
                   style={{ textAlign: "left" }}
                 >
-                  Price: {nftPrice}
+                  Price: {formmatedPrice}
                 </Text>
                 {!logoURI ? (
                   <Skeleton style={{ width: 20, height: 20 }} />
@@ -219,6 +227,7 @@ export const Collectible = ({
                 setTxError={setTxError}
                 setPurchasingNft={setPurchasingNft}
                 userPaymentCurrencyBalance={userPaymentCurrencyBalance}
+                price={price}
               />
             </Box>
             {purchasingNft && (

@@ -1,7 +1,7 @@
 import { useReadContract } from "wagmi";
 
 import { useContractInfo } from "../hooks/data";
-import { SALES_CONTRACT_ABI } from "../constants/abi";
+import { SALES_CONTRACT_ABI } from "../constants/salesContractAbi";
 import {
   getChainId,
   getSalesContractAddress,

@@ -1,7 +1,7 @@
 import { Box, Text, TokenImage, Skeleton } from "@0xsequence/design-system";
 import { formatUnits } from "viem";
 import { useReadContract } from "wagmi";
-import { SALES_CONTRACT_ABI } from "../../constants/abi";
+import { SALES_CONTRACT_ABI } from "../../constants/salesContractAbi";
 import {
   getChainId,
   getSalesContractAddress,

@@ -22,8 +22,8 @@ import {
   getNftTokenAddress,
   getSalesContractAddress,
 } from "../../../../utils/primarySellHelpers";
-import { SALES_CONTRACT_ABI } from "../../../constants/abi";
-import { NFT_TOKEN_CONTRACT_ABI } from "../../../constants/nft_token_contract_abi";
+import { SALES_CONTRACT_ABI } from "../../../constants/salesContractAbi";
+import { NFT_TOKEN_CONTRACT_ABI } from "../../../constants/nftTokenContractAbi";
 import ProgressBar from "../../ProgressBar";
 import { ERC20_ABI } from "../../../../ERC20/ERC20_abi";
 
@@ -49,7 +49,8 @@ const Connected = () => {
   const { disconnect } = useDisconnect();
   const { data: contractInfoData, isLoading: contractInfoIsLoading } =
     useContractInfo(getChainId(chainId), getNftTokenAddress(chainId));
-  const { data: currencyData } = useSalesCurrency(getChainId(chainId));
+  const { data: currencyData, isLoading: currencyDataIsLoading } =
+    useSalesCurrency(getChainId(chainId));
 
   const {
     data: tokenSaleDetailsData,
@@ -155,11 +156,14 @@ const Connected = () => {
   const totalSupply =
     (tokenSaleDetailsData as GlobalSalesDetailsData)?.supplyCap?.toString() ||
     0;
+  const price =
+    (tokenSaleDetailsData as GlobalSalesDetailsData)?.cost || BigInt(0);
   const formattedNftsMinted = nftsMinted?.toString();
   const totalMintedNftsPercentaje = calculateMintedPercentage(
     Number(nftsMinted),
     Number(totalSupply),
   );
+  const currencyDecimals = currencyData?.decimals;
 
   return (
     <Card
@@ -316,6 +320,10 @@ const Connected = () => {
         totalSupply={totalSupply}
         totalMintedNftsPercentaje={totalMintedNftsPercentaje}
         userPaymentCurrencyBalance={userPaymentCurrencyBalance}
+        price={price}
+        currencyDecimals={currencyDecimals}
+        currencyData={currencyData}
+        currencyIsLoading={currencyDataIsLoading}
       />
 
       <Button label="Disconnect" onClick={disconnect} />

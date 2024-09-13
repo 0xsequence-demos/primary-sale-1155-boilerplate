@@ -9,17 +9,12 @@ import {
 } from "wagmi";
 import { ERC20 } from "../../../ERC20/ERC20";
 
-import { SALES_CONTRACT_ABI } from "../../constants/abi";
+import { SALES_CONTRACT_ABI } from "../../constants/salesContractAbi";
 import { useSalesCurrency } from "../../hooks/useSalesCurrency";
 import { useEffect, useState } from "react";
 import { getChain } from "../../../ERC20/getChain";
 import { getSalesContractAddress } from "../../../utils/primarySellHelpers";
 import { toast } from "react-toastify";
-import {
-  erc20TokenDecimals,
-  nativeTokenDecimals,
-  nftPrice,
-} from "../../constants";
 interface BuyWithCryptoCardButtonProps {
   tokenId: string;
   collectionAddress: string;
@@ -30,6 +25,7 @@ interface BuyWithCryptoCardButtonProps {
   setTxError: (error: SendTransactionErrorType | null) => void;
   setPurchasingNft: (value: boolean) => void;
   userPaymentCurrencyBalance: bigint | undefined;
+  price: bigint;
 }
 
 export const BuyWithCryptoCardButton = ({
@@ -42,6 +38,7 @@ export const BuyWithCryptoCardButton = ({
   setTxError,
   userPaymentCurrencyBalance,
   setPurchasingNft,
+  price,
 }: BuyWithCryptoCardButtonProps) => {
   const publicClient = usePublicClient();
   const { data: walletClient } = useWalletClient();
@@ -62,12 +59,7 @@ export const BuyWithCryptoCardButton = ({
     data: currencyData,
     // isLoading: currencyIsLoading
   } = useSalesCurrency(chainId);
-
-  const tokenDecimals: number =
-    currencyData?.address == "0x0000000000000000000000000000000000000000"
-      ? nativeTokenDecimals
-      : erc20TokenDecimals;
-  const nftPriceBigInt = BigInt(nftPrice * 10 ** tokenDecimals);
+  const nftPriceBigInt = price ? price : BigInt(0);
   const amountBigInt = BigInt(amount);
   const totalPrice = nftPriceBigInt * amountBigInt;
 

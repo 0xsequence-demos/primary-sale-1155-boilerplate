@@ -70,3 +70,21 @@ export function getFormmatedUserPaymentCurrencyBalance(
       : 10 ** erc20TokenDecimals)
   );
 }
+
+export const formatPriceWithDecimals = (
+  price: bigint,
+  tokenDecimals: number,
+): string => {
+  const divisor = BigInt(10 ** tokenDecimals);
+
+  const integerPart = price / divisor;
+  const decimalPart = price % divisor;
+
+  let formattedDecimal = decimalPart.toString().padStart(tokenDecimals, "0");
+
+  formattedDecimal = formattedDecimal.replace(/0+$/, "");
+
+  return formattedDecimal
+    ? `${integerPart.toString()}.${formattedDecimal}`
+    : integerPart.toString();
+};

@@ -2,8 +2,7 @@ import { Box, Text, Spinner } from "@0xsequence/design-system";
 import { useAccount } from "wagmi";
 
 import { useTokenMetadata, useCollectionBalance } from "../../hooks/data";
-import { useSalesCurrency } from "../../hooks/useSalesCurrency";
-import { TokenMetadata } from "@0xsequence/indexer";
+import { ContractInfo, TokenMetadata } from "@0xsequence/indexer";
 import { Collectible } from "./Collectible";
 import { getItemsForSale } from "../../../utils/primarySellHelpers";
 
@@ -14,6 +13,10 @@ interface ItemsForSaleProps {
   totalSupply: string | 0;
   totalMintedNftsPercentaje: number;
   userPaymentCurrencyBalance: bigint | undefined;
+  price: bigint;
+  currencyDecimals: number | undefined;
+  currencyData: ContractInfo | undefined;
+  currencyIsLoading: boolean;
 }
 
 export const ItemsForSale = ({
@@ -23,6 +26,10 @@ export const ItemsForSale = ({
   totalSupply,
   totalMintedNftsPercentaje,
   userPaymentCurrencyBalance,
+  price,
+  currencyDecimals,
+  currencyData,
+  currencyIsLoading,
 }: ItemsForSaleProps) => {
   const { address: userAddress } = useAccount();
   const { data: collectionBalanceData, isLoading: collectionBalanceIsLoading } =
@@ -40,9 +47,6 @@ export const ItemsForSale = ({
       collectionAddress,
       getItemsForSale(chainId).map((item) => item.tokenId),
     );
-
-  const { data: currencyData, isLoading: currencyIsLoading } =
-    useSalesCurrency(chainId);
 
   const isLoading =
     tokenMetadatasLoading || collectionBalanceIsLoading || currencyIsLoading;
@@ -93,6 +97,8 @@ export const ItemsForSale = ({
               totalSupply={totalSupply}
               totalNftsMinted={totalMinted}
               userPaymentCurrencyBalance={userPaymentCurrencyBalance}
+              price={price}
+              currencyDecimals={currencyDecimals}
             />
           );
         })}
