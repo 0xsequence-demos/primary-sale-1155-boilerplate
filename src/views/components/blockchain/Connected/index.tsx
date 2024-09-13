@@ -150,7 +150,8 @@ const Connected = () => {
 
   const collectionName: string | undefined = contractInfoData?.name;
   const collectionImage = contractInfoData?.extensions?.ogImage;
-  const collectionDescription = contractInfoData?.extensions?.description;
+  const collectionDescription: string | undefined =
+    contractInfoData?.extensions?.description;
   const totalSupply =
     (tokenSaleDetailsData as GlobalSalesDetailsData)?.supplyCap?.toString() ||
     0;
@@ -240,10 +241,29 @@ const Connected = () => {
                 </Text>
               </Box>
             )}
+            <Box gap="1" flexDirection="column" textAlign="left">
+              <Text
+                variant="normal"
+                color="text100"
+                style={{ fontWeight: "700" }}
+              >
+                Fund Test Payment Currencies in your wallet:
+              </Text>
+              <Text
+                variant="link"
+                as="a"
+                href="https://faucet.circle.com/"
+                target="_blank"
+                rel="noreferrer noopener"
+                style={{ textDecoration: "underline", color: "#1a73e8" }}
+                aria-label="Open Faucet in a new tab"
+              >
+                Click here to Open Faucet
+              </Text>
+            </Box>
           </Box>
         )}
       </Box>
-
       {chainId && (
         <Collapsible label="Stuff for Nerds">
           <Box gap="1" flexDirection="column">
