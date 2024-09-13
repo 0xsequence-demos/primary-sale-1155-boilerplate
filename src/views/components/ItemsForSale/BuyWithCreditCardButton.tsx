@@ -28,6 +28,7 @@ interface BuyWithCryptoCardButtonProps {
   resetAmount: () => void;
   setTxExplorerUrl: (url: string) => void;
   setTxError: (error: SendTransactionErrorType | null) => void;
+  setPurchasingNft: (value: boolean) => void;
   userPaymentCurrencyBalance: bigint | undefined;
 }
 
@@ -40,6 +41,7 @@ export const BuyWithCryptoCardButton = ({
   setTxExplorerUrl,
   setTxError,
   userPaymentCurrencyBalance,
+  setPurchasingNft,
 }: BuyWithCryptoCardButtonProps) => {
   const publicClient = usePublicClient();
   const { data: walletClient } = useWalletClient();
@@ -82,7 +84,7 @@ export const BuyWithCryptoCardButton = ({
     ) {
       return;
     }
-
+    
     /**
      * Mint tokens.
      * @param to Address to mint tokens to.
@@ -99,6 +101,7 @@ export const BuyWithCryptoCardButton = ({
 
     setTxError(null);
     setTxExplorerUrl("");
+    setPurchasingNft(true);
     const allowance = await ERC20.getAllowance(
       currencyData.address,
       userAddress,
@@ -152,11 +155,12 @@ export const BuyWithCryptoCardButton = ({
   useEffect(() => {
     if (!error) return;
     setTxError(error as SendTransactionErrorType);
+    setPurchasingNft(false);
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, [error]);
 
   useEffect(() => {
-    if (!txnData) return;
+    if (!txnData || isPendingSendTxn) return;
     resetAmount();
     toast(
       <div>
@@ -175,8 +179,9 @@ export const BuyWithCryptoCardButton = ({
       </div>,
     );
     setTxExplorerUrl(`${chainInfo.explorerUrl}/tx/${txnData}`);
+    setPurchasingNft(false);
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
-  }, [txnData]);
+  }, [txnData, isPendingSendTxn]);
 
   return (
     <>

@@ -16,6 +16,7 @@ import { nftPrice } from "../../constants";
 import NftsMintedProgressBar from "../NftsMintedProgressBar";
 import { NFT_TOKEN_CONTRACT_ABI } from "../../constants/nft_token_contract_abi";
 import { useReadContract } from "wagmi";
+import PurchaseAnimation from "../blockchain/Connected/PurchaseAnimation";
 
 interface CollectibleProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -53,6 +54,7 @@ export const Collectible = ({
   const [amount, setAmount] = useState(0);
   const [txExplorerUrl, setTxExplorerUrl] = useState("");
   const [txError, setTxError] = useState<SendTransactionErrorType | null>(null);
+  const [purchasingNft, setPurchasingNft] = useState<boolean>(false);
   const logoURI = currencyData?.logoURI;
   const {
     data: nftsMinted,
@@ -67,11 +69,12 @@ export const Collectible = ({
 
   const amountOwned: string = collectibleBalance?.balance || "0";
   const increaseAmount = () => {
+    if (purchasingNft) return;
     setAmount(amount + 1);
   };
 
   const decreaseAmount = () => {
-    if (amount === 0) return;
+    if (amount === 0 || purchasingNft) return;
     setAmount(amount - 1);
   };
 
@@ -87,6 +90,7 @@ export const Collectible = ({
   useEffect(() => {
     if (!txError || JSON.stringify(txError) === "{}") return;
     toast(`Error to purchase NFT`, { type: "error" });
+    setPurchasingNft(false);
     console.error(txError);
   }, [txError]);
 
@@ -213,9 +217,17 @@ export const Collectible = ({
                 resetAmount={resetAmount}
                 setTxExplorerUrl={setTxExplorerUrl}
                 setTxError={setTxError}
+                setPurchasingNft={setPurchasingNft}
                 userPaymentCurrencyBalance={userPaymentCurrencyBalance}
               />
             </Box>
+            {purchasingNft && (
+              <PurchaseAnimation
+                amount={amount}
+                image={tokenMetadata.image || ""}
+                name={tokenMetadata.name}
+              />
+            )}
             {txError && JSON.stringify(txError) != "{}" && (
               <span>Error to purchase NFT. Details in console</span>
             )}
