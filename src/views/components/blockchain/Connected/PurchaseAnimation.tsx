@@ -19,10 +19,16 @@ function PurchaseAnimation({
         <div className="purchaseAnimation__moving-text">
           Purchasing {amount} NFTs
           <span className="purchaseAnimation__dot">.</span>
-          <span className="purchaseAnimation__dot" style={{ animationDelay: "0.2s" }}>
+          <span
+            className="purchaseAnimation__dot"
+            style={{ animationDelay: "0.2s" }}
+          >
             .
           </span>
-          <span className="purchaseAnimation__dot" style={{ animationDelay: "0.4s" }}>
+          <span
+            className="purchaseAnimation__dot"
+            style={{ animationDelay: "0.4s" }}
+          >
             .
           </span>
         </div>

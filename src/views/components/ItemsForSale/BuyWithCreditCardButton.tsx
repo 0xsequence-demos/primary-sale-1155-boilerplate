@@ -84,7 +84,7 @@ export const BuyWithCryptoCardButton = ({
     ) {
       return;
     }
-    
+
     /**
      * Mint tokens.
      * @param to Address to mint tokens to.
