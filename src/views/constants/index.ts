@@ -1,9 +1,4 @@
 // sales params
-export const SALES_CONTRACT_ADDRESS =
-  "0x11fa2eb0cdcaeaebfe6466ea08d84a9c2e0eb6fd";
-export const NFT_TOKEN_ADDRESS = "0xb11446a79e69216958e6900b5fad8ff121b802cb";
-export const CHAIN_ID = 80002;
-
 export const NFT_TOKEN_ADDRESS_AMOY =
   "0x888a322db4b8033bac3ff84412738c096f87f9d0";
 export const SALES_CONTRACT_ADDRESS_AMOY =
