@@ -17,8 +17,8 @@ import { useSalesCurrency } from "../../../hooks/useSalesCurrency";
 import { getChain } from "../../../../ERC20/getChain";
 import SwitchNetwork from "./SwitchNetwork";
 import {
+  formatPriceWithDecimals,
   getChainId,
-  getFormmatedUserPaymentCurrencyBalance,
   getNftTokenAddress,
   getSalesContractAddress,
 } from "../../../../utils/primarySellHelpers";
@@ -308,7 +308,7 @@ const Connected = () => {
           />
           <UserInfoDisplay
             label="User Payment Currency Balance"
-            value={`$${getFormmatedUserPaymentCurrencyBalance(Number(userPaymentCurrencyBalance), currencyData?.address)}`}
+            value={`$${formatPriceWithDecimals(userPaymentCurrencyBalance, currencyDecimals)}`}
           />
         </Collapsible>
       )}

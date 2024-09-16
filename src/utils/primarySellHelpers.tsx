@@ -58,19 +58,6 @@ export function getItemsForSale(chainId: number | undefined): SaleItem[] {
   }
 }
 
-export function getFormmatedUserPaymentCurrencyBalance(
-  userPaymentCurrencyBalance: number,
-  currencyAddress: string,
-) {
-  if (!userPaymentCurrencyBalance || !currencyAddress) return 0;
-  return (
-    userPaymentCurrencyBalance /
-    (currencyAddress == "0x0000000000000000000000000000000000000000"
-      ? 10 ** nativeTokenDecimals
-      : 10 ** erc20TokenDecimals)
-  );
-}
-
 export const formatPriceWithDecimals = (
   price: bigint,
   tokenDecimals: number,
