@@ -2,7 +2,7 @@ import {
   salesConfigurations,
   defaultChainId,
   SaleConfigurationProps,
-} from "../views/constants";
+} from "./constants";
 
 const defaultSaleConfiguration = salesConfigurations.find(
   (saleConfiguration) => saleConfiguration.chainId === defaultChainId,

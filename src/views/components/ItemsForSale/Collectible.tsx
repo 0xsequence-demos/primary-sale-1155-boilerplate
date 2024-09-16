@@ -12,11 +12,11 @@ import { ContractInfo, TokenMetadata } from "@0xsequence/indexer";
 import { toast } from "react-toastify";
 import { SendTransactionErrorType } from "viem";
 import NftsMintedProgressBar from "../NftsMintedProgressBar";
-import { NFT_TOKEN_CONTRACT_ABI } from "../../constants/nftTokenContractAbi";
+import { NFT_TOKEN_CONTRACT_ABI } from "../../../utils/primarySells/abis/nftTokenContractAbi";
 import { useReadContract } from "wagmi";
 import PurchaseAnimation from "../blockchain/Connected/PurchaseAnimation";
-import { formatPriceWithDecimals } from "../../../utils/primarySellHelpers";
-import { SaleConfigurationProps } from "../../constants";
+import { formatPriceWithDecimals } from "../../../utils/primarySells/helpers";
+import { SaleConfigurationProps } from "../../../utils/primarySells/constants";
 
 interface CollectibleProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
