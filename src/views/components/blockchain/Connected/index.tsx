@@ -18,14 +18,13 @@ import { getChain } from "../../../../ERC20/getChain";
 import SwitchNetwork from "./SwitchNetwork";
 import {
   formatPriceWithDecimals,
-  getChainId,
-  getNftTokenAddress,
-  getSalesContractAddress,
+  getSaleConfiguration,
 } from "../../../../utils/primarySellHelpers";
 import { SALES_CONTRACT_ABI } from "../../../constants/salesContractAbi";
 import { NFT_TOKEN_CONTRACT_ABI } from "../../../constants/nftTokenContractAbi";
 import ProgressBar from "../../ProgressBar";
 import { ERC20_ABI } from "../../../../ERC20/ERC20_abi";
+import { useMemo } from "react";
 
 function calculateMintedPercentage(minted: number, totalMax: number): number {
   if (totalMax <= 0) {
@@ -47,10 +46,17 @@ interface GlobalSalesDetailsData {
 const Connected = () => {
   const { address: userAddress, chainId, chain } = useAccount();
   const { disconnect } = useDisconnect();
+  const saleConfiguration = useMemo(
+    () => getSaleConfiguration(chainId),
+    [chainId],
+  );
   const { data: contractInfoData, isLoading: contractInfoIsLoading } =
-    useContractInfo(getChainId(chainId), getNftTokenAddress(chainId));
+    useContractInfo(
+      saleConfiguration.chainId,
+      saleConfiguration.nftTokenAddress,
+    );
   const { data: currencyData, isLoading: currencyDataIsLoading } =
-    useSalesCurrency(getChainId(chainId));
+    useSalesCurrency(saleConfiguration);
 
   const {
     data: tokenSaleDetailsData,
@@ -59,7 +65,7 @@ const Connected = () => {
     abi: SALES_CONTRACT_ABI,
     functionName: "globalSaleDetails",
     chainId: chainId,
-    address: getSalesContractAddress(chainId),
+    address: saleConfiguration.salesContractAddress,
   });
 
   const {
@@ -88,7 +94,7 @@ const Connected = () => {
     abi: NFT_TOKEN_CONTRACT_ABI,
     functionName: "totalSupply",
     chainId: chainId,
-    address: getNftTokenAddress(chainId),
+    address: saleConfiguration.nftTokenAddress,
   });
 
   const AddressDisplay = ({
@@ -163,7 +169,7 @@ const Connected = () => {
     Number(nftsMinted),
     Number(totalSupply),
   );
-  const currencyDecimals = currencyData?.decimals;
+  const currencyDecimals: number | undefined = currencyData?.decimals;
 
   return (
     <Card
@@ -278,12 +284,12 @@ const Connected = () => {
             />
             <AddressDisplay
               label="Sales Contract"
-              address={getSalesContractAddress(chainId)}
+              address={saleConfiguration.salesContractAddress}
               chainId={chainId}
             />
             <AddressDisplay
               label="NFT token Contract"
-              address={getNftTokenAddress(chainId)}
+              address={saleConfiguration.nftTokenAddress}
               chainId={chainId}
             />
             <AddressDisplay
@@ -294,28 +300,31 @@ const Connected = () => {
           </Box>
         </Collapsible>
       )}
-      {chainId && userPaymentCurrencyBalance && userAddress && currencyData && (
-        <Collapsible label="User information">
-          <AddressDisplay
-            label="User Address"
-            address={userAddress}
-            chainId={chainId}
-          />
-          <AddressDisplay
-            label="Payment currency Address"
-            address={currencyData?.address}
-            chainId={chainId}
-          />
-          <UserInfoDisplay
-            label="User Payment Currency Balance"
-            value={`$${formatPriceWithDecimals(userPaymentCurrencyBalance, currencyDecimals)}`}
-          />
-        </Collapsible>
-      )}
-
+      {chainId &&
+        userPaymentCurrencyBalance &&
+        userAddress &&
+        currencyData &&
+        currencyDecimals && (
+          <Collapsible label="User information">
+            <AddressDisplay
+              label="User Address"
+              address={userAddress}
+              chainId={chainId}
+            />
+            <AddressDisplay
+              label="Payment currency Address"
+              address={currencyData?.address}
+              chainId={chainId}
+            />
+            <UserInfoDisplay
+              label="User Payment Currency Balance"
+              value={`$${formatPriceWithDecimals(userPaymentCurrencyBalance, currencyDecimals)}`}
+            />
+          </Collapsible>
+        )}
       <ItemsForSale
-        chainId={getChainId(chainId)}
-        collectionAddress={getNftTokenAddress(chainId)}
+        chainId={saleConfiguration.chainId}
+        collectionAddress={saleConfiguration.nftTokenAddress}
         totalMinted={formattedNftsMinted}
         totalSupply={totalSupply}
         totalMintedNftsPercentaje={totalMintedNftsPercentaje}
@@ -324,6 +333,7 @@ const Connected = () => {
         currencyDecimals={currencyDecimals}
         currencyData={currencyData}
         currencyIsLoading={currencyDataIsLoading}
+        saleConfiguration={saleConfiguration}
       />
 
       <Button label="Disconnect" onClick={disconnect} />

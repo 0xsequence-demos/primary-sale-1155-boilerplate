@@ -10,11 +10,11 @@ import {
 import { ERC20 } from "../../../ERC20/ERC20";
 
 import { SALES_CONTRACT_ABI } from "../../constants/salesContractAbi";
-import { useSalesCurrency } from "../../hooks/useSalesCurrency";
 import { useEffect, useState } from "react";
 import { getChain } from "../../../ERC20/getChain";
-import { getSalesContractAddress } from "../../../utils/primarySellHelpers";
+import { getSaleConfiguration } from "../../../utils/primarySellHelpers";
 import { toast } from "react-toastify";
+import { ContractInfo } from "@0xsequence/indexer";
 interface BuyWithCryptoCardButtonProps {
   tokenId: string;
   collectionAddress: string;
@@ -26,6 +26,7 @@ interface BuyWithCryptoCardButtonProps {
   setPurchasingNft: (value: boolean) => void;
   userPaymentCurrencyBalance: bigint | undefined;
   price: bigint;
+  currencyData: ContractInfo | undefined;
 }
 
 export const BuyWithCryptoCardButton = ({
@@ -39,6 +40,7 @@ export const BuyWithCryptoCardButton = ({
   userPaymentCurrencyBalance,
   setPurchasingNft,
   price,
+  currencyData,
 }: BuyWithCryptoCardButtonProps) => {
   const publicClient = usePublicClient();
   const { data: walletClient } = useWalletClient();
@@ -55,10 +57,6 @@ export const BuyWithCryptoCardButton = ({
     error,
     reset,
   } = useSendTransaction();
-  const {
-    data: currencyData,
-    // isLoading: currencyIsLoading
-  } = useSalesCurrency(chainId);
   const nftPriceBigInt = price ? price : BigInt(0);
   const amountBigInt = BigInt(amount);
   const totalPrice = nftPriceBigInt * amountBigInt;
@@ -94,17 +92,18 @@ export const BuyWithCryptoCardButton = ({
     setTxError(null);
     setTxExplorerUrl("");
     setPurchasingNft(true);
+    const saleConfiguration = getSaleConfiguration(chainId);
     const allowance = await ERC20.getAllowance(
       currencyData.address,
       userAddress,
-      getSalesContractAddress(chainId),
+      saleConfiguration.salesContractAddress,
       chainId,
     );
 
     if (!allowance || allowance === 0n) {
       await ERC20.approveInfinite(
         currencyData.address,
-        getSalesContractAddress(chainId),
+        saleConfiguration.salesContractAddress,
         walletClient,
       );
     }
@@ -126,7 +125,7 @@ export const BuyWithCryptoCardButton = ({
     });
 
     const transactionParameters = {
-      to: getSalesContractAddress(chainId),
+      to: saleConfiguration.salesContractAddress,
       data: calldata,
       value: BigInt(0),
     };

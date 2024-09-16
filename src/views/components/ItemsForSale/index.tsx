@@ -4,7 +4,7 @@ import { useAccount } from "wagmi";
 import { useTokenMetadata, useCollectionBalance } from "../../hooks/data";
 import { ContractInfo, TokenMetadata } from "@0xsequence/indexer";
 import { Collectible } from "./Collectible";
-import { getItemsForSale } from "../../../utils/primarySellHelpers";
+import { SaleConfigurationProps } from "../../constants";
 
 interface ItemsForSaleProps {
   collectionAddress: string;
@@ -17,6 +17,7 @@ interface ItemsForSaleProps {
   currencyDecimals: number | undefined;
   currencyData: ContractInfo | undefined;
   currencyIsLoading: boolean;
+  saleConfiguration: SaleConfigurationProps;
 }
 
 export const ItemsForSale = ({
@@ -30,6 +31,7 @@ export const ItemsForSale = ({
   currencyDecimals,
   currencyData,
   currencyIsLoading,
+  saleConfiguration,
 }: ItemsForSaleProps) => {
   const { address: userAddress } = useAccount();
   const { data: collectionBalanceData, isLoading: collectionBalanceIsLoading } =
@@ -40,12 +42,11 @@ export const ItemsForSale = ({
       includeMetadata: false,
       verifiedOnly: false,
     });
-
   const { data: tokenMetadatas, isLoading: tokenMetadatasLoading } =
     useTokenMetadata(
       chainId,
       collectionAddress,
-      getItemsForSale(chainId).map((item) => item.tokenId),
+      saleConfiguration.itemsForSale.map((item) => item.tokenId),
     );
 
   const isLoading =
@@ -99,6 +100,7 @@ export const ItemsForSale = ({
               userPaymentCurrencyBalance={userPaymentCurrencyBalance}
               price={price}
               currencyDecimals={currencyDecimals}
+              saleConfiguration={saleConfiguration}
             />
           );
         })}

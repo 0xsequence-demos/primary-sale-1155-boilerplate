@@ -7,7 +7,6 @@ import {
 } from "@0xsequence/design-system";
 import CollectibleTileImage from "../CollectibleTileImage";
 import { BuyWithCryptoCardButton } from "./BuyWithCreditCardButton";
-import { getNftTokenAddress } from "../../../utils/primarySellHelpers";
 import { useEffect, useState } from "react";
 import { TokenMetadata } from "@0xsequence/indexer";
 import { toast } from "react-toastify";
@@ -17,6 +16,7 @@ import { NFT_TOKEN_CONTRACT_ABI } from "../../constants/nftTokenContractAbi";
 import { useReadContract } from "wagmi";
 import PurchaseAnimation from "../blockchain/Connected/PurchaseAnimation";
 import { formatPriceWithDecimals } from "../../../utils/primarySellHelpers";
+import { SaleConfigurationProps } from "../../constants";
 
 interface CollectibleProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -31,6 +31,7 @@ interface CollectibleProps {
   userPaymentCurrencyBalance: bigint | undefined;
   price: bigint;
   currencyDecimals: number | undefined;
+  saleConfiguration: SaleConfigurationProps;
 }
 
 function calculateMintedPercentage(minted: number, totalMax: number): number {
@@ -53,6 +54,7 @@ export const Collectible = ({
   userPaymentCurrencyBalance,
   price,
   currencyDecimals,
+  saleConfiguration,
 }: CollectibleProps) => {
   const isMobile = useMediaQuery("isMobile");
   const [amount, setAmount] = useState(0);
@@ -67,7 +69,7 @@ export const Collectible = ({
     abi: NFT_TOKEN_CONTRACT_ABI,
     functionName: "tokenSupply",
     chainId: chainId,
-    address: getNftTokenAddress(chainId),
+    address: saleConfiguration.nftTokenAddress,
     args: [BigInt(tokenMetadata?.tokenId)],
   });
 
@@ -220,7 +222,7 @@ export const Collectible = ({
               <BuyWithCryptoCardButton
                 amount={amount}
                 chainId={chainId}
-                collectionAddress={getNftTokenAddress(chainId)}
+                collectionAddress={saleConfiguration.nftTokenAddress}
                 tokenId={tokenMetadata.tokenId}
                 resetAmount={resetAmount}
                 setTxExplorerUrl={setTxExplorerUrl}
@@ -228,6 +230,7 @@ export const Collectible = ({
                 setPurchasingNft={setPurchasingNft}
                 userPaymentCurrencyBalance={userPaymentCurrencyBalance}
                 price={price}
+                currencyData={currencyData}
               />
             </Box>
             {purchasingNft && (

@@ -2,18 +2,15 @@ import { useReadContract } from "wagmi";
 
 import { useContractInfo } from "../hooks/data";
 import { SALES_CONTRACT_ABI } from "../constants/salesContractAbi";
-import {
-  getChainId,
-  getSalesContractAddress,
-} from "../../utils/primarySellHelpers";
+import { SaleConfigurationProps } from "../constants";
 
-export const useSalesCurrency = (chainId: number) => {
+export const useSalesCurrency = (saleConfiguration: SaleConfigurationProps) => {
   const { data: paymentTokenData, isLoading: paymentTokenIsLoading } =
     useReadContract({
       abi: SALES_CONTRACT_ABI,
       functionName: "paymentToken",
-      chainId: getChainId(chainId),
-      address: getSalesContractAddress(chainId),
+      chainId: saleConfiguration.chainId,
+      address: saleConfiguration.salesContractAddress,
     });
 
   const paymentTokenAddress = (paymentTokenData as string) || "";
@@ -21,7 +18,7 @@ export const useSalesCurrency = (chainId: number) => {
   const {
     data: currencyContractInfoData,
     isLoading: currencyContractInfoIsLoading,
-  } = useContractInfo(getChainId(chainId), paymentTokenAddress);
+  } = useContractInfo(saleConfiguration.chainId, paymentTokenAddress);
 
   return {
     data: currencyContractInfoData,
