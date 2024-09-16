@@ -8,7 +8,7 @@ import {
 import CollectibleTileImage from "../CollectibleTileImage";
 import { BuyWithCryptoCardButton } from "./BuyWithCreditCardButton";
 import { useEffect, useState } from "react";
-import { TokenMetadata } from "@0xsequence/indexer";
+import { ContractInfo, TokenMetadata } from "@0xsequence/indexer";
 import { toast } from "react-toastify";
 import { SendTransactionErrorType } from "viem";
 import NftsMintedProgressBar from "../NftsMintedProgressBar";
@@ -23,8 +23,7 @@ interface CollectibleProps {
   collectibleBalance: { [key: string]: any } | undefined;
   tokenMetadata: TokenMetadata;
   chainId: number;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  currencyData: { [key: string]: any } | undefined;
+  currencyData: ContractInfo | undefined;
   totalMintedNftsPercentaje: number;
   totalSupply: string | 0;
   totalNftsMinted: string | undefined;
