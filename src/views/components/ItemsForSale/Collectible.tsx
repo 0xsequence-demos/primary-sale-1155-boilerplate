@@ -31,6 +31,8 @@ interface CollectibleProps {
   price: bigint;
   currencyDecimals: number | undefined;
   saleConfiguration: SaleConfigurationProps;
+  refetchCollectionBalance: () => void;
+  refetchTotalMinted: () => void;
 }
 
 function calculateMintedPercentage(minted: number, totalMax: number): number {
@@ -54,6 +56,8 @@ export const Collectible = ({
   price,
   currencyDecimals,
   saleConfiguration,
+  refetchCollectionBalance,
+  refetchTotalMinted,
 }: CollectibleProps) => {
   const isMobile = useMediaQuery("isMobile");
   const [amount, setAmount] = useState(0);
@@ -64,6 +68,7 @@ export const Collectible = ({
   const {
     data: nftsMinted,
     // isLoading: nftsMintedIsLoading,
+    refetch: refetchNftsMinted,
   } = useReadContract({
     abi: NFT_TOKEN_CONTRACT_ABI,
     functionName: "tokenSupply",
@@ -230,6 +235,9 @@ export const Collectible = ({
                 userPaymentCurrencyBalance={userPaymentCurrencyBalance}
                 price={price}
                 currencyData={currencyData}
+                refetchCollectionBalance={refetchCollectionBalance}
+                refetchTotalMinted={refetchTotalMinted}
+                refetchNftsMinted={refetchNftsMinted}
               />
             </Box>
             {purchasingNft && (

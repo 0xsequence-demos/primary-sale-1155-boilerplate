@@ -18,6 +18,7 @@ interface ItemsForSaleProps {
   currencyData: ContractInfo | undefined;
   currencyIsLoading: boolean;
   saleConfiguration: SaleConfigurationProps;
+  refetchTotalMinted: () => void;
 }
 
 export const ItemsForSale = ({
@@ -32,16 +33,20 @@ export const ItemsForSale = ({
   currencyData,
   currencyIsLoading,
   saleConfiguration,
+  refetchTotalMinted,
 }: ItemsForSaleProps) => {
   const { address: userAddress } = useAccount();
-  const { data: collectionBalanceData, isLoading: collectionBalanceIsLoading } =
-    useCollectionBalance({
-      accountAddress: userAddress || "",
-      contractAddress: collectionAddress,
-      chainId,
-      includeMetadata: false,
-      verifiedOnly: false,
-    });
+  const {
+    data: collectionBalanceData,
+    isLoading: collectionBalanceIsLoading,
+    refetch: refetchCollectionBalance,
+  } = useCollectionBalance({
+    accountAddress: userAddress || "",
+    contractAddress: collectionAddress,
+    chainId,
+    includeMetadata: false,
+    verifiedOnly: false,
+  });
   const { data: tokenMetadatas, isLoading: tokenMetadatasLoading } =
     useTokenMetadata(
       chainId,
@@ -101,6 +106,8 @@ export const ItemsForSale = ({
               price={price}
               currencyDecimals={currencyDecimals}
               saleConfiguration={saleConfiguration}
+              refetchCollectionBalance={refetchCollectionBalance}
+              refetchTotalMinted={refetchTotalMinted}
             />
           );
         })}

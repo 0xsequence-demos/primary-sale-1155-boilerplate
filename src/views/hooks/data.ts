@@ -17,7 +17,7 @@ export const useTokenMetadata = (
 ) => {
   const metadataClient = useMetadataClient();
 
-  return useQuery({
+  const query = useQuery({
     queryKey: ["tokenMetadata", chainId, contractAddress, tokenIds],
     queryFn: async () => {
       const res = await metadataClient.getTokenMetadata({
@@ -32,6 +32,11 @@ export const useTokenMetadata = (
     staleTime: time.oneMinute * 10,
     enabled: !!chainId && !!contractAddress,
   });
+
+  return {
+    ...query,
+    refetch: query.refetch,
+  };
 };
 
 export const useContractInfo = (
@@ -83,7 +88,7 @@ export const getCollectionBalance = async (
 export const useCollectionBalance = (args: UseCollectionBalanceArgs) => {
   const indexerClient = useIndexerClient(args.chainId);
 
-  return useQuery({
+  const query = useQuery({
     queryKey: ["collectionBalance", args],
     queryFn: () => getCollectionBalance(indexerClient, args),
     retry: true,
@@ -92,4 +97,9 @@ export const useCollectionBalance = (args: UseCollectionBalanceArgs) => {
     staleTime: time.oneSecond * 30,
     enabled: !!args.chainId && !!args.accountAddress && !!args.contractAddress,
   });
+
+  return {
+    ...query,
+    refetch: query.refetch,
+  };
 };

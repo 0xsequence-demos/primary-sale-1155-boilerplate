@@ -27,6 +27,9 @@ interface BuyWithCryptoCardButtonProps {
   userPaymentCurrencyBalance: bigint | undefined;
   price: bigint;
   currencyData: ContractInfo | undefined;
+  refetchCollectionBalance: () => void;
+  refetchTotalMinted: () => void;
+  refetchNftsMinted: () => void;
 }
 
 export const BuyWithCryptoCardButton = ({
@@ -41,6 +44,9 @@ export const BuyWithCryptoCardButton = ({
   setPurchasingNft,
   price,
   currencyData,
+  refetchCollectionBalance,
+  refetchTotalMinted,
+  refetchNftsMinted,
 }: BuyWithCryptoCardButtonProps) => {
   const publicClient = usePublicClient();
   const { data: walletClient } = useWalletClient();
@@ -171,6 +177,11 @@ export const BuyWithCryptoCardButton = ({
     );
     setTxExplorerUrl(`${chainInfo.explorerUrl}/tx/${txnData}`);
     setPurchasingNft(false);
+    setTimeout(() => {
+      refetchCollectionBalance();
+      refetchTotalMinted();
+      refetchNftsMinted();
+    }, 3000);
     /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, [txnData, isPendingSendTxn]);
 

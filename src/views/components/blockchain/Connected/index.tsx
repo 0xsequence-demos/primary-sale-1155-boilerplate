@@ -90,6 +90,7 @@ const Connected = () => {
   const {
     data: nftsMinted,
     // isLoading: nftsMintedIsLoading,
+    refetch: refetchTotalMinted,
   } = useReadContract({
     abi: NFT_TOKEN_CONTRACT_ABI,
     functionName: "totalSupply",
@@ -334,6 +335,7 @@ const Connected = () => {
         currencyData={currencyData}
         currencyIsLoading={currencyDataIsLoading}
         saleConfiguration={saleConfiguration}
+        refetchTotalMinted={refetchTotalMinted}
       />
 
       <Button label="Disconnect" onClick={disconnect} />
