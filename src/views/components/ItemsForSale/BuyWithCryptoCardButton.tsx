@@ -15,6 +15,7 @@ import { getChain } from "../../../ERC20/getChain";
 import { getSaleConfiguration } from "../../../utils/primarySells/helpers";
 import { toast } from "react-toastify";
 import { ContractInfo } from "@0xsequence/indexer";
+
 interface BuyWithCryptoCardButtonProps {
   tokenId: string;
   collectionAddress: string;

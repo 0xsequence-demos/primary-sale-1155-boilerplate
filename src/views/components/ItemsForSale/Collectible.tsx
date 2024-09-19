@@ -6,7 +6,7 @@ import {
   useMediaQuery,
 } from "@0xsequence/design-system";
 import CollectibleTileImage from "../CollectibleTileImage";
-import { BuyWithCryptoCardButton } from "./BuyWithCreditCardButton";
+import { BuyWithCryptoCardButton } from "./BuyWithCryptoCardButton";
 import { useEffect, useState } from "react";
 import { ContractInfo, TokenMetadata } from "@0xsequence/indexer";
 import { toast } from "react-toastify";
