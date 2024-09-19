@@ -25,7 +25,6 @@ function getTransportConfigs(
 
 const App = () => {
   const projectAccessKey = import.meta.env.VITE_PROJECT_ACCESS_KEY;
-  // Get your own keys on sequence.build
   const waasConfigKey = import.meta.env.VITE_WAAS_CONFIG_KEY;
   const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
   const appleClientId = import.meta.env.VITE_APPLE_CLIENT_ID;
