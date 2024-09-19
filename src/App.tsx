@@ -3,10 +3,27 @@ import { getDefaultWaasConnectors, KitProvider } from "@0xsequence/kit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createConfig, http, WagmiProvider } from "wagmi";
 import chains from "./utils/chains";
+import { KitCheckoutProvider } from "@0xsequence/kit-checkout";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Chain, Transport } from "viem";
+import { allNetworks, findNetworkConfig } from "@0xsequence/network";
 const queryClient = new QueryClient();
 
+function getTransportConfigs(
+  chains: [Chain, ...Chain[]],
+): Record<number, Transport> {
+  return chains.reduce(
+    (acc, chain) => {
+      const network = findNetworkConfig(allNetworks, chain.id);
+      if (network) acc[chain.id] = http(network.rpcUrl);
+      return acc;
+    },
+    {} as Record<number, Transport>,
+  );
+}
+
 const App = () => {
-  // Get your own keys on sequence.build
   const projectAccessKey = import.meta.env.VITE_PROJECT_ACCESS_KEY;
   const waasConfigKey = import.meta.env.VITE_WAAS_CONFIG_KEY;
   const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
@@ -22,17 +39,12 @@ const App = () => {
     appleClientId,
     appleRedirectURI,
     /* Arbitrum sepolia chainId */
-    defaultChainId: 421614,
+    defaultChainId: 80002,
     appName: "Kit Starter",
     projectAccessKey,
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const transports: { [key: number]: any } = {};
-
-  chains.forEach((chain) => {
-    transports[chain.id] = http();
-  });
+  const transports = getTransportConfigs(chains);
 
   const config = createConfig({
     transports,
@@ -48,7 +60,21 @@ const App = () => {
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <KitProvider config={kitConfig}>
-          <Home />
+          <KitCheckoutProvider>
+            <ToastContainer
+              position="bottom-right"
+              autoClose={7000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="dark"
+            />
+            <Home />
+          </KitCheckoutProvider>
         </KitProvider>
       </QueryClientProvider>
     </WagmiProvider>

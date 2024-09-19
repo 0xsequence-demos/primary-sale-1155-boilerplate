@@ -4,7 +4,7 @@ import ActiveNetwork from "./ActiveNetwork";
 import NativeBalance from "./NativeBalance";
 import SwitchNetwork from "./SwitchNetwork";
 
-const ChainInfo = (props: { chain: Chain; address: Address }) => {
+const ChainInfo = (props: { chain: Chain; address: Address | string }) => {
   const { chain, address } = props;
 
   return (
