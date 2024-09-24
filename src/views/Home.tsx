@@ -20,7 +20,7 @@ const Home = () => {
     <div>
       {!isConnected && (
         <>
-          <h1>Sequence Primary Drop Sale Boilerplate</h1>
+          <h1>Sequence Primary Drop Sale 1155 Boilerplate</h1>
           <h2 className="homepage__marginBtNormal">Embedded Wallet</h2>
         </>
       )}
