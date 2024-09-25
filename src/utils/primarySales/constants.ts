@@ -6,7 +6,7 @@ type FriendlySaleConfigurationProps = {
   salesContractAddress: Address;
   chain: Chain;
   itemsForSale: string[];
-}
+};
 
 export const friendlySalesConfigurations: FriendlySaleConfigurationProps[] = [
   {
