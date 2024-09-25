@@ -1,9 +1,36 @@
-import { Chain } from "viem";
+import { Address, Chain } from "viem";
 import { getDefaultChains } from "@0xsequence/kit";
-import { salesConfigurations, SaleConfigurationProps } from "./configs";
-import { defaultChainId } from "./constants";
+import {
+  defaultChainId,
+  salesConfigs as salesConfigurations,
+} from "../../salesConfigs";
+interface SaleItem {
+  tokenId: string;
+}
 
-const defaultSaleConfiguration = salesConfigurations.find(
+export interface UnpackedSaleConfigurationProps {
+  networkName: string;
+  nftTokenAddress: Address;
+  salesContractAddress: Address;
+  chainId: number;
+  itemsForSale: SaleItem[];
+}
+
+const unpackedSalesConfigurations = salesConfigurations.map((item) => {
+  const { nftTokenAddress, salesContractAddress, chainId, itemsForSale } = item;
+  const chain = getChainConfig(chainId);
+  return {
+    networkName: chain.name,
+    nftTokenAddress,
+    salesContractAddress,
+    chainId: chain.id,
+    itemsForSale: itemsForSale.map((id) => {
+      return { tokenId: id };
+    }),
+  };
+}) as UnpackedSaleConfigurationProps[];
+
+const defaultSaleConfiguration = unpackedSalesConfigurations.find(
   (saleConfiguration) => saleConfiguration.chainId === defaultChainId,
 );
 if (!defaultSaleConfiguration)
@@ -13,7 +40,7 @@ if (!defaultSaleConfiguration)
 
 export function getSaleConfiguration(
   chainId: number | undefined,
-): SaleConfigurationProps {
+): UnpackedSaleConfigurationProps {
   if (!defaultSaleConfiguration) {
     throw new Error(
       "SaleConfigurationNotFoundError: No default sale configuration found",
@@ -21,7 +48,7 @@ export function getSaleConfiguration(
   }
 
   return (
-    salesConfigurations.find(
+    unpackedSalesConfigurations.find(
       (saleConfiguration) => saleConfiguration.chainId === chainId,
     ) || defaultSaleConfiguration
   );

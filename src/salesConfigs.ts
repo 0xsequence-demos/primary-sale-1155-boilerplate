@@ -1,11 +1,11 @@
-type FriendlySaleConfigurationProps = {
+type SaleConfiguration = {
   nftTokenAddress: `0x${string}`;
   salesContractAddress: `0x${string}`;
   chainId: number;
   itemsForSale: string[];
 };
 
-export const friendlySalesConfigurations: FriendlySaleConfigurationProps[] = [
+export const salesConfigs: SaleConfiguration[] = [
   {
     nftTokenAddress: "0x888a322db4b8033bac3ff84412738c096f87f9d0",
     salesContractAddress: "0x0327b2f274e04d292e74a06809bcd687c63a4ba4",
