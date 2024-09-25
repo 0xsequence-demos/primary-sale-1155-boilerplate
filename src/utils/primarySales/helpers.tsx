@@ -1,10 +1,7 @@
 import { Chain } from "viem";
 import { getDefaultChains } from "@0xsequence/kit";
-import {
-  salesConfigurations,
-  defaultChainId,
-  SaleConfigurationProps,
-} from "./constants";
+import { salesConfigurations, SaleConfigurationProps } from "./configs";
+import { defaultChainId } from "./constants";
 
 const defaultSaleConfiguration = salesConfigurations.find(
   (saleConfiguration) => saleConfiguration.chainId === defaultChainId,

@@ -1,8 +1,8 @@
 import { Box, Text, TokenImage, Skeleton } from "@0xsequence/design-system";
 import { formatUnits } from "viem";
 import { useReadContract } from "wagmi";
-import { SALES_CONTRACT_ABI } from "../../../utils/primarySells/abis/salesContractAbi";
-import { SaleConfigurationProps } from "../../../utils/primarySells/constants";
+import { SALES_CONTRACT_ABI } from "../../../utils/primarySales/abis/salesContractAbi";
+import { SaleConfigurationProps } from "../../../utils/primarySales/configs";
 
 interface CollectibleCardContentProps {
   tokenId: string;

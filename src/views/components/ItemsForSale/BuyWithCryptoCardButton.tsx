@@ -9,10 +9,10 @@ import {
 } from "wagmi";
 import { ERC20 } from "../../../ERC20/ERC20";
 
-import { SALES_CONTRACT_ABI } from "../../../utils/primarySells/abis/salesContractAbi";
+import { SALES_CONTRACT_ABI } from "../../../utils/primarySales/abis/salesContractAbi";
 import { useEffect, useState } from "react";
 import { getChain } from "../../../ERC20/getChain";
-import { getSaleConfiguration } from "../../../utils/primarySells/helpers";
+import { getSaleConfiguration } from "../../../utils/primarySales/helpers";
 import { toast } from "react-toastify";
 import { ContractInfo } from "@0xsequence/indexer";
 
