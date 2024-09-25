@@ -45,4 +45,4 @@ export const salesConfigurations = [
 ] as SaleConfigurationProps[];
 
 // This value must match one of the chainIds present in your salesConfigurations.
-export const defaultChainId = 80002;
+export const defaultChainId = polygonAmoy.id;
