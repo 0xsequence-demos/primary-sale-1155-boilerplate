@@ -16,7 +16,7 @@ import { NFT_TOKEN_CONTRACT_ABI } from "../../../utils/primarySales/abis/nftToke
 import { useReadContract } from "wagmi";
 import PurchaseAnimation from "../blockchain/Connected/PurchaseAnimation";
 import { formatPriceWithDecimals } from "../../../utils/primarySales/helpers";
-import { SaleConfigurationProps } from "../../../utils/primarySales/configs";
+import { UnpackedSaleConfigurationProps } from "../../../utils/primarySales/helpers";
 
 interface CollectibleProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -30,7 +30,7 @@ interface CollectibleProps {
   userPaymentCurrencyBalance: bigint | undefined;
   price: bigint;
   currencyDecimals: number | undefined;
-  saleConfiguration: SaleConfigurationProps;
+  saleConfiguration: UnpackedSaleConfigurationProps;
   refetchCollectionBalance: () => void;
   refetchTotalMinted: () => void;
 }
