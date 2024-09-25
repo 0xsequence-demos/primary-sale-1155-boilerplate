@@ -1,15 +1,10 @@
 import type { Chain } from "wagmi/chains";
 import { friendlySalesConfigurations } from "./primarySales/constants";
+import { getChainConfig } from "./primarySales/helpers";
 
 const chains = Array.from(
   new Set(
-    friendlySalesConfigurations.map((item) => {
-      const chain = chains.find((chain) => chain.id === item.chainId);
-      if (!chain) {
-        throw new Error(`No chain with id ${item.chainId}`);
-      }
-      return chain;
-    }),
+    friendlySalesConfigurations.map((item) => getChainConfig(item.chainId)),
   ),
 ) as [Chain, ...Chain[]];
 
