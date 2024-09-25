@@ -8,7 +8,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Chain, Transport } from "viem";
 import { allNetworks, findNetworkConfig } from "@0xsequence/network";
-import { defaultChainId } from "./utils/primarySells/constants";
+import { defaultChainId } from "./utils/primarySales/constants";
 
 const queryClient = new QueryClient();
 

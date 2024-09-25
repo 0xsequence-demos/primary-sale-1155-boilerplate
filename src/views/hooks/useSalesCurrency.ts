@@ -1,8 +1,8 @@
 import { useReadContract } from "wagmi";
 
 import { useContractInfo } from "../hooks/data";
-import { SALES_CONTRACT_ABI } from "../../utils/primarySells/abis/salesContractAbi";
-import { SaleConfigurationProps } from "../../utils/primarySells/constants";
+import { SALES_CONTRACT_ABI } from "../../utils/primarySales/abis/salesContractAbi";
+import { SaleConfigurationProps } from "../../utils/primarySales/configs";
 
 export const useSalesCurrency = (saleConfiguration: SaleConfigurationProps) => {
   const { data: paymentTokenData, isLoading: paymentTokenIsLoading } =

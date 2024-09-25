@@ -4,7 +4,7 @@ import { useAccount } from "wagmi";
 import { useTokenMetadata, useCollectionBalance } from "../../hooks/data";
 import { ContractInfo, TokenMetadata } from "@0xsequence/indexer";
 import { Collectible } from "./Collectible";
-import { SaleConfigurationProps } from "../../../utils/primarySells/constants";
+import { SaleConfigurationProps } from "../../../utils/primarySales/configs";
 
 interface ItemsForSaleProps {
   collectionAddress: string;

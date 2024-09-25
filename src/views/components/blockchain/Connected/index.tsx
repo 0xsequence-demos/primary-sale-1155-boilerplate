@@ -19,9 +19,9 @@ import SwitchNetwork from "./SwitchNetwork";
 import {
   formatPriceWithDecimals,
   getSaleConfiguration,
-} from "../../../../utils/primarySells/helpers";
-import { SALES_CONTRACT_ABI } from "../../../../utils/primarySells/abis/salesContractAbi";
-import { NFT_TOKEN_CONTRACT_ABI } from "../../../../utils/primarySells/abis/nftTokenContractAbi";
+} from "../../../../utils/primarySales/helpers";
+import { SALES_CONTRACT_ABI } from "../../../../utils/primarySales/abis/salesContractAbi";
+import { NFT_TOKEN_CONTRACT_ABI } from "../../../../utils/primarySales/abis/nftTokenContractAbi";
 import ProgressBar from "../../ProgressBar";
 import { ERC20_ABI } from "../../../../ERC20/ERC20_abi";
 import { useMemo } from "react";
