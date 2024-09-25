@@ -1,3 +1,5 @@
+import { Chain } from "viem";
+import { getDefaultChains } from "@0xsequence/kit";
 import {
   salesConfigurations,
   defaultChainId,
@@ -45,3 +47,7 @@ export const formatPriceWithDecimals = (
     ? `${integerPart.toString()}.${formattedDecimal}`
     : integerPart.toString();
 };
+
+export function getChainConfig(chainId: number): Chain {
+  return getDefaultChains([chainId])[0];
+}
