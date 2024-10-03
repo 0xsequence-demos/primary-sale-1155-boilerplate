@@ -8,6 +8,8 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Chain, Transport } from "viem";
 import { allNetworks, findNetworkConfig } from "@0xsequence/network";
+import { defaultChainId } from "./salesConfigs";
+
 const queryClient = new QueryClient();
 
 function getTransportConfigs(
@@ -38,8 +40,7 @@ const App = () => {
     // Notice: Apple Login only works if deployed on https (to support Apple redirects)
     appleClientId,
     appleRedirectURI,
-    /* Arbitrum sepolia chainId */
-    defaultChainId: 80002,
+    defaultChainId,
     appName: "Kit Starter",
     projectAccessKey,
   });

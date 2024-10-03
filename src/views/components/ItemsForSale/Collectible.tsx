@@ -12,11 +12,11 @@ import { ContractInfo, TokenMetadata } from "@0xsequence/indexer";
 import { toast } from "react-toastify";
 import { SendTransactionErrorType } from "viem";
 import NftsMintedProgressBar from "../NftsMintedProgressBar";
-import { NFT_TOKEN_CONTRACT_ABI } from "../../../utils/primarySells/abis/nftTokenContractAbi";
+import { NFT_TOKEN_CONTRACT_ABI } from "../../../utils/primarySales/abis/nftTokenContractAbi";
 import { useReadContract } from "wagmi";
 import PurchaseAnimation from "../blockchain/Connected/PurchaseAnimation";
-import { formatPriceWithDecimals } from "../../../utils/primarySells/helpers";
-import { SaleConfigurationProps } from "../../../utils/primarySells/constants";
+import { formatPriceWithDecimals } from "../../../utils/primarySales/helpers";
+import { UnpackedSaleConfigurationProps } from "../../../utils/primarySales/helpers";
 
 interface CollectibleProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -30,7 +30,7 @@ interface CollectibleProps {
   userPaymentCurrencyBalance: bigint | undefined;
   price: bigint;
   currencyDecimals: number | undefined;
-  saleConfiguration: SaleConfigurationProps;
+  saleConfiguration: UnpackedSaleConfigurationProps;
   refetchCollectionBalance: () => void;
   refetchTotalMinted: () => void;
 }

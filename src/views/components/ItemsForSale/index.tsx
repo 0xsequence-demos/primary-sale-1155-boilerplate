@@ -4,7 +4,7 @@ import { useAccount } from "wagmi";
 import { useTokenMetadata, useCollectionBalance } from "../../hooks/data";
 import { ContractInfo, TokenMetadata } from "@0xsequence/indexer";
 import { Collectible } from "./Collectible";
-import { SaleConfigurationProps } from "../../../utils/primarySells/constants";
+import { UnpackedSaleConfigurationProps } from "../../../utils/primarySales/helpers";
 
 interface ItemsForSaleProps {
   collectionAddress: string;
@@ -17,7 +17,7 @@ interface ItemsForSaleProps {
   currencyDecimals: number | undefined;
   currencyData: ContractInfo | undefined;
   currencyIsLoading: boolean;
-  saleConfiguration: SaleConfigurationProps;
+  saleConfiguration: UnpackedSaleConfigurationProps;
   refetchTotalMinted: () => void;
 }
 
