@@ -1,4 +1,4 @@
-# Sequence Primary Drop Sale 1155 Boilerplate
+# Sequence Primary Sale 1155 Boilerplate
 
 ## Coming soon!
 
