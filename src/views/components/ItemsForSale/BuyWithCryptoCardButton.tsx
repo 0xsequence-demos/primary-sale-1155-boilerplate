@@ -147,14 +147,12 @@ export const BuyWithCryptoCardButton = ({
     if (chainInfoResponse) {
       setChainInfo(chainInfoResponse);
     }
-    /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, [chainId]);
 
   useEffect(() => {
     if (!error) return;
     setTxError(error as SendTransactionErrorType);
     setPurchasingNft(false);
-    /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, [error]);
 
   useEffect(() => {
@@ -183,7 +181,6 @@ export const BuyWithCryptoCardButton = ({
       refetchTotalMinted();
       refetchNftsMinted();
     }, 3000);
-    /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, [txnData, isPendingSendTxn]);
 
   return (

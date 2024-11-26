@@ -9,6 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { Chain, Transport } from "viem";
 import { allNetworks, findNetworkConfig } from "@0xsequence/network";
 import { defaultChainId } from "./salesConfigs";
+import "@0xsequence/design-system/styles.css";
 
 const queryClient = new QueryClient();
 

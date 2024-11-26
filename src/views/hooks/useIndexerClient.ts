@@ -9,7 +9,6 @@ export const useIndexerClient = (chainId: ChainId) => {
 
   const indexerClients = useMemo(() => {
     return new Map<ChainId, SequenceIndexer>();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectAccessKey]);
 
   const network = networks[chainId];
