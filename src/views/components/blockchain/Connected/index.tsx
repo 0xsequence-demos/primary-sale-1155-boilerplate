@@ -15,11 +15,7 @@ import { ItemsForSale } from "../../ItemsForSale";
 import { useContractInfo } from "../../../hooks/data";
 import { useSalesCurrency } from "../../../hooks/useSalesCurrency";
 import { getChain } from "../../../../ERC20/getChain";
-import SwitchNetwork from "./SwitchNetwork";
-import {
-  formatPriceWithDecimals,
-  getSaleConfiguration,
-} from "../../../../utils/primarySales/helpers";
+import { getSaleConfiguration } from "../../../../utils/primarySales/helpers";
 import { SALES_CONTRACT_ABI } from "../../../../utils/primarySales/abis/salesContractAbi";
 import { NFT_TOKEN_CONTRACT_ABI } from "../../../../utils/primarySales/abis/nftTokenContractAbi";
 import ProgressBar from "../../ProgressBar";
@@ -28,14 +24,8 @@ import { useMemo } from "react";
 import { UserInfo } from "../../user-info/UserInfo";
 import { Group } from "boilerplate-design-system";
 
-function calculateMintedPercentage(minted: number, totalMax: number): number {
-  if (totalMax <= 0) {
-    return 0;
-  }
-
-  const percentage = (minted / totalMax) * 100;
-  return Math.floor(percentage);
-}
+const calculateMintedPercentage = (minted: number, totalMax: number): number =>
+  totalMax <= 0 ? 0 : Math.floor((minted / totalMax) * 100);
 
 interface GlobalSalesDetailsData {
   cost: bigint;
@@ -50,12 +40,12 @@ const Connected = () => {
   const { disconnect } = useDisconnect();
   const saleConfiguration = useMemo(
     () => getSaleConfiguration(chainId),
-    [chainId]
+    [chainId],
   );
   const { data: contractInfoData, isLoading: contractInfoIsLoading } =
     useContractInfo(
       saleConfiguration.chainId,
-      saleConfiguration.nftTokenAddress
+      saleConfiguration.nftTokenAddress,
     );
   const { data: currencyData, isLoading: currencyDataIsLoading } =
     useSalesCurrency(saleConfiguration);
@@ -86,7 +76,7 @@ const Connected = () => {
             enabled: Boolean(currencyData?.address && userAddress),
           },
         }
-      : undefined
+      : undefined,
   );
 
   const {
@@ -134,29 +124,29 @@ const Connected = () => {
     );
   };
 
-  const UserInfoDisplay = ({
-    label,
-    value,
-  }: {
-    label: string;
-    value: string | Hex | undefined;
-  }) => {
-    const isMobile = useMediaQuery("isMobile");
+  // const UserInfoDisplay = ({
+  //   label,
+  //   value,
+  // }: {
+  //   label: string;
+  //   value: string | Hex | undefined;
+  // }) => {
+  //   const isMobile = useMediaQuery("isMobile");
 
-    return (
-      <Box
-        justifyContent="space-between"
-        {...(isMobile ? { flexDirection: "column" } : { textAlign: "left" })}
-      >
-        <Text variant="normal" color="text100" style={{ minWidth: 205 }}>
-          {label}: &nbsp;
-        </Text>
-        <Text variant="normal" color="text100" ellipsis>
-          {value}
-        </Text>
-      </Box>
-    );
-  };
+  //   return (
+  //     <Box
+  //       justifyContent="space-between"
+  //       {...(isMobile ? { flexDirection: "column" } : { textAlign: "left" })}
+  //     >
+  //       <Text variant="normal" color="text100" style={{ minWidth: 205 }}>
+  //         {label}: &nbsp;
+  //       </Text>
+  //       <Text variant="normal" color="text100" ellipsis>
+  //         {value}
+  //       </Text>
+  //     </Box>
+  //   );
+  // };
 
   const collectionName: string | undefined = contractInfoData?.name;
   const collectionImage = contractInfoData?.extensions?.ogImage;
@@ -170,20 +160,17 @@ const Connected = () => {
   const formattedNftsMinted = nftsMinted?.toString();
   const totalMintedNftsPercentaje = calculateMintedPercentage(
     Number(nftsMinted),
-    Number(totalSupply)
+    Number(totalSupply),
   );
   const currencyDecimals: number | undefined = currencyData?.decimals;
 
   return (
-    // <Card
-    //   justifyContent="center"
-    //   alignItems="center"
-    //   flexDirection="column"
-    //   gap="3"
-    //   style={{ width: "100%", margin: "0 auto" }}
-    // >
-    <div>
+    <div className="flex flex-col gap-12">
       <UserInfo
+        balance={{
+          value: userPaymentCurrencyBalance,
+          decimals: currencyDecimals,
+        }}
         address={userAddress}
         chain={chain}
         chainId={chainId}
@@ -194,7 +181,7 @@ const Connected = () => {
         {chain && <SwitchNetwork chain={chain} />}
       </Box> */}
       <Group title="Primary Sale Info">
-        <Card>
+        <Card className="flex flex-col gap-4">
           {contractInfoIsLoading ? (
             <Box justifyContent="center" alignItems="center">
               <Spinner />
@@ -216,36 +203,36 @@ const Connected = () => {
               </div>
             </div>
           )}
+
+          {chainId && (
+            <Collapsible label="Extra info for nerds">
+              <div className="flex flex-col gap-1">
+                <AddressDisplay
+                  label="User Address"
+                  address={userAddress}
+                  chainId={chainId}
+                />
+                <AddressDisplay
+                  label="Sales Contract"
+                  address={saleConfiguration.salesContractAddress}
+                  chainId={chainId}
+                />
+                <AddressDisplay
+                  label="NFT token Contract"
+                  address={saleConfiguration.nftTokenAddress}
+                  chainId={chainId}
+                />
+                <AddressDisplay
+                  label="Payment currency Address"
+                  address={currencyData?.address || ""}
+                  chainId={chainId}
+                />
+              </div>
+            </Collapsible>
+          )}
         </Card>
       </Group>
-
-      {chainId && (
-        <Collapsible label="Extra info for nerds">
-          <Box gap="1" flexDirection="column">
-            <AddressDisplay
-              label="User Address"
-              address={userAddress}
-              chainId={chainId}
-            />
-            <AddressDisplay
-              label="Sales Contract"
-              address={saleConfiguration.salesContractAddress}
-              chainId={chainId}
-            />
-            <AddressDisplay
-              label="NFT token Contract"
-              address={saleConfiguration.nftTokenAddress}
-              chainId={chainId}
-            />
-            <AddressDisplay
-              label="Payment currency Address"
-              address={currencyData?.address || ""}
-              chainId={chainId}
-            />
-          </Box>
-        </Collapsible>
-      )}
-      {chainId &&
+      {/* {chainId &&
         userPaymentCurrencyBalance &&
         userAddress &&
         currencyData &&
@@ -266,23 +253,23 @@ const Connected = () => {
               value={`$${formatPriceWithDecimals(userPaymentCurrencyBalance, currencyDecimals)}`}
             />
           </Collapsible>
-        )}
-      <ItemsForSale
-        chainId={saleConfiguration.chainId}
-        collectionAddress={saleConfiguration.nftTokenAddress}
-        totalMinted={formattedNftsMinted}
-        totalSupply={totalSupply}
-        totalMintedNftsPercentaje={totalMintedNftsPercentaje}
-        userPaymentCurrencyBalance={userPaymentCurrencyBalance}
-        price={price}
-        currencyDecimals={currencyDecimals}
-        currencyData={currencyData}
-        currencyIsLoading={currencyDataIsLoading}
-        saleConfiguration={saleConfiguration}
-        refetchTotalMinted={refetchTotalMinted}
-      />
-
-      {/* </Card> */}
+        )} */}
+      <Group>
+        <ItemsForSale
+          chainId={saleConfiguration.chainId}
+          collectionAddress={saleConfiguration.nftTokenAddress}
+          totalMinted={formattedNftsMinted}
+          totalSupply={totalSupply}
+          totalMintedNftsPercentaje={totalMintedNftsPercentaje}
+          userPaymentCurrencyBalance={userPaymentCurrencyBalance}
+          price={price}
+          currencyDecimals={currencyDecimals}
+          currencyData={currencyData}
+          currencyIsLoading={currencyDataIsLoading}
+          saleConfiguration={saleConfiguration}
+          refetchTotalMinted={refetchTotalMinted}
+        />
+      </Group>
     </div>
   );
 };

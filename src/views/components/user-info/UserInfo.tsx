@@ -1,5 +1,4 @@
 import {
-  Button,
   Card,
   Field,
   Group,
@@ -12,33 +11,28 @@ import {
 } from "boilerplate-design-system";
 import { NetworkSwitchInputSelect } from "../network-switch-input-select/NetworkSwitchInputSelect";
 import { useAccount, useDisconnect } from "wagmi";
+import { formatPriceWithDecimals } from "../../../utils/primarySales/helpers";
 
 type Account = ReturnType<typeof useAccount>;
 type Disconnect = ReturnType<typeof useDisconnect>;
 
 type UserInfoProps = {
-  address: Account["address"];
-  chain: Account["chain"];
-  chainId: Account["chainId"];
+  balance: {
+    value?: bigint;
+    decimals?: number;
+  };
+  address?: Account["address"];
+  chain?: Account["chain"];
+  chainId?: Account["chainId"];
   disconnect: Disconnect["disconnect"];
 };
 
 export function UserInfo({
+  balance,
   address,
   chain,
-  chainId,
   disconnect,
 }: UserInfoProps) {
-  if (!address) {
-    return <>Missing an address</>;
-  }
-  if (!chain) {
-    return <>Missing a chain</>;
-  }
-  if (!chainId) {
-    return <>Missing a chainId</>;
-  }
-
   return (
     <Group title="User info">
       <Card style={{ gap: "1rem", display: "flex", flexDirection: "column" }}>
@@ -50,18 +44,24 @@ export function UserInfo({
         <NetworkSwitchInputSelect chainId={chain?.id?.toString()} />
 
         <Field name="test-payments">
-          <Label>{chain.name} balance for test payments:</Label>
+          <Label>{chain?.name} balance for test payments:</Label>
           <SegmentedInput subvariants={{ width: "full" }}>
             <Input
               type="text"
               variant="transparent"
+              defaultValue={
+                balance.value && balance.decimals
+                  ? formatPriceWithDecimals(balance.value, balance.decimals)
+                  : ""
+              }
               subvariants={{ width: "full" }}
+              readOnly
             />
             <SegmentedInput.Segment>
               <ButtonLink
                 target="_blank"
                 rel="noopener noreferrer"
-                href="http://google.com"
+                href="https://faucet.circle.com/"
                 variant="tiny"
                 className="self-center flex-shrink-0"
               >

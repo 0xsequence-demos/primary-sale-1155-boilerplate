@@ -15,6 +15,7 @@ import { getChain } from "../../../ERC20/getChain";
 import { getSaleConfiguration } from "../../../utils/primarySales/helpers";
 import { toast } from "react-toastify";
 import { ContractInfo } from "@0xsequence/indexer";
+import { Button } from "boilerplate-design-system";
 
 interface BuyWithCryptoCardButtonProps {
   tokenId: string;
@@ -183,34 +184,25 @@ export const BuyWithCryptoCardButton = ({
     }, 3000);
   }, [txnData, isPendingSendTxn]);
 
+  const hasNsf =
+    userPaymentCurrencyBalance?.toString() &&
+    (userPaymentCurrencyBalance?.toString() === "0" ||
+      userPaymentCurrencyBalance < totalPrice);
+
   return (
     <>
-      <button
-        style={{
-          backgroundColor: "rgba(32, 129, 226, 1)",
-          padding: "12px 6px",
-          borderRadius: "0.75rem",
-          width: "100%",
-          transition: "background-color 0.3s ease",
-          border: "none",
-          outline: "none",
-        }}
-        onMouseOver={(e) =>
-          (e.currentTarget.style.backgroundColor = "rgba(25, 100, 176, 1)")
-        }
-        onMouseOut={(e) =>
-          (e.currentTarget.style.backgroundColor = "rgba(32, 129, 226, 1)")
-        }
+      <Button
+        variant="primary"
+        data-nsf={hasNsf}
+        className="rounded-[0.5rem] w-full font-bold text-14 data-[nsf=true]:opacity-50"
         onClick={onClickBuy}
       >
-        {userPaymentCurrencyBalance?.toString() &&
-        (userPaymentCurrencyBalance?.toString() === "0" ||
-          userPaymentCurrencyBalance < totalPrice)
+        {hasNsf
           ? "Insufficient funds"
           : !isPendingSendTxn
-            ? "Purchase"
+            ? "Buy"
             : "Purchasing..."}
-      </button>
+      </Button>
     </>
   );
 };

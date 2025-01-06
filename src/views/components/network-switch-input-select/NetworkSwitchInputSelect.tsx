@@ -6,7 +6,7 @@ const VERSION = 5;
 
 const networkImageUrl = (
   chainId: number,
-  size?: "small" | "medium" | "large"
+  size?: "small" | "medium" | "large",
 ) => {
   return (
     SEQUENCE_ASSETS_URL_PREFIX +
@@ -14,7 +14,7 @@ const networkImageUrl = (
   );
 };
 
-export function NetworkSwitchInputSelect({ chainId }: { chainId: string }) {
+export function NetworkSwitchInputSelect({ chainId }: { chainId?: string }) {
   const { chains, switchChainAsync } = useSwitchChain();
 
   function handleChainChange(value: string) {
@@ -28,7 +28,7 @@ export function NetworkSwitchInputSelect({ chainId }: { chainId: string }) {
   return (
     <InputSelect
       name="network"
-      defaultValue={chainId}
+      defaultValue={chainId || ""}
       onValueChange={handleChainChange}
       options={chains?.map((chain) => ({
         icon: networkImageUrl(chain.id, "small"),
