@@ -6,6 +6,12 @@ interface ProgressBarProps {
 
 const ProgressBar = ({ percentage }: ProgressBarProps) => {
   return (
+    <meter value={percentage} min="0" max="100">
+      {percentage}%
+    </meter>
+  );
+
+  return (
     <Box
       borderRadius="lg"
       overflow="hidden"

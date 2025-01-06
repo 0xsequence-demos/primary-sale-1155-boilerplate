@@ -25,6 +25,8 @@ import { NFT_TOKEN_CONTRACT_ABI } from "../../../../utils/primarySales/abis/nftT
 import ProgressBar from "../../ProgressBar";
 import { ERC20_ABI } from "../../../../ERC20/ERC20_abi";
 import { useMemo } from "react";
+import { UserInfo } from "../../user-info/UserInfo";
+import { Group } from "boilerplate-design-system";
 
 function calculateMintedPercentage(minted: number, totalMax: number): number {
   if (totalMax <= 0) {
@@ -48,12 +50,12 @@ const Connected = () => {
   const { disconnect } = useDisconnect();
   const saleConfiguration = useMemo(
     () => getSaleConfiguration(chainId),
-    [chainId],
+    [chainId]
   );
   const { data: contractInfoData, isLoading: contractInfoIsLoading } =
     useContractInfo(
       saleConfiguration.chainId,
-      saleConfiguration.nftTokenAddress,
+      saleConfiguration.nftTokenAddress
     );
   const { data: currencyData, isLoading: currencyDataIsLoading } =
     useSalesCurrency(saleConfiguration);
@@ -84,7 +86,7 @@ const Connected = () => {
             enabled: Boolean(currencyData?.address && userAddress),
           },
         }
-      : undefined,
+      : undefined
   );
 
   const {
@@ -168,115 +170,57 @@ const Connected = () => {
   const formattedNftsMinted = nftsMinted?.toString();
   const totalMintedNftsPercentaje = calculateMintedPercentage(
     Number(nftsMinted),
-    Number(totalSupply),
+    Number(totalSupply)
   );
   const currencyDecimals: number | undefined = currencyData?.decimals;
 
   return (
-    <Card
-      justifyContent="center"
-      alignItems="center"
-      flexDirection="column"
-      gap="3"
-      style={{ width: "100%", margin: "0 auto" }}
-    >
-      <Box display="flex" justifyContent="flex-end" style={{ width: "100%" }}>
+    // <Card
+    //   justifyContent="center"
+    //   alignItems="center"
+    //   flexDirection="column"
+    //   gap="3"
+    //   style={{ width: "100%", margin: "0 auto" }}
+    // >
+    <div>
+      <UserInfo
+        address={userAddress}
+        chain={chain}
+        chainId={chainId}
+        disconnect={disconnect}
+      />
+
+      {/* <Box display="flex" justifyContent="flex-end" style={{ width: "100%" }}>
         {chain && <SwitchNetwork chain={chain} />}
-      </Box>
-      <Box width="full" paddingLeft="10" paddingRight="10">
-        {contractInfoIsLoading ? (
-          <Box justifyContent="center" alignItems="center">
-            <Spinner />
-          </Box>
-        ) : (
-          <Box gap="2" flexDirection="column">
-            <h1>Sequence Primary Sale Boilerplate</h1>
-            <h2 className="homepage__marginBtNormal">Embedded Wallet</h2>
-            <div>
+      </Box> */}
+      <Group title="Primary Sale Info">
+        <Card>
+          {contractInfoIsLoading ? (
+            <Box justifyContent="center" alignItems="center">
+              <Spinner />
+            </Box>
+          ) : (
+            <div className="flex gap-4">
               <Image
                 src={collectionImage}
                 alt={collectionName}
-                style={{ width: "20rem", height: "auto" }}
+                style={{
+                  width: "8rem",
+                  height: "auto",
+                  borderRadius: "0.5rem",
+                }}
               />
+              <div className="flex items-start flex-col">
+                <h3 className="text-20 font-bold">{collectionName}</h3>
+                {collectionDescription ? <p>{collectionDescription}</p> : null}
+              </div>
             </div>
-            <Box display="flex" justifyContent="space-between">
-              <Box gap="1" flexDirection="column" textAlign="left">
-                <Text
-                  variant="normal"
-                  color="text100"
-                  style={{ fontWeight: "700" }}
-                >
-                  Name:
-                </Text>
-                <Text variant="normal" color="text100">
-                  {collectionName}
-                </Text>
-              </Box>
-              <Box>
-                {!tokenSaleDetailsDataIsLoading ? (
-                  <Box display="flex" flexDirection="column" gap="4">
-                    <Box display="flex" justifyContent="space-between">
-                      <Text
-                        variant="normal"
-                        color="text100"
-                        style={{ fontWeight: "700" }}
-                      >
-                        {totalMintedNftsPercentaje}% Minted
-                      </Text>
-                      <Text
-                        variant="normal"
-                        color="text100"
-                        style={{ fontWeight: "700" }}
-                      >
-                        {formattedNftsMinted}/{totalSupply}
-                      </Text>
-                    </Box>
-                    <ProgressBar percentage={totalMintedNftsPercentaje} />
-                  </Box>
-                ) : (
-                  <Spinner />
-                )}
-              </Box>
-            </Box>
-            {collectionDescription && (
-              <Box gap="1" flexDirection="column" textAlign="left">
-                <Text
-                  variant="normal"
-                  color="text100"
-                  style={{ fontWeight: "700" }}
-                >
-                  Description:
-                </Text>
-                <Text variant="normal" color="text100">
-                  {collectionDescription}
-                </Text>
-              </Box>
-            )}
-            <Box gap="1" flexDirection="column" textAlign="left">
-              <Text
-                variant="normal"
-                color="text100"
-                style={{ fontWeight: "700" }}
-              >
-                Fund Test Payment Currencies in your wallet:
-              </Text>
-              <Text
-                variant="link"
-                as="a"
-                href="https://faucet.circle.com/"
-                target="_blank"
-                rel="noreferrer noopener"
-                style={{ textDecoration: "underline", color: "#1a73e8" }}
-                aria-label="Open Faucet in a new tab"
-              >
-                Click here to Open Faucet
-              </Text>
-            </Box>
-          </Box>
-        )}
-      </Box>
+          )}
+        </Card>
+      </Group>
+
       {chainId && (
-        <Collapsible label="Stuff for Nerds">
+        <Collapsible label="Extra info for nerds">
           <Box gap="1" flexDirection="column">
             <AddressDisplay
               label="User Address"
@@ -338,8 +282,8 @@ const Connected = () => {
         refetchTotalMinted={refetchTotalMinted}
       />
 
-      <Button label="Disconnect" onClick={disconnect} />
-    </Card>
+      {/* </Card> */}
+    </div>
   );
 };
 

@@ -75,18 +75,7 @@ export const ItemsForSale = ({
 
   return (
     <Box width="full">
-      <Box marginBottom="6">
-        <Text variant="xlarge" fontWeight="bold">
-          Available items
-        </Text>
-      </Box>
-      <Box
-        flexDirection={"row"}
-        alignItems="center"
-        flexWrap="wrap"
-        gap="6"
-        marginBottom="10"
-      >
+      <div className="grid grid-cols-3 gap-4">
         {tokenMetadatas?.map((tokenMetadata: TokenMetadata) => {
           const collectibleBalance = collectionBalanceData?.find(
             (balance) => balance?.tokenID === tokenMetadata.tokenId,
@@ -111,7 +100,7 @@ export const ItemsForSale = ({
             />
           );
         })}
-      </Box>
+      </div>
     </Box>
   );
 };

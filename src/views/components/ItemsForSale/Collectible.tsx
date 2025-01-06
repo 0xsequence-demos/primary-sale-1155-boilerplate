@@ -1,10 +1,4 @@
-import {
-  Box,
-  Card,
-  Skeleton,
-  Text,
-  useMediaQuery,
-} from "@0xsequence/design-system";
+import { Skeleton } from "@0xsequence/design-system";
 import CollectibleTileImage from "../CollectibleTileImage";
 import { BuyWithCryptoCardButton } from "./BuyWithCryptoCardButton";
 import { useEffect, useState } from "react";
@@ -17,6 +11,7 @@ import { useReadContract } from "wagmi";
 import PurchaseAnimation from "../blockchain/Connected/PurchaseAnimation";
 import { formatPriceWithDecimals } from "../../../utils/primarySales/helpers";
 import { UnpackedSaleConfigurationProps } from "../../../utils/primarySales/helpers";
+import { Field, Form, Input, Svg } from "boilerplate-design-system";
 
 interface CollectibleProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -59,7 +54,6 @@ export const Collectible = ({
   refetchCollectionBalance,
   refetchTotalMinted,
 }: CollectibleProps) => {
-  const isMobile = useMediaQuery("isMobile");
   const [amount, setAmount] = useState(0);
   const [txExplorerUrl, setTxExplorerUrl] = useState("");
   const [txError, setTxError] = useState<SendTransactionErrorType | null>(null);
@@ -92,12 +86,12 @@ export const Collectible = ({
     setAmount(0);
   };
 
-  const mintedNftPercentaje = calculateMintedPercentage(
+  const mintedNftPercentage = calculateMintedPercentage(
     Number(nftsMinted),
     Number(totalSupply),
   );
 
-  const formmatedPrice = currencyDecimals
+  const formattedPrice = currencyDecimals
     ? formatPriceWithDecimals(price, currencyDecimals)
     : 0;
 
@@ -109,165 +103,114 @@ export const Collectible = ({
   }, [txError]);
 
   return (
-    <Box
-      padding="1"
-      width="full"
-      flexDirection="column"
-      style={{
-        flexBasis: isMobile ? "100%" : "50%",
-        width: "fit-content",
-        maxWidth: "50rem",
-      }}
-    >
-      <Card>
-        <Box flexDirection="row" gap="6">
-          <CollectibleTileImage imageUrl={tokenMetadata?.image || ""} />
-          <Box display="flex" flexDirection="column" gap="6">
-            <Text variant="large" fontWeight="bold" color="text100">
-              {tokenMetadata?.name || ""}
-            </Text>
-            <Text
-              variant="normal"
-              fontWeight="bold"
-              color="text100"
-              style={{ textAlign: "left" }}
-            >
-              Token id: {tokenMetadata?.tokenId || ""}
-            </Text>
-            <NftsMintedProgressBar
-              totalMintedNftsPercentaje={totalMintedNftsPercentaje}
-              mintedNftsPercentaje={mintedNftPercentaje}
-              tokenId={tokenMetadata?.tokenId || ""}
-              mintedNftCount={Number(nftsMinted)}
-              totalMintedNfts={Number(totalNftsMinted)}
-              totalSupply={Number(totalSupply)}
-            />
-            <Box display="flex" justifyContent="space-between" gap="4">
-              <Box flexDirection="row" gap="2">
-                <Text
-                  variant="normal"
-                  fontWeight="bold"
-                  color="text100"
-                  style={{ textAlign: "left" }}
-                >
-                  Price: {formmatedPrice}
-                </Text>
-                {!logoURI ? (
-                  <Skeleton style={{ width: 20, height: 20 }} />
-                ) : (
-                  // <TokenImage
-                  //   // src="https://metadata.sequence.app/projects/30957/collections/690/image.png"
-                  //   withNetwork="amoy"
-                  //   symbol="matic"
-                  //   style={{ width: 20, height: 20 }}
-                  // />
-                  <></>
-                )}
-              </Box>
-              <Text
-                variant="normal"
-                fontWeight="bold"
-                color="text100"
-                style={{ textAlign: "left" }}
-              >
-                Amount Owned: {amountOwned}
-              </Text>
-            </Box>
-            <Box
-              display="flex"
-              padding="4"
-              borderRadius="lg"
-              gap="4"
-              style={{ backgroundColor: "rgba(32, 32, 32, 1)", width: "25rem" }}
-            >
-              <Box
-                display="flex"
-                alignItems="center"
-                gap="8"
-                style={{
-                  backgroundColor: "rgba(255, 255, 255, 0.04)",
-                  width: "fit-content",
-                  padding: "0.5rem 1rem",
-                }}
-                borderRadius="lg"
-              >
-                <Text
-                  variant="large"
-                  fontWeight="bold"
-                  onClick={decreaseAmount}
-                  style={{
-                    cursor: "pointer",
-                    color: "#ffffff",
-                    fontWeight: 900,
-                  }}
-                >
-                  -
-                </Text>
-                <Text
-                  variant="large"
-                  fontWeight="bold"
-                  style={{ color: "#ffffff" }}
-                >
-                  {amount}
-                </Text>
-                <Text
-                  variant="large"
-                  fontWeight="bold"
-                  onClick={increaseAmount}
-                  style={{
-                    cursor: "pointer",
-                    color: "#ffffff",
-                    fontWeight: 900,
-                  }}
-                >
-                  +
-                </Text>
-              </Box>
-              <BuyWithCryptoCardButton
-                amount={amount}
-                chainId={chainId}
-                collectionAddress={saleConfiguration.nftTokenAddress}
-                tokenId={tokenMetadata.tokenId}
-                resetAmount={resetAmount}
-                setTxExplorerUrl={setTxExplorerUrl}
-                setTxError={setTxError}
-                setPurchasingNft={setPurchasingNft}
-                userPaymentCurrencyBalance={userPaymentCurrencyBalance}
-                price={price}
-                currencyData={currencyData}
-                refetchCollectionBalance={refetchCollectionBalance}
-                refetchTotalMinted={refetchTotalMinted}
-                refetchNftsMinted={refetchNftsMinted}
+    <div className="bg-grey-900 p-4 text-left rounded-[1rem] flex flex-col gap-3">
+      <CollectibleTileImage imageUrl={tokenMetadata?.image || ""} />
+
+      <span className="text-10 font-bold">
+        Token id: {tokenMetadata?.tokenId || ""}
+      </span>
+      <span className="text-20 font-bold leading-tight">
+        {tokenMetadata?.name || ""}
+      </span>
+
+      <div className="mt-auto mb-0 flex flex-col gap-4">
+        <NftsMintedProgressBar
+          totalMintedNftsPercentage={totalMintedNftsPercentaje}
+          mintedNftsPercentage={mintedNftPercentage}
+          tokenId={tokenMetadata?.tokenId || ""}
+          mintedNftCount={Number(nftsMinted)}
+          totalMintedNfts={Number(totalNftsMinted)}
+          totalSupply={Number(totalSupply)}
+        />
+
+        <div className="flex justify-between">
+          <div className="flex flex-col">
+            <span className="text-12 font-medium text-grey-50 ">Price</span>
+            <span className="text-14 font-bold inline-flex items-center gap-1">
+              {!logoURI ? (
+                <Skeleton style={{ width: 16, height: 16 }} />
+              ) : (
+                // <TokenImage
+                //   // src="https://metadata.sequence.app/projects/30957/collections/690/image.png"
+                //   withNetwork="amoy"
+                //   symbol="matic"
+                //   style={{ width: 20, height: 20 }}
+                // />
+                <></>
+              )}
+              {formattedPrice}
+            </span>
+          </div>
+          <div className="flex flex-col items-end text-end">
+            <span className="text-grey-50 font-medium text-12">Owned</span>
+            <span className="text-white font-bold text-14">{amountOwned}</span>
+          </div>
+        </div>
+
+        <Form className="flex flex-col gap-3">
+          <div className="flex items-center border border-grey-600 rounded-[0.5rem]">
+            <button type="button" onClick={decreaseAmount}>
+              <Svg
+                name="Subtract"
+                className="text-white size-4"
+                alt="Decrease quantity"
               />
-            </Box>
-            {purchasingNft && (
-              <PurchaseAnimation
-                amount={amount}
-                image={tokenMetadata.image || ""}
-                name={tokenMetadata.name}
+            </button>
+            <Field name="quantity">
+              <Input
+                type="text"
+                value={amount}
+                readOnly
+                variant="transparent"
+                className="text-center"
               />
-            )}
-            {txError && JSON.stringify(txError) != "{}" && (
-              <span>Error to purchase NFT. Details in console</span>
-            )}
-            {txExplorerUrl && (
-              <Box display="flex" flexDirection="column" marginBottom="3">
-                <Text variant="large" color="text100">
-                  Purchase Completed Succesfully
-                </Text>
-                <a
-                  href={txExplorerUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <span>View transaction in explorer</span>
-                  <br />
-                </a>
-              </Box>
-            )}
-          </Box>
-        </Box>
-      </Card>
-    </Box>
+            </Field>
+            <button type="button" onClick={increaseAmount}>
+              <Svg
+                name="Add"
+                className="text-white size-4"
+                alt="Increase quantity"
+              />
+            </button>
+          </div>
+
+          <BuyWithCryptoCardButton
+            amount={amount}
+            chainId={chainId}
+            collectionAddress={saleConfiguration.nftTokenAddress}
+            tokenId={tokenMetadata.tokenId}
+            resetAmount={resetAmount}
+            setTxExplorerUrl={setTxExplorerUrl}
+            setTxError={setTxError}
+            setPurchasingNft={setPurchasingNft}
+            userPaymentCurrencyBalance={userPaymentCurrencyBalance}
+            price={price}
+            currencyData={currencyData}
+            refetchCollectionBalance={refetchCollectionBalance}
+            refetchTotalMinted={refetchTotalMinted}
+            refetchNftsMinted={refetchNftsMinted}
+          />
+        </Form>
+
+        {purchasingNft && (
+          <PurchaseAnimation
+            amount={amount}
+            image={tokenMetadata.image || ""}
+            name={tokenMetadata.name}
+          />
+        )}
+        {txError && JSON.stringify(txError) != "{}" && (
+          <span>Error to purchase NFT. Details in console</span>
+        )}
+        {txExplorerUrl && (
+          <span>
+            Purchase Completed Succesfully
+            <a href={txExplorerUrl} target="_blank" rel="noopener noreferrer">
+              View transaction in explorer
+            </a>
+          </span>
+        )}
+      </div>
+    </div>
   );
 };

@@ -1,87 +1,45 @@
-import { Box, Text } from "@0xsequence/design-system";
-
 interface NftsMintedProgressBarProps {
-  mintedNftsPercentaje: number;
+  mintedNftsPercentage: number;
   mintedNftCount: number;
   tokenId: string | number;
-  totalMintedNftsPercentaje: number;
+  totalMintedNftsPercentage: number;
   totalMintedNfts: number;
   totalSupply: number;
 }
-
-const mintedNftCountProgressColor = "rgb(0, 123, 255)";
-const totalMintedNftsProgressColor = "#B8B8B8";
-
 const NftsMintedProgressBar = ({
-  mintedNftsPercentaje,
-  totalMintedNftsPercentaje,
-  tokenId,
+  mintedNftsPercentage,
+  totalMintedNftsPercentage,
+  // tokenId,
   mintedNftCount,
-  totalMintedNfts,
+  // totalMintedNfts,
   totalSupply,
 }: NftsMintedProgressBarProps) => {
-  const otherNftsMintedValue = totalMintedNfts - mintedNftCount;
+  // const otherNftsMintedValue = totalMintedNfts - mintedNftCount;
+
   return (
-    <Box display="flex" flexDirection="column">
-      <Text variant="normal" fontWeight="bold">
-        NFTs minted details:
-      </Text>
-      <Box marginBottom="4">
-        <Text
-          variant="normal"
-          fontWeight="bold"
-          style={{ color: mintedNftCountProgressColor }}
-        >
-          {`NFT #${tokenId} (${mintedNftCount})`}
-        </Text>
-        <Text variant="normal" fontWeight="bold">
-          {` | `}
-        </Text>
-        <Text
-          variant="normal"
-          fontWeight="bold"
-          style={{ color: totalMintedNftsProgressColor }}
-        >
-          {`Other NFTs (${otherNftsMintedValue})`}
-        </Text>
-        <Text variant="normal" fontWeight="bold">
-          {` | `}
-        </Text>
-        <Text variant="normal" fontWeight="bold">
-          {`Limit supply (${totalSupply})`}
-        </Text>
-      </Box>
-      <Box
-        borderRadius="lg"
-        overflow="hidden"
-        height="5"
-        position="relative"
-        style={{ width: "25rem", backgroundColor: "#e0e0e0", border: "none" }}
-      >
-        <Box
-          position="absolute"
-          left="0"
-          height="full"
-          borderRightRadius="lg"
+    <div className="flex flex-col gap-1 ">
+      <span className="text-12 font-medium">
+        {mintedNftCount}/{totalSupply} Minted
+      </span>
+
+      <div className="w-full h-[12px] rounded-full overflow-hidden bg-grey-700 relative">
+        <div
+          className="absolute left-0 h-full rounded-full z-[100] bg-indigo-400"
           style={{
-            width: `${totalMintedNftsPercentaje}%`,
-            backgroundColor: totalMintedNftsProgressColor,
+            width: `${mintedNftsPercentage}%`,
             transition: "width 0.5s ease-in-out",
           }}
-        ></Box>
-        <Box
-          position="absolute"
-          height="full"
-          borderRightRadius="lg"
-          left="0"
+        ></div>
+
+        <div
+          className="absolute left-0 h-full rounded-full z-[50] bg-grey-500"
           style={{
-            width: `${mintedNftsPercentaje}%`,
-            backgroundColor: mintedNftCountProgressColor,
+            width: `${totalMintedNftsPercentage}%`,
             transition: "width 0.5s ease-in-out",
           }}
-        ></Box>
-      </Box>
-    </Box>
+        ></div>
+      </div>
+    </div>
   );
 };
 

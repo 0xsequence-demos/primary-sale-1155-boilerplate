@@ -6,15 +6,7 @@ interface CollectibleTileImageProps {
 
 const CollectibleTileImage = ({ imageUrl }: CollectibleTileImageProps) => {
   return (
-    <Image
-      style={{
-        width: "298px",
-        height: "298px",
-        objectFit: "cover",
-        objectPosition: "center",
-      }}
-      src={imageUrl}
-    />
+    <Image className="aspect-square w-full rounded-[0.5rem]" src={imageUrl} />
   );
 };
 
