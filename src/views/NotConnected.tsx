@@ -6,7 +6,11 @@ export function NotConnected() {
 
   return (
     <Card variant="none">
-      <Button variant="primary" onClick={() => setOpenConnectModal(true)}>
+      <Button
+        variant="primary"
+        onClick={() => setOpenConnectModal(true)}
+        className="px-8"
+      >
         Connect
       </Button>
     </Card>
