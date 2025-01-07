@@ -13,9 +13,10 @@ import { getChain } from "~/config/ERC20/getChain";
 import { SALES_CONTRACT_ABI } from "~/config/sales/salesContractAbi";
 import { useEffect, useState } from "react";
 import { getSaleConfiguration } from "~/helpers";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { ContractInfo } from "@0xsequence/indexer";
 import { Button } from "boilerplate-design-system";
+import { Toast } from "~/components/toast/Toast";
 
 interface BuyWithCryptoCardButtonProps {
   tokenId: string;
@@ -159,22 +160,22 @@ export const BuyWithCryptoCardButton = ({
   useEffect(() => {
     if (!txnData || isPendingSendTxn) return;
     resetAmount();
-    toast(
-      <div>
-        Purchase Completed Successfully.{" "}
-        <a
-          href={`${chainInfo.explorerUrl}/tx/${txnData}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
-            color: "rgba(32, 129, 226, 1)",
-            textDecoration: "underline",
-          }}
-        >
-          View transaction in explorer
-        </a>
-      </div>,
-    );
+
+    toast.custom((t) => (
+      <Toast status="success" handleClose={() => toast.dismiss(t)}>
+        <div className="flex flex-col flex-1 gap-1 w-full">
+          <span className="font-medium">Purchase Completed Successfully. </span>
+          <a
+            href={`${chainInfo.explorerUrl}/tx/${txnData}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-12 font-medium underline text-grey-200"
+          >
+            View transaction in explorer
+          </a>
+        </div>
+      </Toast>
+    ));
     setTxExplorerUrl(`${chainInfo.explorerUrl}/tx/${txnData}`);
     setPurchasingNft(false);
     setTimeout(() => {
@@ -201,7 +202,7 @@ export const BuyWithCryptoCardButton = ({
           ? "Insufficient funds"
           : !isPendingSendTxn
             ? "Buy"
-            : "Purchasing..."}
+            : "Buying..."}
       </Button>
     </>
   );

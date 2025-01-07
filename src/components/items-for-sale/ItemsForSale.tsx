@@ -4,14 +4,14 @@ import { useTokenMetadata, useCollectionBalance } from "../../hooks/data";
 import { ContractInfo, TokenMetadata } from "@0xsequence/indexer";
 import { Collectible } from "../collectable/Collectable";
 import { UnpackedSaleConfigurationProps } from "~/helpers";
-import { CollectableSkeleton } from "~/components/collectable-skeleton/CollectableSkeleton";
+import { CollectableSkeleton } from "~/components/collectable/CollectableSkeleton";
 
 interface ItemsForSaleProps {
   collectionAddress: string;
   chainId: number;
   totalMinted: string | undefined;
   totalSupply: string | 0;
-  totalMintedNftsPercentaje: number;
+  totalMintedNftsPercentage: number;
   userPaymentCurrencyBalance: bigint | undefined;
   price: bigint;
   currencyDecimals: number | undefined;
@@ -26,7 +26,7 @@ export const ItemsForSale = ({
   chainId,
   totalMinted,
   totalSupply,
-  totalMintedNftsPercentaje,
+  totalMintedNftsPercentage,
   userPaymentCurrencyBalance,
   price,
   currencyDecimals,
@@ -57,42 +57,42 @@ export const ItemsForSale = ({
   const isLoading =
     tokenMetadatasLoading || collectionBalanceIsLoading || currencyIsLoading;
 
-  if (isLoading) {
-    return (
-      <div className="grid grid-cols-3 gap-4">
-        <CollectableSkeleton />
-        <CollectableSkeleton />
-        <CollectableSkeleton />
-      </div>
-    );
-  }
-
   return (
-    <div className="grid grid-cols-3 gap-4">
-      {tokenMetadatas?.map((tokenMetadata: TokenMetadata) => {
-        const collectibleBalance = collectionBalanceData?.find(
-          (balance) => balance?.tokenID === tokenMetadata.tokenId,
-        );
+    <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
+      {isLoading ? (
+        <>
+          <CollectableSkeleton />
+          <CollectableSkeleton />
+          <CollectableSkeleton />
+        </>
+      ) : (
+        <>
+          {tokenMetadatas?.map((tokenMetadata: TokenMetadata) => {
+            const collectibleBalance = collectionBalanceData?.find(
+              (balance) => balance?.tokenID === tokenMetadata.tokenId,
+            );
 
-        return (
-          <Collectible
-            key={collectionAddress + tokenMetadata.tokenId}
-            collectibleBalance={collectibleBalance}
-            tokenMetadata={tokenMetadata}
-            chainId={chainId}
-            currencyData={currencyData}
-            totalMintedNftsPercentaje={totalMintedNftsPercentaje}
-            totalSupply={totalSupply}
-            totalNftsMinted={totalMinted}
-            userPaymentCurrencyBalance={userPaymentCurrencyBalance}
-            price={price}
-            currencyDecimals={currencyDecimals}
-            saleConfiguration={saleConfiguration}
-            refetchCollectionBalance={refetchCollectionBalance}
-            refetchTotalMinted={refetchTotalMinted}
-          />
-        );
-      })}
+            return (
+              <Collectible
+                key={collectionAddress + tokenMetadata.tokenId}
+                collectibleBalance={collectibleBalance}
+                tokenMetadata={tokenMetadata}
+                chainId={chainId}
+                currencyData={currencyData}
+                totalMintedNftsPercentage={totalMintedNftsPercentage}
+                totalSupply={totalSupply}
+                totalNftsMinted={totalMinted}
+                userPaymentCurrencyBalance={userPaymentCurrencyBalance}
+                price={price}
+                currencyDecimals={currencyDecimals}
+                saleConfiguration={saleConfiguration}
+                refetchCollectionBalance={refetchCollectionBalance}
+                refetchTotalMinted={refetchTotalMinted}
+              />
+            );
+          })}
+        </>
+      )}
     </div>
   );
 };

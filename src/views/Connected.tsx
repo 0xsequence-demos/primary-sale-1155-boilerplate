@@ -1,31 +1,24 @@
-import {
-  Box,
-  Card,
-  Collapsible,
-  Image,
-  Spinner,
-  Text,
-  useMediaQuery,
-} from "@0xsequence/design-system";
-import { Hex } from "viem";
+import { useMemo } from "react";
 import { useAccount, useDisconnect, useReadContract } from "wagmi";
 
-import { ItemsForSale } from "../components/items-for-sale/ItemsForSale";
 import { useContractInfo } from "../hooks/data";
 import { useSalesCurrency } from "../hooks/useSalesCurrency";
-import { getChain } from "~/config/ERC20/getChain";
 
 import { SALES_CONTRACT_ABI } from "~/config/sales/salesContractAbi";
 import { NFT_TOKEN_CONTRACT_ABI } from "~/config/nft-token/nftTokenContractAbi";
 import { ERC20_ABI } from "~/config/ERC20/ERC20_abi";
-import { useMemo } from "react";
-import { UserInfo } from "../components/user-info/UserInfo";
-import { Group } from "boilerplate-design-system";
-import { getSaleConfiguration } from "~/helpers";
-import { MintedProgressBar } from "~/components/minted-progress-bar/MintedProgressBar";
 
-const calculateMintedPercentage = (minted: number, totalMax: number): number =>
-  totalMax <= 0 ? 0 : Math.floor((minted / totalMax) * 100);
+import { calculateMintedPercentage, getSaleConfiguration } from "~/helpers";
+
+// UI - Library
+import { Card, Divider, Group } from "boilerplate-design-system";
+// UI - Local
+import { ItemsForSale } from "../components/items-for-sale/ItemsForSale";
+import { UserInfo } from "../components/user-info/UserInfo";
+import { PrimarySaleSkeleton } from "~/components/primary-sale/PrimarySaleSkeleton";
+import { AddressList } from "~/components/address-list/AddressList";
+import { AddressListItem } from "~/components/address-list/AddressListItem";
+import { PrimarySale } from "~/components/primary-sale/PrimarySale";
 
 interface GlobalSalesDetailsData {
   cost: bigint;
@@ -38,18 +31,25 @@ interface GlobalSalesDetailsData {
 export const Connected = () => {
   const { address: userAddress, chainId, chain } = useAccount();
   const { disconnect } = useDisconnect();
+
+  // Setup the sale configuration based on the chainId
   const saleConfiguration = useMemo(
     () => getSaleConfiguration(chainId),
     [chainId],
   );
+
+  // Fetch the contract info
   const { data: contractInfoData, isLoading: contractInfoIsLoading } =
     useContractInfo(
       saleConfiguration.chainId,
       saleConfiguration.nftTokenAddress,
     );
+
+  // Fetch the currency data
   const { data: currencyData, isLoading: currencyDataIsLoading } =
     useSalesCurrency(saleConfiguration);
 
+  // Fetch the token sale details data
   const {
     data: tokenSaleDetailsData,
     // isLoading: tokenSaleDetailsDataIsLoading,
@@ -60,6 +60,7 @@ export const Connected = () => {
     address: saleConfiguration.salesContractAddress,
   });
 
+  // Fetch the user payment currency balance
   const {
     data: userPaymentCurrencyBalance,
     // isLoading: userPaymentCurrencyBalanceIsLoading,
@@ -79,6 +80,7 @@ export const Connected = () => {
       : undefined,
   );
 
+  // Fetch the total minted NFTs
   const {
     data: nftsMinted,
     // isLoading: nftsMintedIsLoading,
@@ -90,79 +92,30 @@ export const Connected = () => {
     address: saleConfiguration.nftTokenAddress,
   });
 
-  const AddressDisplay = ({
-    label,
-    address,
-    chainId,
-  }: {
-    label: string;
-    address: string | Hex | undefined;
-    chainId: number;
-  }) => {
-    const isMobile = useMediaQuery("isMobile");
-
-    return (
-      <Box
-        justifyContent="space-between"
-        {...(isMobile ? { flexDirection: "column" } : { textAlign: "left" })}
-      >
-        <Text variant="normal" color="text100" style={{ minWidth: 205 }}>
-          {label}: &nbsp;
-        </Text>
-        <Text
-          variant="normal"
-          as="a"
-          color="text100"
-          href={`${getChain(chainId)?.explorerUrl}/address/${address}`}
-          target="_blank"
-          rel="noreferrer"
-          ellipsis
-        >
-          {address}
-        </Text>
-      </Box>
-    );
+  const collection = {
+    name: contractInfoData?.name,
+    image: contractInfoData?.extensions?.ogImage,
+    description: contractInfoData?.extensions?.description,
   };
 
-  // const UserInfoDisplay = ({
-  //   label,
-  //   value,
-  // }: {
-  //   label: string;
-  //   value: string | Hex | undefined;
-  // }) => {
-  //   const isMobile = useMediaQuery("isMobile");
-
-  //   return (
-  //     <Box
-  //       justifyContent="space-between"
-  //       {...(isMobile ? { flexDirection: "column" } : { textAlign: "left" })}
-  //     >
-  //       <Text variant="normal" color="text100" style={{ minWidth: 205 }}>
-  //         {label}: &nbsp;
-  //       </Text>
-  //       <Text variant="normal" color="text100" ellipsis>
-  //         {value}
-  //       </Text>
-  //     </Box>
-  //   );
-  // };
-
-  const collectionName: string | undefined = contractInfoData?.name;
-  const collectionImage = contractInfoData?.extensions?.ogImage;
-  const collectionDescription: string | undefined =
-    contractInfoData?.extensions?.description;
   const totalSupply =
     (tokenSaleDetailsData as GlobalSalesDetailsData)?.supplyCap?.toString() ||
     0;
+
   const price =
     (tokenSaleDetailsData as GlobalSalesDetailsData)?.cost || BigInt(0);
-  const formattedNftsMinted = nftsMinted?.toString();
-  const totalMintedNftsPercentaje = calculateMintedPercentage(
+
+  const totalMintedNftsPercentage = calculateMintedPercentage(
     Number(nftsMinted),
     Number(totalSupply),
   );
   const currencyDecimals: number | undefined = currencyData?.decimals;
+
+  const minting = {
+    percentage: Number(totalMintedNftsPercentage),
+    value: Number(nftsMinted),
+    total: Number(totalSupply),
+  };
 
   return (
     <div className="flex flex-col gap-12">
@@ -177,102 +130,44 @@ export const Connected = () => {
         disconnect={disconnect}
       />
 
-      {/* <Box display="flex" justifyContent="flex-end" style={{ width: "100%" }}>
-        {chain && <SwitchNetwork chain={chain} />}
-      </Box> */}
+      <Divider />
       <Group title="Primary Sale Info">
         <Card className="flex flex-col gap-4">
           {contractInfoIsLoading ? (
-            <Box justifyContent="center" alignItems="center">
-              <Spinner />
-            </Box>
+            <PrimarySaleSkeleton />
           ) : (
-            <div className="flex gap-4 w-full">
-              <Image
-                src={collectionImage}
-                alt={collectionName}
-                style={{
-                  width: "8rem",
-                  height: "auto",
-                  borderRadius: "0.5rem",
-                }}
-              />
-              <div className="flex flex-col items-start w-full">
-                <div className="flex items-start flex-col flex-1">
-                  <h3 className="text-20 font-bold">{collectionName}</h3>
-                  {collectionDescription ? (
-                    <p>{collectionDescription}</p>
-                  ) : null}
-                </div>
-                <div className="mt-auto mb-0 w-full">
-                  <MintedProgressBar
-                    mintedPercentage={totalMintedNftsPercentaje}
-                    mintedValue={Number(nftsMinted)}
-                    supplyValue={Number(totalSupply)}
-                    showTotalMintedPercentage
-                  />
-                </div>
-              </div>
-            </div>
+            <PrimarySale collection={collection} minting={minting} />
           )}
-
           {chainId && (
-            <Collapsible label="Extra info for nerds">
-              <div className="flex flex-col gap-1">
-                <AddressDisplay
-                  label="User Address"
-                  address={userAddress}
-                  chainId={chainId}
-                />
-                <AddressDisplay
+            <Card collapsable title="Extra info for nerds">
+              <AddressList chainId={chainId}>
+                <AddressListItem label="User Address" address={userAddress} />
+                <AddressListItem
                   label="Sales Contract"
                   address={saleConfiguration.salesContractAddress}
-                  chainId={chainId}
                 />
-                <AddressDisplay
-                  label="NFT token Contract"
+                <AddressListItem
+                  label="NFT Token Contract"
                   address={saleConfiguration.nftTokenAddress}
-                  chainId={chainId}
                 />
-                <AddressDisplay
-                  label="Payment currency Address"
-                  address={currencyData?.address || ""}
-                  chainId={chainId}
+                <AddressListItem
+                  label="Payment Currency Address"
+                  address={currencyData?.address}
                 />
-              </div>
-            </Collapsible>
+              </AddressList>
+            </Card>
           )}
         </Card>
       </Group>
-      {/* {chainId &&
-        userPaymentCurrencyBalance &&
-        userAddress &&
-        currencyData &&
-        currencyDecimals && (
-          <Collapsible label="User information">
-            <AddressDisplay
-              label="User Address"
-              address={userAddress}
-              chainId={chainId}
-            />
-            <AddressDisplay
-              label="Payment currency Address"
-              address={currencyData?.address}
-              chainId={chainId}
-            />
-            <UserInfoDisplay
-              label="User Payment Currency Balance"
-              value={`$${formatPriceWithDecimals(userPaymentCurrencyBalance, currencyDecimals)}`}
-            />
-          </Collapsible>
-        )} */}
+      <Divider />
+
       <Group>
         <ItemsForSale
           chainId={saleConfiguration.chainId}
           collectionAddress={saleConfiguration.nftTokenAddress}
-          totalMinted={formattedNftsMinted}
+          totalMinted={nftsMinted?.toString()}
           totalSupply={totalSupply}
-          totalMintedNftsPercentaje={totalMintedNftsPercentaje}
+          totalMintedNftsPercentage={totalMintedNftsPercentage}
           userPaymentCurrencyBalance={userPaymentCurrencyBalance}
           price={price}
           currencyDecimals={currencyDecimals}
@@ -282,6 +177,7 @@ export const Connected = () => {
           refetchTotalMinted={refetchTotalMinted}
         />
       </Group>
+      <Divider />
     </div>
   );
 };

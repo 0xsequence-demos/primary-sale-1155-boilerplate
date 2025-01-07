@@ -4,8 +4,10 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createConfig, http, WagmiProvider } from "wagmi";
 import { chains } from "~/helpers";
 import { KitCheckoutProvider } from "@0xsequence/kit-checkout";
-import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+import { Toaster } from "sonner";
+
 import { Chain, Transport } from "viem";
 import { allNetworks, findNetworkConfig } from "@0xsequence/network";
 import { defaultChainId } from "../config/sales/salesConfigs";
@@ -64,18 +66,7 @@ const App = () => {
       <QueryClientProvider client={queryClient}>
         <KitProvider config={kitConfig}>
           <KitCheckoutProvider>
-            <ToastContainer
-              position="bottom-right"
-              autoClose={7000}
-              hideProgressBar={false}
-              newestOnTop={false}
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-              theme="dark"
-            />
+            <Toaster />
             <Layout />
           </KitCheckoutProvider>
         </KitProvider>

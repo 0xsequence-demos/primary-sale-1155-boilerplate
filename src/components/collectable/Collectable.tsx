@@ -1,19 +1,19 @@
 import { BuyWithCryptoCardButton } from "../buy-with-crypto-card-button/BuyWithCryptoCardButton";
 import { useEffect, useState } from "react";
 import { ContractInfo, TokenMetadata } from "@0xsequence/indexer";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { SendTransactionErrorType } from "viem";
 import { MintedProgressBar } from "../minted-progress-bar/MintedProgressBar";
 import { NFT_TOKEN_CONTRACT_ABI } from "~/config/nft-token/nftTokenContractAbi";
 import { useReadContract } from "wagmi";
-import PurchaseAnimation from "../purchase-animation/PurchaseAnimation";
+// import PurchaseAnimation from "../purchase-animation/PurchaseAnimation";
 import {
   UnpackedSaleConfigurationProps,
   formatPriceWithDecimals,
 } from "~/helpers";
 
-import { Form, Svg } from "boilerplate-design-system";
-import { Image } from "@0xsequence/design-system";
+import { Form, Svg, Image } from "boilerplate-design-system";
+import { Toast } from "~/components/toast/Toast";
 
 interface CollectibleProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -21,7 +21,7 @@ interface CollectibleProps {
   tokenMetadata: TokenMetadata;
   chainId: number;
   currencyData: ContractInfo | undefined;
-  totalMintedNftsPercentaje: number;
+  totalMintedNftsPercentage: number;
   totalSupply: string | 0;
   totalNftsMinted: string | undefined;
   userPaymentCurrencyBalance: bigint | undefined;
@@ -33,6 +33,10 @@ interface CollectibleProps {
 }
 
 function calculateMintedPercentage(minted: number, totalMax: number): number {
+  if (isNaN(minted) || isNaN(totalMax)) {
+    return 0;
+  }
+
   if (totalMax <= 0) {
     return 0;
   }
@@ -46,7 +50,7 @@ export const Collectible = ({
   tokenMetadata,
   chainId,
   currencyData,
-  totalMintedNftsPercentaje,
+  totalMintedNftsPercentage,
   totalSupply,
   // totalNftsMinted,
   userPaymentCurrencyBalance,
@@ -61,6 +65,7 @@ export const Collectible = ({
   const [txError, setTxError] = useState<SendTransactionErrorType | null>(null);
   const [purchasingNft, setPurchasingNft] = useState<boolean>(false);
   const logoURI = currencyData?.logoURI;
+
   const {
     data: nftsMinted,
     // isLoading: nftsMintedIsLoading,
@@ -74,6 +79,7 @@ export const Collectible = ({
   });
 
   const amountOwned: string = collectibleBalance?.balance || "0";
+
   const increaseAmount = () => {
     if (purchasingNft) return;
     setAmount(amount + 1);
@@ -99,20 +105,53 @@ export const Collectible = ({
 
   useEffect(() => {
     if (!txError || JSON.stringify(txError) === "{}") return;
-    toast(`Error to purchase NFT`, { type: "error" });
+    toast.error(`Error purchasing NFT`);
     setPurchasingNft(false);
     console.error(txError);
   }, [txError]);
+
+  useEffect(() => {
+    const label = amount > 1 ? "NFTs" : "NFT";
+    let toastId: string | number;
+    if (purchasingNft) {
+      toastId = toast.custom(() => (
+        <Toast>
+          <div className="w-[20rem]"></div>
+          <div className="flex gap-4 w-full items-center">
+            <img
+              src={tokenMetadata?.image || ""}
+              alt={tokenMetadata?.name || ""}
+              className="size-12 rounded-[0.5rem]"
+            />
+            <div className="flex flex-col gap-1">
+              {tokenMetadata?.name ? (
+                <span className="text-12 font-medium text-grey-200">
+                  {tokenMetadata?.name}
+                </span>
+              ) : null}
+              <span>
+                Purchasing {amount} {label}
+              </span>
+            </div>
+          </div>
+        </Toast>
+      ));
+    }
+
+    return () => {
+      toast.dismiss(toastId);
+    };
+  }, [purchasingNft]);
 
   return (
     <div className="bg-grey-900 p-4 text-left rounded-[1rem] flex flex-col gap-3">
       {tokenMetadata?.image ? (
         <Image
-          className="aspect-square w-full rounded-[0.5rem]"
+          className=" w-full max-w-[28rem] mx-auto aspect-square rounded-[0.5rem]"
           src={tokenMetadata?.image}
         />
       ) : (
-        <div className="aspect-square w-full rounded-[0.5rem] bg-grey-800"></div>
+        <div className=" w-full max-w-[28rem] mx-auto aspect-square rounded-[0.5rem] bg-grey-800"></div>
       )}
 
       <span className="text-10 font-bold">
@@ -122,11 +161,11 @@ export const Collectible = ({
         {tokenMetadata?.name || ""}
       </span>
 
-      <div className="mt-auto mb-0 flex flex-col gap-4">
+      <div className="mt-auto mb-0 flex flex-col gap-4 pt-4">
         <MintedProgressBar
-          totalMintedPercentage={totalMintedNftsPercentaje}
+          totalMintedPercentage={totalMintedNftsPercentage}
           mintedPercentage={mintedNftPercentage}
-          mintedValue={Number(nftsMinted)}
+          mintedValue={Number(nftsMinted) || 0}
           supplyValue={Number(totalSupply)}
         />
 
@@ -136,15 +175,13 @@ export const Collectible = ({
             <span className="text-14 font-bold inline-flex items-center gap-1">
               {!logoURI ? (
                 <span className="size-4 bg-grey-800"></span>
-              ) : (
-                // <TokenImage
-                //   // src="https://metadata.sequence.app/projects/30957/collections/690/image.png"
-                //   withNetwork="amoy"
-                //   symbol="matic"
-                //   style={{ width: 20, height: 20 }}
-                // />
-                <></>
-              )}
+              ) : // <TokenImage
+              //   // src="https://metadata.sequence.app/projects/30957/collections/690/image.png"
+              //   withNetwork="amoy"
+              //   symbol="matic"
+              //   style={{ width: 20, height: 20 }}
+              // />
+              null}
               {formattedPrice}
             </span>
           </div>
@@ -156,7 +193,11 @@ export const Collectible = ({
 
         <Form className="flex flex-col gap-3">
           <div className="flex items-center border border-grey-600 rounded-[0.5rem]">
-            <button type="button" onClick={decreaseAmount}>
+            <button
+              type="button"
+              onClick={decreaseAmount}
+              className="size-12 flex items-center justify-center"
+            >
               <Svg
                 name="Subtract"
                 className="text-white size-4"
@@ -164,7 +205,11 @@ export const Collectible = ({
               />
             </button>
             <span className="flex-1 text-center">{amount}</span>
-            <button type="button" onClick={increaseAmount}>
+            <button
+              type="button"
+              onClick={increaseAmount}
+              className="size-12 flex items-center justify-center"
+            >
               <Svg
                 name="Add"
                 className="text-white size-4"
@@ -191,23 +236,26 @@ export const Collectible = ({
           />
         </Form>
 
-        {purchasingNft && (
+        {/* {purchasingNft && (
           <PurchaseAnimation
             amount={amount}
             image={tokenMetadata.image || ""}
             name={tokenMetadata.name}
           />
-        )}
+        )} */}
         {txError && JSON.stringify(txError) != "{}" && (
-          <span>Error to purchase NFT. Details in console</span>
+          <span>Error purchasing NFT, see details in the browser console</span>
         )}
         {txExplorerUrl && (
-          <span>
-            Purchase Completed Succesfully
-            <a href={txExplorerUrl} target="_blank" rel="noopener noreferrer">
-              View transaction in explorer
-            </a>
-          </span>
+          <a
+            href={txExplorerUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-12 text-grey-50 inline-flex items-center gap-1"
+          >
+            <Svg name="ExternalLink" className="size-4" />
+            <span className="underline">View latest transaction</span>
+          </a>
         )}
       </div>
     </div>

@@ -32,7 +32,11 @@ export function CollectableSkeleton() {
 
         <div className="flex flex-col gap-3">
           <div className="flex items-center border border-grey-600 rounded-[0.5rem]">
-            <button type="button" disabled>
+            <button
+              type="button"
+              disabled
+              className="size-12 flex items-center justify-center"
+            >
               <Svg
                 name="Subtract"
                 className="text-white size-4"
@@ -40,7 +44,11 @@ export function CollectableSkeleton() {
               />
             </button>
             <span className="flex-1 text-center">0</span>
-            <button type="button" disabled>
+            <button
+              type="button"
+              disabled
+              className="size-12 flex items-center justify-center"
+            >
               <Svg
                 name="Add"
                 className="text-white size-4"
