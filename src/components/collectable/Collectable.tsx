@@ -106,7 +106,6 @@ export const Collectible = ({
 
   return (
     <div className="bg-grey-900 p-4 text-left rounded-[1rem] flex flex-col gap-3">
-      <CollectibleTileImage imageUrl={tokenMetadata?.image || ""} />
       {tokenMetadata?.image ? (
         <Image
           className="aspect-square w-full rounded-[0.5rem]"
