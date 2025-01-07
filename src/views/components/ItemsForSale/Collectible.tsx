@@ -156,15 +156,7 @@ export const Collectible = ({
                 alt="Decrease quantity"
               />
             </button>
-            <Field name="quantity">
-              <Input
-                type="text"
-                value={amount}
-                readOnly
-                variant="transparent"
-                className="text-center"
-              />
-            </Field>
+            <span className="flex-1 text-center">{amount}</span>
             <button type="button" onClick={increaseAmount}>
               <Svg
                 name="Add"
