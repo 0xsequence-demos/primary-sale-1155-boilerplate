@@ -1,10 +1,10 @@
-import { Box, Text, Spinner } from "@0xsequence/design-system";
 import { useAccount } from "wagmi";
 
 import { useTokenMetadata, useCollectionBalance } from "../../hooks/data";
 import { ContractInfo, TokenMetadata } from "@0xsequence/indexer";
-import { Collectible } from "./Collectible";
-import { UnpackedSaleConfigurationProps } from "../../../utils/primarySales/helpers";
+import { Collectible } from "../collectable/Collectable";
+import { UnpackedSaleConfigurationProps } from "~/helpers";
+import { CollectableSkeleton } from "~/components/collectable-skeleton/CollectableSkeleton";
 
 interface ItemsForSaleProps {
   collectionAddress: string;
@@ -59,48 +59,40 @@ export const ItemsForSale = ({
 
   if (isLoading) {
     return (
-      <Box
-        margin="2"
-        color="text100"
-        flexDirection="column"
-        justifyContent="center"
-        alignItems="center"
-        gap="2"
-      >
-        <Text color="text100">Loading...</Text>
-        <Spinner />
-      </Box>
+      <div className="grid grid-cols-3 gap-4">
+        <CollectableSkeleton />
+        <CollectableSkeleton />
+        <CollectableSkeleton />
+      </div>
     );
   }
 
   return (
-    <Box width="full">
-      <div className="grid grid-cols-3 gap-4">
-        {tokenMetadatas?.map((tokenMetadata: TokenMetadata) => {
-          const collectibleBalance = collectionBalanceData?.find(
-            (balance) => balance?.tokenID === tokenMetadata.tokenId,
-          );
+    <div className="grid grid-cols-3 gap-4">
+      {tokenMetadatas?.map((tokenMetadata: TokenMetadata) => {
+        const collectibleBalance = collectionBalanceData?.find(
+          (balance) => balance?.tokenID === tokenMetadata.tokenId,
+        );
 
-          return (
-            <Collectible
-              key={collectionAddress + tokenMetadata.tokenId}
-              collectibleBalance={collectibleBalance}
-              tokenMetadata={tokenMetadata}
-              chainId={chainId}
-              currencyData={currencyData}
-              totalMintedNftsPercentaje={totalMintedNftsPercentaje}
-              totalSupply={totalSupply}
-              totalNftsMinted={totalMinted}
-              userPaymentCurrencyBalance={userPaymentCurrencyBalance}
-              price={price}
-              currencyDecimals={currencyDecimals}
-              saleConfiguration={saleConfiguration}
-              refetchCollectionBalance={refetchCollectionBalance}
-              refetchTotalMinted={refetchTotalMinted}
-            />
-          );
-        })}
-      </div>
-    </Box>
+        return (
+          <Collectible
+            key={collectionAddress + tokenMetadata.tokenId}
+            collectibleBalance={collectibleBalance}
+            tokenMetadata={tokenMetadata}
+            chainId={chainId}
+            currencyData={currencyData}
+            totalMintedNftsPercentaje={totalMintedNftsPercentaje}
+            totalSupply={totalSupply}
+            totalNftsMinted={totalMinted}
+            userPaymentCurrencyBalance={userPaymentCurrencyBalance}
+            price={price}
+            currencyDecimals={currencyDecimals}
+            saleConfiguration={saleConfiguration}
+            refetchCollectionBalance={refetchCollectionBalance}
+            refetchTotalMinted={refetchTotalMinted}
+          />
+        );
+      })}
+    </div>
   );
 };

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ERC20 } from "../../ERC20/ERC20";
+import { ERC20 } from "~/config/ERC20/ERC20";
 
 export const BigIntReplacer = (_: any, value: any) =>
   typeof value === "bigint" ? { type: "bigint", v: value.toString() } : value;

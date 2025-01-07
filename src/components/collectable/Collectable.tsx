@@ -1,17 +1,19 @@
-import { Skeleton } from "@0xsequence/design-system";
-import CollectibleTileImage from "../CollectibleTileImage";
-import { BuyWithCryptoCardButton } from "./BuyWithCryptoCardButton";
+import { BuyWithCryptoCardButton } from "../buy-with-crypto-card-button/BuyWithCryptoCardButton";
 import { useEffect, useState } from "react";
 import { ContractInfo, TokenMetadata } from "@0xsequence/indexer";
 import { toast } from "react-toastify";
 import { SendTransactionErrorType } from "viem";
-import NftsMintedProgressBar from "../NftsMintedProgressBar";
-import { NFT_TOKEN_CONTRACT_ABI } from "../../../utils/primarySales/abis/nftTokenContractAbi";
+import { MintedProgressBar } from "../minted-progress-bar/MintedProgressBar";
+import { NFT_TOKEN_CONTRACT_ABI } from "~/config/nft-token/nftTokenContractAbi";
 import { useReadContract } from "wagmi";
-import PurchaseAnimation from "../blockchain/Connected/PurchaseAnimation";
-import { formatPriceWithDecimals } from "../../../utils/primarySales/helpers";
-import { UnpackedSaleConfigurationProps } from "../../../utils/primarySales/helpers";
-import { Field, Form, Input, Svg } from "boilerplate-design-system";
+import PurchaseAnimation from "../purchase-animation/PurchaseAnimation";
+import {
+  UnpackedSaleConfigurationProps,
+  formatPriceWithDecimals,
+} from "~/helpers";
+
+import { Form, Svg } from "boilerplate-design-system";
+import { Image } from "@0xsequence/design-system";
 
 interface CollectibleProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -46,7 +48,7 @@ export const Collectible = ({
   currencyData,
   totalMintedNftsPercentaje,
   totalSupply,
-  totalNftsMinted,
+  // totalNftsMinted,
   userPaymentCurrencyBalance,
   price,
   currencyDecimals,
@@ -105,6 +107,14 @@ export const Collectible = ({
   return (
     <div className="bg-grey-900 p-4 text-left rounded-[1rem] flex flex-col gap-3">
       <CollectibleTileImage imageUrl={tokenMetadata?.image || ""} />
+      {tokenMetadata?.image ? (
+        <Image
+          className="aspect-square w-full rounded-[0.5rem]"
+          src={tokenMetadata?.image}
+        />
+      ) : (
+        <div className="aspect-square w-full rounded-[0.5rem] bg-grey-800"></div>
+      )}
 
       <span className="text-10 font-bold">
         Token id: {tokenMetadata?.tokenId || ""}
@@ -114,13 +124,11 @@ export const Collectible = ({
       </span>
 
       <div className="mt-auto mb-0 flex flex-col gap-4">
-        <NftsMintedProgressBar
-          totalMintedNftsPercentage={totalMintedNftsPercentaje}
-          mintedNftsPercentage={mintedNftPercentage}
-          tokenId={tokenMetadata?.tokenId || ""}
-          mintedNftCount={Number(nftsMinted)}
-          totalMintedNfts={Number(totalNftsMinted)}
-          totalSupply={Number(totalSupply)}
+        <MintedProgressBar
+          totalMintedPercentage={totalMintedNftsPercentaje}
+          mintedPercentage={mintedNftPercentage}
+          mintedValue={Number(nftsMinted)}
+          supplyValue={Number(totalSupply)}
         />
 
         <div className="flex justify-between">
@@ -128,7 +136,7 @@ export const Collectible = ({
             <span className="text-12 font-medium text-grey-50 ">Price</span>
             <span className="text-14 font-bold inline-flex items-center gap-1">
               {!logoURI ? (
-                <Skeleton style={{ width: 16, height: 16 }} />
+                <span className="size-4 bg-grey-800"></span>
               ) : (
                 // <TokenImage
                 //   // src="https://metadata.sequence.app/projects/30957/collections/690/image.png"

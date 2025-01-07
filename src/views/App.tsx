@@ -1,21 +1,21 @@
-import Home from "./views/Home";
+import Layout from "./Home";
 import { getDefaultWaasConnectors, KitProvider } from "@0xsequence/kit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createConfig, http, WagmiProvider } from "wagmi";
-import chains from "./utils/chains";
+import { chains } from "~/helpers";
 import { KitCheckoutProvider } from "@0xsequence/kit-checkout";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Chain, Transport } from "viem";
 import { allNetworks, findNetworkConfig } from "@0xsequence/network";
-import { defaultChainId } from "./salesConfigs";
+import { defaultChainId } from "../config/sales/salesConfigs";
 import "@0xsequence/design-system/styles.css";
 import "boilerplate-design-system/styles.css";
 
 const queryClient = new QueryClient();
 
 function getTransportConfigs(
-  chains: [Chain, ...Chain[]]
+  chains: [Chain, ...Chain[]],
 ): Record<number, Transport> {
   return chains.reduce(
     (acc, chain) => {
@@ -23,7 +23,7 @@ function getTransportConfigs(
       if (network) acc[chain.id] = http(network.rpcUrl);
       return acc;
     },
-    {} as Record<number, Transport>
+    {} as Record<number, Transport>,
   );
 }
 
@@ -76,7 +76,7 @@ const App = () => {
               pauseOnHover
               theme="dark"
             />
-            <Home />
+            <Layout />
           </KitCheckoutProvider>
         </KitProvider>
       </QueryClientProvider>

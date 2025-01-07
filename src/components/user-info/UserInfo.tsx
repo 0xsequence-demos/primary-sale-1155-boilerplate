@@ -9,9 +9,9 @@ import {
   ShowAddressWithDisconnect,
   Svg,
 } from "boilerplate-design-system";
-import { NetworkSwitchInputSelect } from "../network-switch-input-select/NetworkSwitchInputSelect";
+import { NetworkSwitchInputSelect } from "~/components/network-switch-input-select/NetworkSwitchInputSelect";
 import { useAccount, useDisconnect } from "wagmi";
-import { formatPriceWithDecimals } from "../../../utils/primarySales/helpers";
+import { formatPriceWithDecimals } from "~/helpers";
 
 type Account = ReturnType<typeof useAccount>;
 type Disconnect = ReturnType<typeof useDisconnect>;

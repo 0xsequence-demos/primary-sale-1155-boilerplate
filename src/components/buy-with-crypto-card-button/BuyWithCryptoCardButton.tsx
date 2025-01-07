@@ -7,12 +7,12 @@ import {
   useSendTransaction,
   // useSwitchChain,
 } from "wagmi";
-import { ERC20 } from "../../../ERC20/ERC20";
+import { ERC20 } from "~/config/ERC20/ERC20";
+import { getChain } from "~/config/ERC20/getChain";
 
-import { SALES_CONTRACT_ABI } from "../../../utils/primarySales/abis/salesContractAbi";
+import { SALES_CONTRACT_ABI } from "~/config/sales/salesContractAbi";
 import { useEffect, useState } from "react";
-import { getChain } from "../../../ERC20/getChain";
-import { getSaleConfiguration } from "../../../utils/primarySales/helpers";
+import { getSaleConfiguration } from "~/helpers";
 import { toast } from "react-toastify";
 import { ContractInfo } from "@0xsequence/indexer";
 import { Button } from "boilerplate-design-system";

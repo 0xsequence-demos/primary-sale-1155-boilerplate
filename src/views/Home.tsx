@@ -1,11 +1,10 @@
+import { SequenceBoilerplate } from "boilerplate-design-system";
 import { useAccount } from "wagmi";
 
-import "./Home.css";
-import Connected from "./components/blockchain/Connected";
-import { SequenceBoilerplate } from "boilerplate-design-system";
-import { Connector } from "./components/Connector";
+import { Connected } from "~/views/Connected";
+import { NotConnected } from "~/views/NotConnected";
 
-const Home = () => {
+export default function HomeView() {
   const { isConnected } = useAccount();
 
   return (
@@ -15,9 +14,7 @@ const Home = () => {
       description="Example of how to perform primary sales of 1155 NFTs using Sequence."
       docsUrl="https://docs.sequence.xyz/"
     >
-      {!isConnected ? <Connector /> : <Connected />}
+      {!isConnected ? <NotConnected /> : <Connected />}
     </SequenceBoilerplate>
   );
-};
-
-export default Home;
+}

@@ -3,7 +3,11 @@ import { getDefaultChains } from "@0xsequence/kit";
 import {
   defaultChainId,
   salesConfigs as salesConfigurations,
-} from "../../salesConfigs";
+} from "../config/sales/salesConfigs";
+
+import type { Chain as ChainType } from "wagmi/chains";
+import { salesConfigs } from "../config/sales/salesConfigs";
+
 interface SaleItem {
   tokenId: string;
 }
@@ -75,3 +79,7 @@ export const formatPriceWithDecimals = (
 export function getChainConfig(chainId: number): Chain {
   return getDefaultChains([chainId])[0];
 }
+
+export const chains = Array.from(
+  new Set(salesConfigs.map((item) => getChainConfig(item.chainId))),
+) as [ChainType, ...ChainType[]];
