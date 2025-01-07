@@ -6,11 +6,12 @@ import { chains } from "~/helpers";
 import { KitCheckoutProvider } from "@0xsequence/kit-checkout";
 import "react-toastify/dist/ReactToastify.css";
 
-import { Toaster } from "sonner";
-
 import { Chain, Transport } from "viem";
 import { allNetworks, findNetworkConfig } from "@0xsequence/network";
 import { defaultChainId } from "../config/sales/salesConfigs";
+
+import { Toaster } from "sonner";
+
 import "@0xsequence/design-system/styles.css";
 import "boilerplate-design-system/styles.css";
 

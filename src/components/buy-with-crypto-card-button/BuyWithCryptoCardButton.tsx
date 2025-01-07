@@ -15,8 +15,7 @@ import { useEffect, useState } from "react";
 import { getSaleConfiguration } from "~/helpers";
 import { toast } from "sonner";
 import { ContractInfo } from "@0xsequence/indexer";
-import { Button } from "boilerplate-design-system";
-import { Toast } from "~/components/toast/Toast";
+import { Button, Toast } from "boilerplate-design-system";
 
 interface BuyWithCryptoCardButtonProps {
   tokenId: string;

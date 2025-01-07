@@ -12,8 +12,7 @@ import {
   formatPriceWithDecimals,
 } from "~/helpers";
 
-import { Form, Svg, Image } from "boilerplate-design-system";
-import { Toast } from "~/components/toast/Toast";
+import { Form, Svg, Image, Toast } from "boilerplate-design-system";
 
 interface CollectibleProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
