@@ -16,7 +16,7 @@ importers:
         version: 2.1.0
       '@0xsequence/design-system':
         specifier: ^1.8.0
-        version: 1.8.0(@types/react-dom@18.3.1)(@types/react@18.3.12)(framer-motion@8.5.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 1.8.0(@types/react-dom@18.3.1)(@types/react@18.3.12)(framer-motion@11.16.0(@emotion/is-prop-valid@0.8.8)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@0xsequence/indexer':
         specifier: ^2.1.0
         version: 2.1.0
@@ -25,7 +25,7 @@ importers:
         version: 4.4.4(ahb6a4bjnnc5l4wm7aktaoswz4)
       '@0xsequence/kit-checkout':
         specifier: 4.4.4
-        version: 4.4.4(gmoa2ox376vakpeuzglnstrf54)
+        version: 4.4.4(pcm4ysizc66zakcm6fqllhrm3y)
       '@0xsequence/metadata':
         specifier: 2.1.0
         version: 2.1.0
@@ -36,8 +36,8 @@ importers:
         specifier: ^5.61.4
         version: 5.61.4(react@18.3.1)
       boilerplate-design-system:
-        specifier: github:0xsequence-demos/boilerplate-design-system#073f1ce
-        version: https://codeload.github.com/0xsequence-demos/boilerplate-design-system/tar.gz/073f1ce(@emotion/is-prop-valid@0.8.8)(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sonner@1.7.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(typescript@5.7.2)
+        specifier: github:0xsequence-demos/boilerplate-design-system#2069c80
+        version: https://codeload.github.com/0xsequence-demos/boilerplate-design-system/tar.gz/2069c80(@emotion/is-prop-valid@0.8.8)(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sonner@1.7.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(typescript@5.7.2)
       ethers:
         specifier: 6.13.4
         version: 6.13.4(bufferutil@4.0.8)(utf-8-validate@5.0.10)
@@ -3047,6 +3047,14 @@ packages:
 
   boilerplate-design-system@https://codeload.github.com/0xsequence-demos/boilerplate-design-system/tar.gz/073f1ce:
     resolution: {tarball: https://codeload.github.com/0xsequence-demos/boilerplate-design-system/tar.gz/073f1ce}
+    version: 0.0.0
+    peerDependencies:
+      react: ^18
+      react-dom: ^18
+      sonner: ^1.7.1
+
+  boilerplate-design-system@https://codeload.github.com/0xsequence-demos/boilerplate-design-system/tar.gz/2069c80:
+    resolution: {tarball: https://codeload.github.com/0xsequence-demos/boilerplate-design-system/tar.gz/2069c80}
     version: 0.0.0
     peerDependencies:
       react: ^18
@@ -6197,11 +6205,11 @@ snapshots:
 
   '@0xsequence/indexer@2.1.0': {}
 
-  '@0xsequence/kit-checkout@4.4.4(gmoa2ox376vakpeuzglnstrf54)':
+  '@0xsequence/kit-checkout@4.4.4(pcm4ysizc66zakcm6fqllhrm3y)':
     dependencies:
       0xsequence: 2.1.0(ethers@6.13.4(bufferutil@4.0.8)(utf-8-validate@5.0.10))
       '@0xsequence/api': 2.1.0
-      '@0xsequence/design-system': 1.8.0(@types/react-dom@18.3.1)(@types/react@18.3.12)(framer-motion@8.5.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@0xsequence/design-system': 1.8.0(@types/react-dom@18.3.1)(@types/react@18.3.12)(framer-motion@11.16.0(@emotion/is-prop-valid@0.8.8)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@0xsequence/indexer': 2.1.0
       '@0xsequence/kit': 4.4.4(ahb6a4bjnnc5l4wm7aktaoswz4)
       '@0xsequence/metadata': 2.1.0
@@ -6209,7 +6217,7 @@ snapshots:
       '@0xsequence/waas': 2.1.0(ethers@6.13.4(bufferutil@4.0.8)(utf-8-validate@5.0.10))
       '@tanstack/react-query': 5.61.4(react@18.3.1)
       ethers: 6.13.4(bufferutil@4.0.8)(utf-8-validate@5.0.10)
-      framer-motion: 8.5.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      framer-motion: 11.16.0(@emotion/is-prop-valid@0.8.8)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       qrcode.react: 4.1.0(react@18.3.1)
       react: 18.3.1
       react-copy-to-clipboard: 5.1.0(react@18.3.1)
@@ -10233,6 +10241,26 @@ snapshots:
       '@radix-ui/react-select': 2.1.2(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-tooltip': 1.1.4(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@svgr/cli': 8.1.0(typescript@5.7.2)
+      clsx: 2.1.1
+      framer-motion: 11.16.0(@emotion/is-prop-valid@0.8.8)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+      sonner: 1.7.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      zod: 3.24.1
+    transitivePeerDependencies:
+      - '@emotion/is-prop-valid'
+      - '@types/react'
+      - '@types/react-dom'
+      - supports-color
+      - typescript
+
+  boilerplate-design-system@https://codeload.github.com/0xsequence-demos/boilerplate-design-system/tar.gz/2069c80(@emotion/is-prop-valid@0.8.8)(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sonner@1.7.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(typescript@5.7.2):
+    dependencies:
+      '@0xsequence/design-system': 1.8.0(@types/react-dom@18.3.1)(@types/react@18.3.12)(framer-motion@11.16.0(@emotion/is-prop-valid@0.8.8)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@radix-ui/react-select': 2.1.2(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@radix-ui/react-tooltip': 1.1.4(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@svgr/cli': 8.1.0(typescript@5.7.2)
+      boilerplate-design-system: https://codeload.github.com/0xsequence-demos/boilerplate-design-system/tar.gz/073f1ce(@emotion/is-prop-valid@0.8.8)(@types/react-dom@18.3.1)(@types/react@18.3.12)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(sonner@1.7.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(typescript@5.7.2)
       clsx: 2.1.1
       framer-motion: 11.16.0(@emotion/is-prop-valid@0.8.8)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
