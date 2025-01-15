@@ -8,6 +8,7 @@ export function NotConnected() {
     <Card variant="none">
       <Button
         variant="primary"
+        subvariants={{ padding: "comfortable" }}
         onClick={() => setOpenConnectModal(true)}
         className="px-8"
       >

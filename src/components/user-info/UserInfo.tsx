@@ -62,7 +62,7 @@ export function UserInfo({
                 target="_blank"
                 rel="noopener noreferrer"
                 href="https://faucet.circle.com/"
-                variant="tiny"
+                variant="tertiary"
                 className="self-center flex-shrink-0"
               >
                 <Svg name="ExternalLink" width="16" />
