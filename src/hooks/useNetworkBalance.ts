@@ -7,8 +7,17 @@ import { ERC20_ABI } from "~/config/ERC20/ERC20_abi";
 
 import { formatPriceWithDecimals, getSaleConfiguration } from "~/helpers";
 
-export function useNetworkBalance({ address, chainId }) {
+export function useNetworkBalance({
+  address,
+  chainId,
+}: {
+  address?: `0x${string}`;
+  chainId?: number;
+}) {
   // Setup the sale configuration based on the chainId
+
+  if (!address || !chainId) return "0";
+
   const saleConfiguration = useMemo(
     () => getSaleConfiguration(chainId),
     [chainId],
@@ -41,5 +50,5 @@ export function useNetworkBalance({ address, chainId }) {
 
   return userPaymentCurrencyBalance && currencyDecimals
     ? formatPriceWithDecimals(userPaymentCurrencyBalance, currencyDecimals)
-    : 0;
+    : "0";
 }

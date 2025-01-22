@@ -16,7 +16,9 @@ interface GlobalSalesDetailsData {
   supplyCap: bigint;
 }
 
-export function useNFTSales({ chainId }) {
+export function useNFTSales({ chainId }: { chainId?: number }) {
+  if (!chainId) return null;
+
   // Setup the sale configuration based on the chainId
   const saleConfiguration = useMemo(
     () => getSaleConfiguration(chainId),

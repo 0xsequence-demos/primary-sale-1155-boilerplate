@@ -84,8 +84,6 @@ function App() {
   const { isConnected, address, chainId } = useAccount();
   const balance = useNetworkBalance({ address, chainId });
 
-  console.log(balance);
-
   return (
     <SequenceBoilerplate
       githubUrl="https://github.com/0xsequence-demos/kit-embedded-wallet-remix-cloudflare-boilerplate"
@@ -94,7 +92,7 @@ function App() {
       docsUrl="https://docs.sequence.xyz/"
       wagmi={{ useAccount, useDisconnect, useSwitchChain }}
       faucetUrl="https://faucet.circle.com/"
-      balance={balance}
+      balance={`$${balance}`}
     >
       {isConnected ? <Connected /> : <NotConnected />}
     </SequenceBoilerplate>

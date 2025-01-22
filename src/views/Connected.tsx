@@ -8,11 +8,7 @@ import { SALES_CONTRACT_ABI } from "~/config/sales/salesContractAbi";
 import { NFT_TOKEN_CONTRACT_ABI } from "~/config/nft-token/nftTokenContractAbi";
 import { ERC20_ABI } from "~/config/ERC20/ERC20_abi";
 
-import {
-  calculateMintedPercentage,
-  formatPriceWithDecimals,
-  getSaleConfiguration,
-} from "~/helpers";
+import { calculateMintedPercentage, getSaleConfiguration } from "~/helpers";
 
 // UI - Library
 import { Card, Divider, Group } from "boilerplate-design-system";
@@ -23,7 +19,6 @@ import { PrimarySaleSkeleton } from "~/components/primary-sale/PrimarySaleSkelet
 import { AddressList } from "~/components/address-list/AddressList";
 import { AddressListItem } from "~/components/address-list/AddressListItem";
 import { PrimarySale } from "~/components/primary-sale/PrimarySale";
-import { useNetworkBalance } from "~/hooks/useNetworkBalance";
 import { useNFTSales } from "~/hooks/useNFTSales";
 
 interface GlobalSalesDetailsData {
@@ -135,7 +130,11 @@ export function Connected() {
           {contractInfoIsLoading ? (
             <PrimarySaleSkeleton />
           ) : (
-            <PrimarySale collection={collection} minting={minting} />
+            <>
+              {minting ? (
+                <PrimarySale collection={collection} minting={minting} />
+              ) : null}
+            </>
           )}
           {chainId && (
             <Card collapsable title="Extra info for nerds">
