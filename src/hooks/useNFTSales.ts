@@ -17,8 +17,6 @@ interface GlobalSalesDetailsData {
 }
 
 export function useNFTSales({ chainId }: { chainId?: number }) {
-  if (!chainId) return null;
-
   // Setup the sale configuration based on the chainId
   const saleConfiguration = useMemo(
     () => getSaleConfiguration(chainId),

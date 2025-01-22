@@ -16,8 +16,6 @@ export function useNetworkBalance({
 }) {
   // Setup the sale configuration based on the chainId
 
-  if (!address || !chainId) return "0";
-
   const saleConfiguration = useMemo(
     () => getSaleConfiguration(chainId),
     [chainId],
