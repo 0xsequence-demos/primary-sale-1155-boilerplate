@@ -1,11 +1,11 @@
 import { useOpenConnectModal } from "@0xsequence/kit";
-import { Button, Card } from "boilerplate-design-system";
+import { Button } from "boilerplate-design-system";
 
 export function NotConnected() {
   const { setOpenConnectModal } = useOpenConnectModal();
 
   return (
-    <Card variant="none">
+    <div className="w-full flex flex-col items-center">
       <Button
         variant="primary"
         subvariants={{ padding: "comfortable" }}
@@ -14,6 +14,6 @@ export function NotConnected() {
       >
         Connect
       </Button>
-    </Card>
+    </div>
   );
 }

@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useAccount, useDisconnect, useReadContract } from "wagmi";
+import { useAccount, useReadContract } from "wagmi";
 
 import { useContractInfo } from "../hooks/data";
 import { useSalesCurrency } from "../hooks/useSalesCurrency";
@@ -8,17 +8,23 @@ import { SALES_CONTRACT_ABI } from "~/config/sales/salesContractAbi";
 import { NFT_TOKEN_CONTRACT_ABI } from "~/config/nft-token/nftTokenContractAbi";
 import { ERC20_ABI } from "~/config/ERC20/ERC20_abi";
 
-import { calculateMintedPercentage, getSaleConfiguration } from "~/helpers";
+import {
+  calculateMintedPercentage,
+  formatPriceWithDecimals,
+  getSaleConfiguration,
+} from "~/helpers";
 
 // UI - Library
 import { Card, Divider, Group } from "boilerplate-design-system";
 // UI - Local
 import { ItemsForSale } from "../components/items-for-sale/ItemsForSale";
-import { UserInfo } from "../components/user-info/UserInfo";
+// import { UserInfo } from "../components/user-info/UserInfo";
 import { PrimarySaleSkeleton } from "~/components/primary-sale/PrimarySaleSkeleton";
 import { AddressList } from "~/components/address-list/AddressList";
 import { AddressListItem } from "~/components/address-list/AddressListItem";
 import { PrimarySale } from "~/components/primary-sale/PrimarySale";
+import { useNetworkBalance } from "~/hooks/useNetworkBalance";
+import { useNFTSales } from "~/hooks/useNFTSales";
 
 interface GlobalSalesDetailsData {
   cost: bigint;
@@ -28,9 +34,9 @@ interface GlobalSalesDetailsData {
   supplyCap: bigint;
 }
 
-export const Connected = () => {
-  const { address: userAddress, chainId, chain } = useAccount();
-  const { disconnect } = useDisconnect();
+export function Connected() {
+  const { address: userAddress, chainId } = useAccount();
+  const minting = useNFTSales({ chainId });
 
   // Setup the sale configuration based on the chainId
   const saleConfiguration = useMemo(
@@ -111,15 +117,9 @@ export const Connected = () => {
   );
   const currencyDecimals: number | undefined = currencyData?.decimals;
 
-  const minting = {
-    percentage: Number(totalMintedNftsPercentage),
-    value: Number(nftsMinted),
-    total: Number(totalSupply),
-  };
-
   return (
     <div className="flex flex-col gap-12">
-      <UserInfo
+      {/* <UserInfo
         balance={{
           value: userPaymentCurrencyBalance,
           decimals: currencyDecimals,
@@ -128,9 +128,8 @@ export const Connected = () => {
         chain={chain}
         chainId={chainId}
         disconnect={disconnect}
-      />
+      /> */}
 
-      <Divider />
       <Group title="Primary Sale Info">
         <Card className="flex flex-col gap-4">
           {contractInfoIsLoading ? (
@@ -180,6 +179,6 @@ export const Connected = () => {
       <Divider />
     </div>
   );
-};
+}
 
 export default Connected;
