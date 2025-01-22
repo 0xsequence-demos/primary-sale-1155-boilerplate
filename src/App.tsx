@@ -92,7 +92,7 @@ function App() {
       docsUrl="https://docs.sequence.xyz/"
       wagmi={{ useAccount, useDisconnect, useSwitchChain }}
       faucetUrl="https://faucet.circle.com/"
-      balance={`$${balance}`}
+      balance={balance ? `$${balance}` : false}
     >
       {isConnected ? <Connected /> : <NotConnected />}
     </SequenceBoilerplate>

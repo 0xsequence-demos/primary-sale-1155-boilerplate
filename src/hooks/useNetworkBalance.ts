@@ -48,5 +48,5 @@ export function useNetworkBalance({
 
   return userPaymentCurrencyBalance && currencyDecimals
     ? formatPriceWithDecimals(userPaymentCurrencyBalance, currencyDecimals)
-    : "0";
+    : false;
 }

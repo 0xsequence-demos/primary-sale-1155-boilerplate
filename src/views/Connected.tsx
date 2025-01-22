@@ -126,18 +126,24 @@ export function Connected() {
       /> */}
 
       <Group title="Primary Sale Info">
-        <Card className="flex flex-col gap-4">
-          {contractInfoIsLoading ? (
-            <PrimarySaleSkeleton />
-          ) : (
-            <>
-              {minting ? (
-                <PrimarySale collection={collection} minting={minting} />
-              ) : null}
-            </>
-          )}
+        <Card className="flex flex-col gap-5 bg-white/10 border border-white/10 backdrop-blur-sm text-center p-0">
+          <div className="p-4">
+            {contractInfoIsLoading ? (
+              <PrimarySaleSkeleton />
+            ) : (
+              <>
+                {minting ? (
+                  <PrimarySale collection={collection} minting={minting} />
+                ) : null}
+              </>
+            )}
+          </div>
           {chainId && (
-            <Card collapsable title="Extra info for nerds">
+            <Card
+              collapsable
+              title="Extra info for nerds"
+              className="border-t border-white/10 rounded-none bg-transparent"
+            >
               <AddressList chainId={chainId}>
                 <AddressListItem label="User Address" address={userAddress} />
                 <AddressListItem
