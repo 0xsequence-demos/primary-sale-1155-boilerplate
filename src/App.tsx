@@ -1,15 +1,23 @@
-import Home from "./views/Home";
 import { getDefaultWaasConnectors, KitProvider } from "@0xsequence/kit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createConfig, http, WagmiProvider } from "wagmi";
-import chains from "./utils/chains";
+import { chains } from "~/helpers";
 import { KitCheckoutProvider } from "@0xsequence/kit-checkout";
-import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { SequenceBoilerplate } from "boilerplate-design-system";
+import { useAccount, useDisconnect, useSwitchChain } from "wagmi";
+
+import { Connected } from "~/views/Connected";
+import { NotConnected } from "~/views/NotConnected";
+
 import { Chain, Transport } from "viem";
 import { allNetworks, findNetworkConfig } from "@0xsequence/network";
-import { defaultChainId } from "./salesConfigs";
+import { defaultChainId } from "./config/sales/salesConfigs";
+
+import { Toaster } from "sonner";
+
 import "@0xsequence/design-system/styles.css";
+import { useNetworkBalance } from "~/hooks/useNetworkBalance";
 
 const queryClient = new QueryClient();
 
@@ -26,7 +34,7 @@ function getTransportConfigs(
   );
 }
 
-const App = () => {
+export default function Layout() {
   const projectAccessKey = import.meta.env.VITE_PROJECT_ACCESS_KEY;
   const waasConfigKey = import.meta.env.VITE_WAAS_CONFIG_KEY;
   const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
@@ -63,24 +71,30 @@ const App = () => {
       <QueryClientProvider client={queryClient}>
         <KitProvider config={kitConfig}>
           <KitCheckoutProvider>
-            <ToastContainer
-              position="bottom-right"
-              autoClose={7000}
-              hideProgressBar={false}
-              newestOnTop={false}
-              closeOnClick
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-              theme="dark"
-            />
-            <Home />
+            <Toaster />
+            <App />
           </KitCheckoutProvider>
         </KitProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );
-};
+}
 
-export default App;
+function App() {
+  const { isConnected, address, chainId } = useAccount();
+  const balance = useNetworkBalance({ address, chainId });
+
+  return (
+    <SequenceBoilerplate
+      githubUrl="https://github.com/0xsequence-demos/primary-sale-1155-boilerplate/"
+      name="Primary Sale 1155 Boilerplate"
+      description="Example of how to perform primary sales of 1155 NFTs using Sequence."
+      docsUrl="https://docs.sequence.xyz/"
+      wagmi={{ useAccount, useDisconnect, useSwitchChain }}
+      faucetUrl="https://faucet.circle.com/"
+      balance={balance ? `$${balance}` : false}
+    >
+      {isConnected ? <Connected /> : <NotConnected />}
+    </SequenceBoilerplate>
+  );
+}
