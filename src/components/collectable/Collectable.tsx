@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { ContractInfo, TokenMetadata } from "@0xsequence/indexer";
 import { toast } from "sonner";
 import { SendTransactionErrorType } from "viem";
-import { MintedProgressBar } from "../minted-progress-bar/MintedProgressBar";
 import { NFT_TOKEN_CONTRACT_ABI } from "~/config/nft-token/nftTokenContractAbi";
 import { useReadContract } from "wagmi";
 // import PurchaseAnimation from "../purchase-animation/PurchaseAnimation";
@@ -31,26 +30,11 @@ interface CollectibleProps {
   refetchTotalMinted: () => void;
 }
 
-function calculateMintedPercentage(minted: number, totalMax: number): number {
-  if (isNaN(minted) || isNaN(totalMax)) {
-    return 0;
-  }
-
-  if (totalMax <= 0) {
-    return 0;
-  }
-
-  const percentage = (minted / totalMax) * 100;
-  return Math.floor(percentage);
-}
-
 export const Collectible = ({
   collectibleBalance,
   tokenMetadata,
   chainId,
   currencyData,
-  totalMintedNftsPercentage,
-  totalSupply,
   // totalNftsMinted,
   userPaymentCurrencyBalance,
   price,
@@ -66,7 +50,6 @@ export const Collectible = ({
   const logoURI = currencyData?.logoURI;
 
   const {
-    data: nftsMinted,
     // isLoading: nftsMintedIsLoading,
     refetch: refetchNftsMinted,
   } = useReadContract({
@@ -92,11 +75,6 @@ export const Collectible = ({
   const resetAmount = () => {
     setAmount(0);
   };
-
-  const mintedNftPercentage = calculateMintedPercentage(
-    Number(nftsMinted),
-    Number(totalSupply),
-  );
 
   const formattedPrice = currencyDecimals
     ? formatPriceWithDecimals(price, currencyDecimals)
@@ -161,13 +139,6 @@ export const Collectible = ({
       </span>
 
       <div className="mt-auto mb-0 flex flex-col gap-4 pt-4">
-        <MintedProgressBar
-          totalMintedPercentage={totalMintedNftsPercentage}
-          mintedPercentage={mintedNftPercentage}
-          mintedValue={Number(nftsMinted) || 0}
-          supplyValue={Number(totalSupply)}
-        />
-
         <div className="flex justify-between">
           <div className="flex flex-col">
             <span className="text-12 font-medium text-grey-50 ">Price</span>
