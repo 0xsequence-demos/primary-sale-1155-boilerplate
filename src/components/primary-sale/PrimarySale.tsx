@@ -21,11 +21,13 @@ type PrimarySaleProps = {
 export function PrimarySale({ collection, minting }: PrimarySaleProps) {
   return (
     <div className="flex gap-4 w-full sm:flex-row flex-col text-left">
-      <Image
-        src={collection.image}
-        alt={collection.name}
-        className="sm:w-[8rem] w-full max-w-[28rem] mx-auto aspect-square rounded-[0.5rem]"
-      />
+      {collection.image ? (
+        <Image
+          src={collection.image}
+          alt={collection.name}
+          className="sm:w-[8rem] w-full max-w-[28rem] mx-auto aspect-square rounded-[0.5rem]"
+        />
+      ) : null}
       <div className="flex flex-col items-start w-full">
         <div className="flex items-start flex-col flex-1 gap-2">
           <h3 className="text-20 font-bold leading-tight">{collection.name}</h3>
