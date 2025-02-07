@@ -1,15 +1,14 @@
 import { useAccount } from "wagmi";
-
 import { useTokenMetadata, useCollectionBalance } from "../../hooks/data";
-import { ContractInfo, TokenMetadata } from "@0xsequence/indexer";
+import { ContractInfo } from "@0xsequence/metadata";
 import { Collectible } from "../collectable/Collectable";
 import { UnpackedSaleConfigurationProps } from "~/helpers";
 import { CollectableSkeleton } from "~/components/collectable/CollectableSkeleton";
+import { TokenMetadata } from "@0xsequence/metadata";
 
 interface ItemsForSaleProps {
   collectionAddress: string;
   chainId: number;
-  totalMinted: string | undefined;
   totalSupply: string | 0;
   totalMintedNftsPercentage: number;
   userPaymentCurrencyBalance: bigint | undefined;
@@ -24,7 +23,6 @@ interface ItemsForSaleProps {
 export const ItemsForSale = ({
   collectionAddress,
   chainId,
-  totalMinted,
   totalSupply,
   totalMintedNftsPercentage,
   userPaymentCurrencyBalance,
@@ -81,7 +79,6 @@ export const ItemsForSale = ({
                 currencyData={currencyData}
                 totalMintedNftsPercentage={totalMintedNftsPercentage}
                 totalSupply={totalSupply}
-                totalNftsMinted={totalMinted}
                 userPaymentCurrencyBalance={userPaymentCurrencyBalance}
                 price={price}
                 currencyDecimals={currencyDecimals}

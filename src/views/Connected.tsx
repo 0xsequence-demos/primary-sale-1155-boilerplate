@@ -169,7 +169,6 @@ export function Connected() {
         <ItemsForSale
           chainId={saleConfiguration.chainId}
           collectionAddress={saleConfiguration.nftTokenAddress}
-          totalMinted={nftsMinted?.toString()}
           totalSupply={totalSupply}
           totalMintedNftsPercentage={totalMintedNftsPercentage}
           userPaymentCurrencyBalance={userPaymentCurrencyBalance}
