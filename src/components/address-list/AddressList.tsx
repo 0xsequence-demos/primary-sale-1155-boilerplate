@@ -8,7 +8,7 @@ export function AddressList({
   children: ReactElement | ReactElement[];
   chainId: number;
 }) {
-  const url = `${getChain(chainId)?.explorerUrl}/address/`;
+  const url = `${getChain(chainId)?.blockExplorer?.rootUrl}/address/`;
 
   const childrenWithProps = Children.map(
     children as ReactElement | ReactElement[],
