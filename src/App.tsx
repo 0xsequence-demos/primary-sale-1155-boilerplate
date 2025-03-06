@@ -87,8 +87,8 @@ function App() {
   return (
     <SequenceBoilerplate
       githubUrl="https://github.com/0xsequence-demos/primary-sale-1155-boilerplate/"
-      name="Primary Sale 1155 Boilerplate"
-      description="Example of how to perform primary sales of 1155 NFTs using Sequence."
+      // name="Primary Sale 1155 Boilerplate"
+      // description="Example of how to perform primary sales of 1155 NFTs using Sequence."
       docsUrl="https://docs.sequence.xyz/"
       wagmi={{ useAccount, useDisconnect, useSwitchChain }}
       faucetUrl="https://faucet.circle.com/"
