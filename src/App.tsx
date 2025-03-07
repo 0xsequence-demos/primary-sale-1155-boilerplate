@@ -7,9 +7,6 @@ import "react-toastify/dist/ReactToastify.css";
 import { SequenceBoilerplate } from "boilerplate-design-system";
 import { useAccount, useDisconnect, useSwitchChain } from "wagmi";
 
-import { Connected } from "~/views/Connected";
-import { NotConnected } from "~/views/NotConnected";
-
 import { Chain, Transport } from "viem";
 import { allNetworks, findNetworkConfig } from "@0xsequence/network";
 import { defaultChainId } from "./config/sales/salesConfigs";
@@ -18,6 +15,12 @@ import { Toaster } from "sonner";
 
 import "@0xsequence/design-system/styles.css";
 import { useNetworkBalance } from "~/hooks/useNetworkBalance";
+
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router";
+import Marketplace from "./pages/Marketplace";
+import Inventory from "./pages/Inventory";
+import Home from "./pages/Home";
 
 const queryClient = new QueryClient();
 
@@ -80,7 +83,7 @@ export default function Layout() {
   );
 }
 
-function App() {
+const App: React.FC = () => {
   const { isConnected, address, chainId } = useAccount();
   const balance = useNetworkBalance({ address, chainId });
 
@@ -94,7 +97,13 @@ function App() {
       faucetUrl="https://faucet.circle.com/"
       balance={balance ? `$${balance}` : false}
     >
-      {isConnected ? <Connected /> : <NotConnected />}
+      <Router>
+        <Routes>
+          <Route path="/" element={<Home isConnected={isConnected} />} />
+          <Route path="/marketplace" element={<Marketplace />} />
+          <Route path="/inventory" element={<Inventory />} />
+        </Routes>
+      </Router>
     </SequenceBoilerplate>
   );
-}
+};

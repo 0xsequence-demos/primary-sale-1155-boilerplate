@@ -7,6 +7,7 @@ import { useTexture } from "@react-three/drei";
 interface CardProps {
   isChestOpen: boolean;
   position?: [number, number, number];
+  imageNumber?: number;
 }
 
 const getRandomInt = (min: number, max: number): number => {
@@ -22,7 +23,10 @@ export function Card(props: CardProps) {
     pauseTimer: 0,
   });
 
-  const imageNumber = useMemo(() => getRandomInt(1, 22), []);
+  const imageNumber = useMemo(
+    () => props.imageNumber || getRandomInt(1, 22),
+    [props.imageNumber],
+  );
 
   // Create texture loader with error handling
   const textures = useTexture({
