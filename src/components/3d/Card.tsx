@@ -15,6 +15,12 @@ const getRandomInt = (min: number, max: number): number => {
 
 export function Card(props: CardProps) {
   const meshRef = useRef<THREE.Mesh>(null);
+  // Track rotation state
+  const rotationState = useRef({
+    totalRotation: 0,
+    isPaused: false,
+    pauseTimer: 0,
+  });
 
   const imageNumber = useMemo(() => getRandomInt(1, 22), []);
 
@@ -36,7 +42,28 @@ export function Card(props: CardProps) {
 
   useFrame((_, delta) => {
     if (meshRef.current && props.isChestOpen) {
+      const state = rotationState.current;
+
+      // Check if we're in pause state
+      if (state.isPaused) {
+        state.pauseTimer += delta;
+        // Resume rotation after 5 seconds
+        if (state.pauseTimer >= 5) {
+          state.isPaused = false;
+          state.pauseTimer = 0;
+        }
+        return;
+      }
+
+      // Continue rotation
       meshRef.current.rotation.y += delta * 0.8;
+      state.totalRotation += delta * 0.8;
+
+      // Check if we completed a full rotation (2π radians)
+      if (state.totalRotation >= Math.PI * 2) {
+        state.isPaused = true;
+        state.totalRotation = 0;
+      }
     }
   });
 

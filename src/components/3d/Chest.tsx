@@ -66,7 +66,6 @@ function Chest() {
       clamp: true,
     },
   });
-  // const rotation = openSpring.to([0, 1], [0, Math.PI * 0.65]);
 
   const rotation = openSpring.to(
     [0, 1],
