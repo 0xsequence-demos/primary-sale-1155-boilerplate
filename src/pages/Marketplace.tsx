@@ -2,11 +2,7 @@ import React, { useState } from "react";
 import Card from "../components/Card";
 import mockCards from "../data/mockData";
 import CardDetailModal from "../components/CardDetailModal";
-import {
-  getRarityForCard,
-  getMarketPriceForCard,
-  getDescriptionForCard,
-} from "../utils/cardUtils";
+import { getRarityForCard, getDescriptionForCard } from "../utils/cardUtils";
 
 interface CardDetails {
   id: number;
@@ -57,29 +53,14 @@ const Marketplace: React.FC = () => {
             className="cursor-pointer transition-transform hover:scale-105"
             onClick={() => handleCardClick(card)}
           >
-            <Card
-              key={card.id}
-              id={card.id}
-              name={card.name}
-              image={card.image}
-              price={card.price}
-              onBuy={(e) => {
-                e.stopPropagation(); // Prevent modal from opening when buy button is clicked
-                handleBuy(card.id);
-              }}
-            />
+            <Card key={card.id} id={card.id} name={card.name} image={card.image} />
           </div>
         ))}
       </div>
 
       {/* Modal for 3D view */}
       {isModalOpen && selectedCard && (
-        <CardDetailModal
-          card={selectedCard}
-          onClose={closeModal}
-          showBuyButton={true}
-          onBuy={handleBuy}
-        />
+        <CardDetailModal card={selectedCard} onClose={closeModal} showBuyButton={true} onBuy={handleBuy} />
       )}
     </div>
   );

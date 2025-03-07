@@ -24,16 +24,14 @@ import Home from "./pages/Home";
 
 const queryClient = new QueryClient();
 
-function getTransportConfigs(
-  chains: [Chain, ...Chain[]],
-): Record<number, Transport> {
+function getTransportConfigs(chains: [Chain, ...Chain[]]): Record<number, Transport> {
   return chains.reduce(
     (acc, chain) => {
       const network = findNetworkConfig(allNetworks, chain.id);
       if (network) acc[chain.id] = http(network.rpcUrl);
       return acc;
     },
-    {} as Record<number, Transport>,
+    {} as Record<number, Transport>
   );
 }
 
@@ -90,8 +88,8 @@ const App: React.FC = () => {
   return (
     <SequenceBoilerplate
       githubUrl="https://github.com/0xsequence-demos/primary-sale-1155-boilerplate/"
-      // name="Primary Sale 1155 Boilerplate"
-      // description="Example of how to perform primary sales of 1155 NFTs using Sequence."
+      name="ERC 1155 Pack Boilerplate"
+      description="Example of how to perform sales of 1155 NFT Pack using Sequence."
       docsUrl="https://docs.sequence.xyz/"
       wagmi={{ useAccount, useDisconnect, useSwitchChain }}
       faucetUrl="https://faucet.circle.com/"
