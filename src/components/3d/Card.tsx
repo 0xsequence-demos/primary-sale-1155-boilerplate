@@ -3,7 +3,8 @@ import { useFrame } from "@react-three/fiber";
 import { useSpring, animated } from "@react-spring/three";
 import * as THREE from "three";
 import { useTexture } from "@react-three/drei";
-
+import { JOKERS } from "~/jokers";
+import Word from "./Word";
 interface CardProps {
   isChestOpen: boolean;
   position?: [number, number, number];
@@ -23,14 +24,12 @@ export function Card(props: CardProps) {
     pauseTimer: 0,
   });
 
-  const imageNumber = useMemo(
-    () => props.imageNumber || getRandomInt(1, 22),
-    [props.imageNumber],
-  );
+  const imageNumber = useMemo(() => getRandomInt(1, 155), [props.imageNumber]);
+  const joker = JOKERS[imageNumber];
 
   // Create texture loader with error handling
   const textures = useTexture({
-    front: `/img-${imageNumber}.png`,
+    front: `/jokers-wiki-fandom/${joker.Name.split(" ").join("_")}.png`,
     back: "/card-bg.png",
   });
 
@@ -59,14 +58,20 @@ export function Card(props: CardProps) {
         return;
       }
 
-      // Continue rotation
-      meshRef.current.rotation.y += delta * 0.8;
-      state.totalRotation += delta * 0.8;
+      // Ensure the card starts at 0 degrees (front face seen)
+      if (state.totalRotation === 0) {
+        meshRef.current.rotation.y = 0;
+      }
+      const rotationStep = delta * 0.8;
 
-      // Check if we completed a full rotation (2π radians)
-      if (state.totalRotation >= Math.PI * 2) {
-        state.isPaused = true;
-        state.totalRotation = 0;
+      // Check if next step would exceed 2π
+      if (state.totalRotation + rotationStep >= Math.PI * 2) {
+        meshRef.current.rotation.y = Math.PI * 2; // Snap to exact 2π
+        state.totalRotation = 0; // Reset rotation count
+        state.isPaused = true; // Pause rotation
+      } else {
+        meshRef.current.rotation.y += rotationStep;
+        state.totalRotation += rotationStep;
       }
     }
   });
@@ -83,8 +88,8 @@ export function Card(props: CardProps) {
       <meshStandardMaterial
         map={textures.front}
         side={THREE.FrontSide}
-        metalness={0.5}
-        roughness={0.4}
+        metalness={0.9}
+        roughness={0.9}
       />
 
       {/* Back of card */}
@@ -97,6 +102,9 @@ export function Card(props: CardProps) {
           roughness={0.4}
         />
       </mesh>
+
+      <Word position={[0, -1.3, 0]}>{joker.Name}</Word>
+      <Word position={[0, -1.5, 0]}>{joker.Rarity}</Word>
     </animated.mesh>
   );
 }

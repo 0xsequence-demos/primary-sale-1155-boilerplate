@@ -1,3 +1,4 @@
+import { ThemeProvider } from "@0xsequence/design-system";
 import { getDefaultWaasConnectors, KitProvider } from "@0xsequence/kit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createConfig, http, WagmiProvider } from "wagmi";
@@ -24,14 +25,16 @@ import Home from "./pages/Home";
 
 const queryClient = new QueryClient();
 
-function getTransportConfigs(chains: [Chain, ...Chain[]]): Record<number, Transport> {
+function getTransportConfigs(
+  chains: [Chain, ...Chain[]],
+): Record<number, Transport> {
   return chains.reduce(
     (acc, chain) => {
       const network = findNetworkConfig(allNetworks, chain.id);
       if (network) acc[chain.id] = http(network.rpcUrl);
       return acc;
     },
-    {} as Record<number, Transport>
+    {} as Record<number, Transport>,
   );
 }
 
@@ -68,16 +71,18 @@ export default function Layout() {
   };
 
   return (
-    <WagmiProvider config={config}>
-      <QueryClientProvider client={queryClient}>
-        <KitProvider config={kitConfig}>
-          <KitCheckoutProvider>
-            <Toaster />
-            <App />
-          </KitCheckoutProvider>
-        </KitProvider>
-      </QueryClientProvider>
-    </WagmiProvider>
+    <ThemeProvider theme="dark">
+      <WagmiProvider config={config}>
+        <QueryClientProvider client={queryClient}>
+          <KitProvider config={kitConfig}>
+            <KitCheckoutProvider>
+              <Toaster />
+              <App />
+            </KitCheckoutProvider>
+          </KitProvider>
+        </QueryClientProvider>
+      </WagmiProvider>
+    </ThemeProvider>
   );
 }
 
