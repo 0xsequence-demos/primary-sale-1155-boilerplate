@@ -1,5 +1,5 @@
 import { Address, Chain } from "viem";
-import { getDefaultChains } from "@0xsequence/kit";
+import { getDefaultChains } from "@0xsequence/connect";
 import {
   defaultChainId,
   salesConfigs as salesConfigurations,

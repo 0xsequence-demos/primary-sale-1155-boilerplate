@@ -1,8 +1,11 @@
-import { getDefaultWaasConnectors, KitProvider } from "@0xsequence/kit";
+import {
+  getDefaultWaasConnectors,
+  SequenceConnectProvider,
+} from "@0xsequence/connect";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createConfig, http, WagmiProvider } from "wagmi";
 import { chains } from "~/helpers";
-import { KitCheckoutProvider } from "@0xsequence/kit-checkout";
+import { SequenceCheckoutProvider } from "@0xsequence/checkout";
 import "react-toastify/dist/ReactToastify.css";
 import { SequenceBoilerplate } from "boilerplate-design-system";
 import { useAccount, useDisconnect, useSwitchChain } from "wagmi";
@@ -16,7 +19,6 @@ import { defaultChainId } from "./config/sales/salesConfigs";
 
 import { Toaster } from "sonner";
 
-import "@0xsequence/design-system/styles.css";
 import { useNetworkBalance } from "~/hooks/useNetworkBalance";
 
 const queryClient = new QueryClient();
@@ -69,12 +71,12 @@ export default function Layout() {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <KitProvider config={kitConfig}>
-          <KitCheckoutProvider>
+        <SequenceConnectProvider config={kitConfig}>
+          <SequenceCheckoutProvider>
             <Toaster />
             <App />
-          </KitCheckoutProvider>
-        </KitProvider>
+          </SequenceCheckoutProvider>
+        </SequenceConnectProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );
