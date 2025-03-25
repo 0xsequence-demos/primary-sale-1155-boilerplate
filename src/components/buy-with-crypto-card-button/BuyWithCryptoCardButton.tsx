@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { getSaleConfiguration } from "~/helpers";
 import { ContractInfo } from "@0xsequence/metadata";
 import { Button } from "boilerplate-design-system";
-import { useERC1155SaleContractCheckout } from "@0xsequence/kit-checkout";
+import { useERC1155SaleContractPaymentModal } from "@0xsequence/checkout";
 
 interface BuyWithCryptoCardButtonProps {
   tokenId: string;
@@ -45,7 +45,7 @@ export const BuyWithCryptoCardButton = ({
     () => getSaleConfiguration(chainId),
     [chainId],
   );
-  const { openCheckoutModal } = useERC1155SaleContractCheckout({
+  const { openCheckoutModal } = useERC1155SaleContractPaymentModal({
     chain: saleConfiguration.chainId,
     contractAddress: saleConfiguration.salesContractAddress,
     wallet: userAddress!,
@@ -77,7 +77,7 @@ export const BuyWithCryptoCardButton = ({
   const amountBigInt = BigInt(amount);
   const totalPrice = nftPriceBigInt * amountBigInt;
 
-  const onClickBuy = async () => {
+  const onClickBuy = () => {
     if (
       !publicClient ||
       !walletClient ||
