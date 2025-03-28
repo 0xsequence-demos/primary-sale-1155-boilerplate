@@ -20,6 +20,7 @@ import { AddressList } from "~/components/address-list/AddressList";
 import { AddressListItem } from "~/components/address-list/AddressListItem";
 import { PrimarySale } from "~/components/primary-sale/PrimarySale";
 import { useNFTSales } from "~/hooks/useNFTSales";
+import { getChain } from "~/config/ERC20/getChain";
 
 interface GlobalSalesDetailsData {
   cost: bigint;
@@ -112,6 +113,27 @@ export function Connected() {
   );
   const currencyDecimals: number | undefined = currencyData?.decimals;
 
+  const addressListData: Array<[string, string]> = [];
+
+  if (userAddress) {
+    addressListData.push(["User Address", userAddress]);
+  }
+  addressListData.push([
+    "Sales Contract",
+    saleConfiguration.salesContractAddress,
+  ]);
+  addressListData.push([
+    "NFT Token Contract",
+    saleConfiguration.nftTokenAddress,
+  ]);
+  if (currencyData) {
+    addressListData.push(["Payment Currency Address", currencyData?.address]);
+  }
+
+  const urlBase = chainId
+    ? getChain(chainId)?.blockExplorer?.rootUrl
+    : undefined;
+
   return (
     <div className="flex flex-col gap-12">
       {/* <UserInfo
@@ -144,20 +166,15 @@ export function Connected() {
               title="Extra info for nerds"
               className="border-t border-white/10 rounded-none bg-transparent"
             >
-              <AddressList chainId={chainId}>
-                <AddressListItem label="User Address" address={userAddress} />
-                <AddressListItem
-                  label="Sales Contract"
-                  address={saleConfiguration.salesContractAddress}
-                />
-                <AddressListItem
-                  label="NFT Token Contract"
-                  address={saleConfiguration.nftTokenAddress}
-                />
-                <AddressListItem
-                  label="Payment Currency Address"
-                  address={currencyData?.address}
-                />
+              <AddressList>
+                {addressListData.map((data) => (
+                  <AddressListItem
+                    key={data[0]}
+                    label={data[0]}
+                    address={data[1]}
+                    url={urlBase ? `${urlBase}address/` : ""}
+                  />
+                ))}
               </AddressList>
             </Card>
           )}
