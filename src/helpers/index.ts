@@ -1,12 +1,8 @@
 import { Address, Chain } from "viem";
 import { getDefaultChains } from "@0xsequence/connect";
-import {
-  defaultChainId,
-  salesConfigs as salesConfigurations,
-} from "../config/sales/salesConfigs";
+import { defaultChainId, salesConfigs } from "../config/sales/salesConfigs";
 
 import type { Chain as ChainType } from "wagmi/chains";
-import { salesConfigs } from "../config/sales/salesConfigs";
 
 interface SaleItem {
   tokenId: string;
@@ -20,7 +16,7 @@ export interface UnpackedSaleConfigurationProps {
   itemsForSale: SaleItem[];
 }
 
-const unpackedSalesConfigurations = salesConfigurations.map((item) => {
+const unpackedSalesConfigurations = salesConfigs.map((item) => {
   const { nftTokenAddress, salesContractAddress, chainId, itemsForSale } = item;
   const chain = getChainConfig(chainId);
   return {

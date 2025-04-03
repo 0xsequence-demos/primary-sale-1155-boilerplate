@@ -6,7 +6,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createConfig, http, WagmiProvider } from "wagmi";
 import { chains } from "./helpers";
 import { SequenceCheckoutProvider } from "@0xsequence/checkout";
-import "react-toastify/dist/ReactToastify.css";
 
 import { Chain, Transport } from "viem";
 import { allNetworks, findNetworkConfig } from "@0xsequence/network";
