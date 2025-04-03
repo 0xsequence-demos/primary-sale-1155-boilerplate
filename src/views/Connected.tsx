@@ -4,23 +4,23 @@ import { useAccount, useReadContract } from "wagmi";
 import { useContractInfo } from "../hooks/data";
 import { useSalesCurrency } from "../hooks/useSalesCurrency";
 
-import { SALES_CONTRACT_ABI } from "~/config/sales/salesContractAbi";
-import { NFT_TOKEN_CONTRACT_ABI } from "~/config/nft-token/nftTokenContractAbi";
-import { ERC20_ABI } from "~/config/ERC20/ERC20_abi";
+import { SALES_CONTRACT_ABI } from "../config/sales/salesContractAbi";
+import { NFT_TOKEN_CONTRACT_ABI } from "../config/nft-token/nftTokenContractAbi";
+import { ERC20_ABI } from "../config/ERC20/ERC20_abi";
 
-import { calculateMintedPercentage, getSaleConfiguration } from "~/helpers";
+import { calculateMintedPercentage, getSaleConfiguration } from "../helpers";
 
 // UI - Library
 import { Card, Divider, Group } from "boilerplate-design-system";
 // UI - Local
 import { ItemsForSale } from "../components/items-for-sale/ItemsForSale";
 // import { UserInfo } from "../components/user-info/UserInfo";
-import { PrimarySaleSkeleton } from "~/components/primary-sale/PrimarySaleSkeleton";
-import { AddressList } from "~/components/address-list/AddressList";
-import { AddressListItem } from "~/components/address-list/AddressListItem";
-import { PrimarySale } from "~/components/primary-sale/PrimarySale";
-import { useNFTSales } from "~/hooks/useNFTSales";
-import { getChain } from "~/config/ERC20/getChain";
+import { PrimarySaleSkeleton } from "../components/primary-sale/PrimarySaleSkeleton";
+import { AddressList } from "../components/address-list/AddressList";
+import { AddressListItem } from "../components/address-list/AddressListItem";
+import { PrimarySale } from "../components/primary-sale/PrimarySale";
+import { useNFTSales } from "../hooks/useNFTSales";
+import { getChain } from "../config/ERC20/getChain";
 
 interface GlobalSalesDetailsData {
   cost: bigint;

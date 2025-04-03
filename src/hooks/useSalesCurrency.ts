@@ -1,8 +1,8 @@
 import { useReadContract } from "wagmi";
 
-import { useContractInfo } from "../hooks/data";
+import { useContractInfo } from "./data";
 import { SALES_CONTRACT_ABI } from "../config/sales/salesContractAbi";
-import { UnpackedSaleConfigurationProps } from "~/helpers";
+import { UnpackedSaleConfigurationProps } from "../helpers";
 
 export const useSalesCurrency = (
   saleConfiguration: UnpackedSaleConfigurationProps,

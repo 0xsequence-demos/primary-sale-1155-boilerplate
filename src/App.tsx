@@ -4,14 +4,14 @@ import {
 } from "@0xsequence/connect";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createConfig, http, WagmiProvider } from "wagmi";
-import { chains } from "~/helpers";
+import { chains } from "./helpers";
 import { SequenceCheckoutProvider } from "@0xsequence/checkout";
 import "react-toastify/dist/ReactToastify.css";
 import { SequenceBoilerplate } from "boilerplate-design-system";
 import { useAccount, useDisconnect, useSwitchChain } from "wagmi";
 
-import { Connected } from "~/views/Connected";
-import { NotConnected } from "~/views/NotConnected";
+import { Connected } from "./views/Connected";
+import { NotConnected } from "./views/NotConnected";
 
 import { Chain, Transport } from "viem";
 import { allNetworks, findNetworkConfig } from "@0xsequence/network";
@@ -19,7 +19,7 @@ import { defaultChainId } from "./config/sales/salesConfigs";
 
 import { Toaster } from "sonner";
 
-import { useNetworkBalance } from "~/hooks/useNetworkBalance";
+import { useNetworkBalance } from "./hooks/useNetworkBalance";
 
 const queryClient = new QueryClient();
 

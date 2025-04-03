@@ -1,11 +1,11 @@
 import { useMemo } from "react";
 import { useReadContract } from "wagmi";
 
-import { useSalesCurrency } from "../hooks/useSalesCurrency";
+import { useSalesCurrency } from "./useSalesCurrency";
 
-import { ERC20_ABI } from "~/config/ERC20/ERC20_abi";
+import { ERC20_ABI } from "../config/ERC20/ERC20_abi";
 
-import { formatPriceWithDecimals, getSaleConfiguration } from "~/helpers";
+import { formatPriceWithDecimals, getSaleConfiguration } from "../helpers";
 
 export function useNetworkBalance({
   address,

@@ -2,12 +2,12 @@ import { BuyWithCryptoCardButton } from "../buy-with-crypto-card-button/BuyWithC
 import { useState } from "react";
 import { ContractInfo } from "@0xsequence/metadata";
 import { TokenMetadata } from "@0xsequence/metadata";
-import { NFT_TOKEN_CONTRACT_ABI } from "~/config/nft-token/nftTokenContractAbi";
+import { NFT_TOKEN_CONTRACT_ABI } from "../../config/nft-token/nftTokenContractAbi";
 import { useReadContract } from "wagmi";
 import {
   UnpackedSaleConfigurationProps,
   formatPriceWithDecimals,
-} from "~/helpers";
+} from "../../helpers";
 
 import { Form, Svg, Image } from "boilerplate-design-system";
 

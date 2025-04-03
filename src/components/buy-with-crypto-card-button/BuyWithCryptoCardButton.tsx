@@ -1,7 +1,7 @@
 import { usePublicClient, useWalletClient, useAccount } from "wagmi";
-import { getChain } from "~/config/ERC20/getChain";
+import { getChain } from "../../config/ERC20/getChain";
 import { useMemo } from "react";
-import { getSaleConfiguration } from "~/helpers";
+import { getSaleConfiguration } from "../../helpers";
 import { ContractInfo } from "@0xsequence/metadata";
 import { Button } from "boilerplate-design-system";
 import { useERC1155SaleContractPaymentModal } from "@0xsequence/checkout";

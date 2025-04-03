@@ -1,4 +1,4 @@
-import { MintedProgressBar } from "~/components/minted-progress-bar/MintedProgressBar";
+import { MintedProgressBar } from "../minted-progress-bar/MintedProgressBar";
 
 export function PrimarySaleSkeleton() {
   return (

@@ -1,5 +1,5 @@
 import { Button, Svg } from "boilerplate-design-system";
-import { MintedProgressBar } from "~/components/minted-progress-bar/MintedProgressBar";
+import { MintedProgressBar } from "../minted-progress-bar/MintedProgressBar";
 
 export function CollectableSkeleton() {
   return (

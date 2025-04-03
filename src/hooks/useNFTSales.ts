@@ -1,10 +1,10 @@
 import { useMemo } from "react";
 import { useReadContract } from "wagmi";
 
-import { SALES_CONTRACT_ABI } from "~/config/sales/salesContractAbi";
-import { NFT_TOKEN_CONTRACT_ABI } from "~/config/nft-token/nftTokenContractAbi";
+import { SALES_CONTRACT_ABI } from "../config/sales/salesContractAbi";
+import { NFT_TOKEN_CONTRACT_ABI } from "../config/nft-token/nftTokenContractAbi";
 
-import { calculateMintedPercentage, getSaleConfiguration } from "~/helpers";
+import { calculateMintedPercentage, getSaleConfiguration } from "../helpers";
 
 // UI - Library
 

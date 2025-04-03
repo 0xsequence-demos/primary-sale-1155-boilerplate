@@ -1,5 +1,5 @@
 import { Image } from "boilerplate-design-system";
-import { MintedProgressBar } from "~/components/minted-progress-bar/MintedProgressBar";
+import { MintedProgressBar } from "../minted-progress-bar/MintedProgressBar";
 
 type Collection = {
   name?: string;
