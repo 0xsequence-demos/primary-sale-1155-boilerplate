@@ -1,55 +1,43 @@
 import { useAccount } from "wagmi";
 import { useTokenMetadata, useCollectionBalance } from "../../hooks/data";
-import { ContractInfo } from "@0xsequence/metadata";
 import { Collectible } from "../collectable/Collectable";
-import { UnpackedSaleConfigurationProps } from "../../helpers";
 import { CollectableSkeleton } from "../collectable/CollectableSkeleton";
 import { TokenMetadata } from "@0xsequence/metadata";
+import { useSalesCurrency } from "../../contexts/SalesCurrencyContext";
+import { useSalesConfig } from "../../contexts/SalesConfigContext";
+import { useSalesDetails } from "../../contexts/SalesDetailsContext";
 
-interface ItemsForSaleProps {
-  collectionAddress: string;
-  chainId: number;
-  userPaymentCurrencyBalance: bigint | undefined;
-  price: bigint;
-  currencyDecimals: number | undefined;
-  currencyInfo: ContractInfo | undefined;
-  currencyIsLoading: boolean;
-  saleConfiguration: UnpackedSaleConfigurationProps;
-  refetchTotalMinted: () => void;
-}
-
-export const ItemsForSale = ({
-  collectionAddress,
-  chainId,
-  userPaymentCurrencyBalance,
-  price,
-  currencyDecimals,
-  currencyInfo,
-  currencyIsLoading,
-  saleConfiguration,
-  refetchTotalMinted,
-}: ItemsForSaleProps) => {
+export const ItemsForSale = () => {
   const { address: userAddress } = useAccount();
+  const nftSalesData = useSalesDetails();
+
+  const price = nftSalesData?.cost || BigInt(0);
+
+  const saleConfig = useSalesConfig();
   const {
     data: collectionBalanceData,
     isLoading: collectionBalanceIsLoading,
     refetch: refetchCollectionBalance,
   } = useCollectionBalance({
     accountAddress: userAddress || "",
-    contractAddress: collectionAddress,
-    chainId,
+    contractAddress: saleConfig.nftTokenAddress,
+    chainId: saleConfig.chainId,
     includeMetadata: false,
     verifiedOnly: false,
   });
   const { data: tokenMetadatas, isLoading: tokenMetadatasLoading } =
     useTokenMetadata(
-      chainId,
-      collectionAddress,
-      saleConfiguration.itemsForSale.map((item) => item.tokenId),
+      saleConfig.chainId,
+      saleConfig.nftTokenAddress,
+      saleConfig.itemsForSale.map((item) => item.tokenId),
     );
 
+  const { isLoading: isCurrencyInfoLoading } = useSalesCurrency();
+
   const isLoading =
-    tokenMetadatasLoading || collectionBalanceIsLoading || currencyIsLoading;
+    tokenMetadatasLoading ||
+    collectionBalanceIsLoading ||
+    isCurrencyInfoLoading;
 
   return (
     <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
@@ -68,17 +56,14 @@ export const ItemsForSale = ({
 
             return (
               <Collectible
-                key={collectionAddress + tokenMetadata.tokenId}
+                key={saleConfig.nftTokenAddress + tokenMetadata.tokenId}
                 collectibleBalance={collectibleBalance}
                 tokenMetadata={tokenMetadata}
-                chainId={chainId}
-                currencyInfo={currencyInfo}
-                userPaymentCurrencyBalance={userPaymentCurrencyBalance}
                 price={price}
-                currencyDecimals={currencyDecimals}
-                saleConfiguration={saleConfiguration}
-                refetchCollectionBalance={refetchCollectionBalance}
-                refetchTotalMinted={refetchTotalMinted}
+                onPurchaseSuccess={() => {
+                  refetchCollectionBalance();
+                  nftSalesData.refetchTotalMinted();
+                }}
               />
             );
           })}
