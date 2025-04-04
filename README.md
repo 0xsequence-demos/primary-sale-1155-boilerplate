@@ -1,21 +1,23 @@
 # Sequence Primary Sale 1155 Boilerplate
 
-## Coming soon!
-
 Starter Sequence boilerplate demonstrating how to perform primary sales of 1155 NFTs using Sequence.
 
 ## Quickstart
 
-Copy `.env.example` to `.env` and fill with your project information. To test things out, you can use the pre-provided keys in the `.env.example` file:
-
-```
-cp .env.example .env
-```
-
-Then install and run:
+Use pnpm to install dependencies:
 
 ```js
-pnpm install && pnpm dev
+pnpm install
+```
+
+This will also copy `.env.example` to `.env` if `.env` doesn't exist yet.
+
+You can use the pre-provided env vars to test things out.
+
+Run the project locally:
+
+```js
+pnpm dev
 ```
 
 The app will start on `localhost:4444`
