@@ -66,7 +66,7 @@ export const formatPriceWithDecimals = (
   });
 };
 
-export function getChainConfig(chainId: number): Chain {
+function getChainConfig(chainId: number): Chain {
   return getDefaultChains([chainId])[0];
 }
 

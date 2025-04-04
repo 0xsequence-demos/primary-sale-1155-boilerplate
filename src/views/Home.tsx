@@ -1,21 +1,14 @@
 import { SequenceBoilerplate } from "boilerplate-design-system";
 import { useAccount, useDisconnect, useSwitchChain } from "wagmi";
 
-import { Connected } from "./Connected";
+import Connected from "./Connected";
 import { NotConnected } from "./NotConnected";
-import { useMemo } from "react";
-import { getSaleConfiguration } from "../helpers";
-import { useNetworkBalancePretty } from "../hooks/useNetworkBalancePretty";
+import { useUserPaymentCurrencyBalancePretty } from "../hooks/useUserPaymentCurrencyBalancePretty";
 
 export default function Home() {
   const { isConnected, address, chainId } = useAccount();
 
-  const saleConfiguration = useMemo(
-    () => getSaleConfiguration(chainId),
-    [chainId],
-  );
-
-  const balance = useNetworkBalancePretty({ address, saleConfiguration });
+  const balance = useUserPaymentCurrencyBalancePretty({ address });
 
   return (
     <SequenceBoilerplate
@@ -28,11 +21,7 @@ export default function Home() {
       balance={balance ? `$${balance}` : false}
     >
       {isConnected && address && chainId ? (
-        <Connected
-          saleConfiguration={saleConfiguration}
-          userAddress={address}
-          chainId={chainId}
-        />
+        <Connected userAddress={address} chainId={chainId} />
       ) : (
         <NotConnected />
       )}

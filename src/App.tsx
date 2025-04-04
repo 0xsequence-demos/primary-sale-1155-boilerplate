@@ -13,6 +13,7 @@ import { defaultChainId } from "./config/sales/salesConfigs";
 
 import { Toaster } from "sonner";
 import Home from "./views/Home";
+import Contexts from "./views/Contexts";
 
 const queryClient = new QueryClient();
 
@@ -67,7 +68,9 @@ export default function App() {
         <SequenceConnectProvider config={kitConfig}>
           <SequenceCheckoutProvider>
             <Toaster />
-            <Home />
+            <Contexts>
+              <Home />
+            </Contexts>
           </SequenceCheckoutProvider>
         </SequenceConnectProvider>
       </QueryClientProvider>

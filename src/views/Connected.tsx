@@ -1,65 +1,32 @@
-import { useContractInfo } from "../hooks/data";
-import { useSalesCurrency } from "../hooks/useSalesCurrency";
-
-import { UnpackedSaleConfigurationProps } from "../helpers";
-
 import { Card, Divider, Group } from "boilerplate-design-system";
 import { ItemsForSale } from "../components/items-for-sale/ItemsForSale";
 import { AddressList } from "../components/address-list/AddressList";
 import { AddressListItem } from "../components/address-list/AddressListItem";
 import { PrimarySale } from "../components/primary-sale/PrimarySale";
-import { useNFTSales } from "../hooks/useNFTSales";
 import { getChain } from "../config/ERC20/getChain";
-import { useNetworkBalance } from "../hooks/useNetworkBalance";
+import { useSalesCurrency } from "../contexts/SalesCurrencyContext";
+import { useSalesConfig } from "../contexts/SalesConfigContext";
+import { Address } from "viem";
 
-export function Connected(props: {
-  userAddress: `0x${string}`;
+export default function Connected(props: {
+  userAddress: Address;
   chainId: number;
-  saleConfiguration: UnpackedSaleConfigurationProps;
 }) {
-  const { saleConfiguration, chainId, userAddress } = props;
+  const { chainId, userAddress } = props;
 
-  const nftSalesData = useNFTSales({ chainId });
+  const saleConfig = useSalesConfig();
 
-  const { data: currencyData, isLoading: currencyDataIsLoading } =
-    useSalesCurrency(saleConfiguration);
-
-  const balance = useNetworkBalance({
-    address: userAddress,
-    saleConfiguration,
-  });
-
-  const { data: contractInfoData } = useContractInfo(
-    saleConfiguration.chainId,
-    saleConfiguration.nftTokenAddress,
-  );
-
-  const collection = {
-    name: contractInfoData?.name,
-    image: contractInfoData?.logoURI,
-    description: contractInfoData?.extensions?.description,
-  };
-
-  const price = nftSalesData?.cost || BigInt(0);
+  const { info: currencyInfo } = useSalesCurrency();
 
   const addressListData: Array<[string, string]> = [];
 
   if (userAddress) {
     addressListData.push(["User Address", userAddress]);
   }
-  addressListData.push([
-    "Sales Contract",
-    saleConfiguration.salesContractAddress,
-  ]);
-  addressListData.push([
-    "NFT Token Contract",
-    saleConfiguration.nftTokenAddress,
-  ]);
-  if (currencyData.info) {
-    addressListData.push([
-      "Payment Currency Address",
-      currencyData.info.address,
-    ]);
+  addressListData.push(["Sales Contract", saleConfig.salesContractAddress]);
+  addressListData.push(["NFT Token Contract", saleConfig.nftTokenAddress]);
+  if (currencyInfo) {
+    addressListData.push(["Payment Currency Address", currencyInfo.address]);
   }
 
   const urlBase = chainId
@@ -71,7 +38,7 @@ export function Connected(props: {
       <Group title="Primary Sale Info">
         <Card className="flex flex-col gap-5 bg-white/10 border border-white/10 backdrop-blur-sm text-center p-0">
           <div className="p-4">
-            <PrimarySale collection={collection} nftSalesData={nftSalesData} />
+            <PrimarySale />
           </div>
           {chainId && (
             <Card
@@ -95,21 +62,9 @@ export function Connected(props: {
       </Group>
       <Divider />
       <Group>
-        <ItemsForSale
-          chainId={saleConfiguration.chainId}
-          collectionAddress={saleConfiguration.nftTokenAddress}
-          userPaymentCurrencyBalance={balance}
-          price={price}
-          currencyDecimals={currencyData.decimals}
-          currencyInfo={currencyData.info}
-          currencyIsLoading={currencyDataIsLoading}
-          saleConfiguration={saleConfiguration}
-          refetchTotalMinted={nftSalesData.refetchTotalMinted}
-        />
+        <ItemsForSale />
       </Group>
       <Divider />
     </div>
   );
 }
-
-export default Connected;

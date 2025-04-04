@@ -1,6 +1,8 @@
+import { Address } from "viem";
+
 type SaleConfiguration = {
-  nftTokenAddress: `0x${string}`;
-  salesContractAddress: `0x${string}`;
+  nftTokenAddress: Address;
+  salesContractAddress: Address;
   chainId: number;
   itemsForSale: string[];
 };

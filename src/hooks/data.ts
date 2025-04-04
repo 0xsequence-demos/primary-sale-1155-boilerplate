@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useMetadataClient } from "./useMetadataClient";
 import { useIndexerClient } from "./useIndexerClient";
 
-export const time = {
+const time = {
   oneSecond: 1 * 1000,
   oneMinute: 60 * 1000,
   oneHour: 60 * 60 * 1000,
@@ -69,7 +69,7 @@ interface UseCollectionBalanceArgs {
   verifiedOnly?: boolean;
 }
 
-export const getCollectionBalance = async (
+const getCollectionBalance = async (
   indexerClient: SequenceIndexer,
   args: UseCollectionBalanceArgs,
 ) => {

@@ -1,37 +1,27 @@
 import { usePublicClient, useWalletClient, useAccount } from "wagmi";
 import { getChain } from "../../config/ERC20/getChain";
-import { useMemo } from "react";
-import { getSaleConfiguration } from "../../helpers";
-import { ContractInfo } from "@0xsequence/metadata";
 import { Button } from "boilerplate-design-system";
 import { useERC1155SaleContractCheckout } from "@0xsequence/checkout";
+import { useSalesCurrency } from "../../contexts/SalesCurrencyContext";
+import { useSalesConfig } from "../../contexts/SalesConfigContext";
+import { useUserPaymentCurrencyBalance } from "../../hooks/useUserPaymentCurrencyBalance";
 
 interface BuyWithCryptoCardButtonProps {
   tokenId: string;
-  collectionAddress: string;
-  chainId: number;
   amount: number;
   resetAmount: () => void;
   setTxExplorerUrl: (url: string) => void;
-  userPaymentCurrencyBalance: bigint | undefined;
   price: bigint;
-  currencyInfo: ContractInfo | undefined;
-  refetchCollectionBalance: () => void;
-  refetchTotalMinted: () => void;
+  onPurchaseSuccess: () => void;
 }
 
 export const BuyWithCryptoCardButton = ({
   tokenId,
-  // collectionAddress,
-  chainId,
   amount,
   resetAmount,
   setTxExplorerUrl,
-  userPaymentCurrencyBalance,
   price,
-  currencyInfo,
-  refetchCollectionBalance,
-  refetchTotalMinted,
+  onPurchaseSuccess,
 }: BuyWithCryptoCardButtonProps) => {
   const publicClient = usePublicClient();
   const { data: walletClient } = useWalletClient();
@@ -39,15 +29,12 @@ export const BuyWithCryptoCardButton = ({
     address: userAddress,
     // chainId: chainIdUser
   } = useAccount();
-  const saleConfiguration = useMemo(
-    () => getSaleConfiguration(chainId),
-    [chainId],
-  );
+  const saleConfig = useSalesConfig();
   const { openCheckoutModal } = useERC1155SaleContractCheckout({
-    chain: saleConfiguration.chainId,
-    contractAddress: saleConfiguration.salesContractAddress,
+    chain: saleConfig.chainId,
+    contractAddress: saleConfig.salesContractAddress,
     wallet: userAddress!,
-    collectionAddress: saleConfiguration.nftTokenAddress,
+    collectionAddress: saleConfig.nftTokenAddress,
     items: [
       {
         tokenId: String(tokenId),
@@ -55,15 +42,14 @@ export const BuyWithCryptoCardButton = ({
       },
     ],
     onSuccess: (txnHash: string) => {
-      const chainInfoResponse = getChain(chainId);
+      const chainInfoResponse = getChain(saleConfig.chainId);
       if (chainInfoResponse)
         setTxExplorerUrl(
           `${chainInfoResponse?.blockExplorer?.rootUrl}tx/${txnHash}`,
         );
       resetAmount();
-      refetchCollectionBalance();
-      refetchTotalMinted();
       console.log("success!", txnHash);
+      onPurchaseSuccess();
     },
     onError: (error: Error) => {
       console.error(error);
@@ -73,6 +59,11 @@ export const BuyWithCryptoCardButton = ({
   const nftPriceBigInt = price ? price : BigInt(0);
   const amountBigInt = BigInt(amount);
   const totalPrice = nftPriceBigInt * amountBigInt;
+  const { info: currencyInfo } = useSalesCurrency();
+
+  const userPaymentCurrencyBalance = useUserPaymentCurrencyBalance({
+    address: userAddress,
+  });
 
   const onClickBuy = () => {
     if (
@@ -95,15 +86,13 @@ export const BuyWithCryptoCardButton = ({
       userPaymentCurrencyBalance < totalPrice);
 
   return (
-    <>
-      <Button
-        variant="primary"
-        data-nsf={hasNsf}
-        className="rounded-[0.5rem] w-full font-bold text-14 data-[nsf=true]:opacity-50"
-        onClick={onClickBuy}
-      >
-        {hasNsf ? "Insufficient funds" : "Buy"}
-      </Button>
-    </>
+    <Button
+      variant="primary"
+      data-nsf={hasNsf}
+      className="rounded-[0.5rem] w-full font-bold text-14 data-[nsf=true]:opacity-50"
+      onClick={onClickBuy}
+    >
+      {hasNsf ? "Insufficient funds" : "Buy"}
+    </Button>
   );
 };

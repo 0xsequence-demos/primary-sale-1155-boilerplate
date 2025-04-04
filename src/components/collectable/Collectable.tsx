@@ -1,42 +1,28 @@
 import { BuyWithCryptoCardButton } from "../buy-with-crypto-card-button/BuyWithCryptoCardButton";
 import { useState } from "react";
-import { ContractInfo } from "@0xsequence/metadata";
 import { TokenMetadata } from "@0xsequence/metadata";
-import {
-  UnpackedSaleConfigurationProps,
-  formatPriceWithDecimals,
-} from "../../helpers";
+import { formatPriceWithDecimals } from "../../helpers";
 
 import { Form, Svg, Image } from "boilerplate-design-system";
+import { useSalesCurrency } from "../../contexts/SalesCurrencyContext";
 
 interface CollectibleProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   collectibleBalance: { [key: string]: any } | undefined;
   tokenMetadata: TokenMetadata;
-  chainId: number;
-  currencyInfo: ContractInfo | undefined;
-  userPaymentCurrencyBalance: bigint | undefined;
   price: bigint;
-  currencyDecimals: number | undefined;
-  saleConfiguration: UnpackedSaleConfigurationProps;
-  refetchCollectionBalance: () => void;
-  refetchTotalMinted: () => void;
+  onPurchaseSuccess: () => void;
 }
 
 export const Collectible = ({
   collectibleBalance,
   tokenMetadata,
-  chainId,
-  currencyInfo,
-  userPaymentCurrencyBalance,
   price,
-  currencyDecimals,
-  saleConfiguration,
-  refetchCollectionBalance,
-  refetchTotalMinted,
+  onPurchaseSuccess,
 }: CollectibleProps) => {
   const [amount, setAmount] = useState(0);
   const [txExplorerUrl, setTxExplorerUrl] = useState("");
+  const { info: currencyInfo } = useSalesCurrency();
   const logoURI = currencyInfo?.logoURI;
 
   const amountOwned: string = collectibleBalance?.balance || "0";
@@ -54,9 +40,10 @@ export const Collectible = ({
     setAmount(0);
   };
 
-  const formattedPrice = currencyDecimals
-    ? formatPriceWithDecimals(price, currencyDecimals)
-    : 0;
+  const formattedPrice =
+    currencyInfo !== undefined
+      ? formatPriceWithDecimals(price, currencyInfo.decimals)
+      : 0;
 
   return (
     <div className="bg-grey-900 p-4 text-left rounded-[1rem] flex flex-col gap-3">
@@ -124,16 +111,11 @@ export const Collectible = ({
 
           <BuyWithCryptoCardButton
             amount={amount}
-            chainId={chainId}
-            collectionAddress={saleConfiguration.nftTokenAddress}
             tokenId={tokenMetadata.tokenId}
             resetAmount={resetAmount}
             setTxExplorerUrl={setTxExplorerUrl}
-            userPaymentCurrencyBalance={userPaymentCurrencyBalance}
             price={price}
-            currencyInfo={currencyInfo}
-            refetchCollectionBalance={refetchCollectionBalance}
-            refetchTotalMinted={refetchTotalMinted}
+            onPurchaseSuccess={onPurchaseSuccess}
           />
         </Form>
         {txExplorerUrl && (
