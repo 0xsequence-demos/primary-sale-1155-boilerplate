@@ -1,13 +1,21 @@
-import { useNetworkBalance } from "../hooks/useNetworkBalance";
 import { SequenceBoilerplate } from "boilerplate-design-system";
 import { useAccount, useDisconnect, useSwitchChain } from "wagmi";
 
 import { Connected } from "./Connected";
 import { NotConnected } from "./NotConnected";
+import { useMemo } from "react";
+import { getSaleConfiguration } from "../helpers";
+import { useNetworkBalancePretty } from "../hooks/useNetworkBalancePretty";
 
 export default function Home() {
   const { isConnected, address, chainId } = useAccount();
-  const balance = useNetworkBalance({ address, chainId });
+
+  const saleConfiguration = useMemo(
+    () => getSaleConfiguration(chainId),
+    [chainId],
+  );
+
+  const balance = useNetworkBalancePretty({ address, saleConfiguration });
 
   return (
     <SequenceBoilerplate
@@ -19,7 +27,15 @@ export default function Home() {
       faucetUrl="https://faucet.circle.com/"
       balance={balance ? `$${balance}` : false}
     >
-      {isConnected ? <Connected /> : <NotConnected />}
+      {isConnected && address && chainId ? (
+        <Connected
+          saleConfiguration={saleConfiguration}
+          userAddress={address}
+          chainId={chainId}
+        />
+      ) : (
+        <NotConnected />
+      )}
     </SequenceBoilerplate>
   );
 }

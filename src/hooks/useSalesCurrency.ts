@@ -3,6 +3,7 @@ import { useReadContract } from "wagmi";
 import { useContractInfo } from "./data";
 import { SALES_CONTRACT_ABI } from "../config/sales/salesContractAbi";
 import { UnpackedSaleConfigurationProps } from "../helpers";
+import { ERC20_ABI } from "../config/ERC20/ERC20_abi";
 
 export const useSalesCurrency = (
   saleConfiguration: UnpackedSaleConfigurationProps,
@@ -15,6 +16,13 @@ export const useSalesCurrency = (
       address: saleConfiguration.salesContractAddress,
     });
 
+  const { data: decimals } = useReadContract({
+    abi: ERC20_ABI,
+    functionName: "decimals",
+    chainId: saleConfiguration.chainId,
+    address: paymentTokenData as `0x${string}`,
+  });
+
   const paymentTokenAddress = (paymentTokenData as string) || "";
 
   const {
@@ -23,7 +31,7 @@ export const useSalesCurrency = (
   } = useContractInfo(saleConfiguration.chainId, paymentTokenAddress);
 
   return {
-    data: currencyContractInfoData,
+    data: { info: currencyContractInfoData, decimals },
     isLoading: paymentTokenIsLoading || currencyContractInfoIsLoading,
   };
 };

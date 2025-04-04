@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { getSaleConfiguration } from "../../helpers";
 import { ContractInfo } from "@0xsequence/metadata";
 import { Button } from "boilerplate-design-system";
-import { useERC1155SaleContractPaymentModal } from "@0xsequence/checkout";
+import { useERC1155SaleContractCheckout } from "@0xsequence/checkout";
 
 interface BuyWithCryptoCardButtonProps {
   tokenId: string;
@@ -15,10 +15,9 @@ interface BuyWithCryptoCardButtonProps {
   setTxExplorerUrl: (url: string) => void;
   userPaymentCurrencyBalance: bigint | undefined;
   price: bigint;
-  currencyData: ContractInfo | undefined;
+  currencyInfo: ContractInfo | undefined;
   refetchCollectionBalance: () => void;
   refetchTotalMinted: () => void;
-  refetchNftsMinted: () => void;
 }
 
 export const BuyWithCryptoCardButton = ({
@@ -30,10 +29,9 @@ export const BuyWithCryptoCardButton = ({
   setTxExplorerUrl,
   userPaymentCurrencyBalance,
   price,
-  currencyData,
+  currencyInfo,
   refetchCollectionBalance,
   refetchTotalMinted,
-  refetchNftsMinted,
 }: BuyWithCryptoCardButtonProps) => {
   const publicClient = usePublicClient();
   const { data: walletClient } = useWalletClient();
@@ -45,7 +43,7 @@ export const BuyWithCryptoCardButton = ({
     () => getSaleConfiguration(chainId),
     [chainId],
   );
-  const { openCheckoutModal } = useERC1155SaleContractPaymentModal({
+  const { openCheckoutModal } = useERC1155SaleContractCheckout({
     chain: saleConfiguration.chainId,
     contractAddress: saleConfiguration.salesContractAddress,
     wallet: userAddress!,
@@ -60,12 +58,11 @@ export const BuyWithCryptoCardButton = ({
       const chainInfoResponse = getChain(chainId);
       if (chainInfoResponse)
         setTxExplorerUrl(
-          `${chainInfoResponse?.blockExplorer?.rootUrl}/tx/${txnHash}`,
+          `${chainInfoResponse?.blockExplorer?.rootUrl}tx/${txnHash}`,
         );
       resetAmount();
       refetchCollectionBalance();
       refetchTotalMinted();
-      refetchNftsMinted();
       console.log("success!", txnHash);
     },
     onError: (error: Error) => {
@@ -82,7 +79,7 @@ export const BuyWithCryptoCardButton = ({
       !publicClient ||
       !walletClient ||
       !userAddress ||
-      !currencyData ||
+      !currencyInfo ||
       amount <= 0 ||
       !userPaymentCurrencyBalance?.toString() ||
       userPaymentCurrencyBalance < totalPrice
