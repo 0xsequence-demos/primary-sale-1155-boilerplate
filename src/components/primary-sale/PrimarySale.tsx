@@ -7,7 +7,7 @@ type Collection = {
   description?: string;
 };
 
-type MintingDetails = {
+type nftSalesDetails = {
   percentage: number;
   value: number;
   total: number;
@@ -15,10 +15,10 @@ type MintingDetails = {
 
 type PrimarySaleProps = {
   collection: Collection;
-  minting: MintingDetails;
+  nftSalesData: nftSalesDetails;
 };
 
-export function PrimarySale({ collection, minting }: PrimarySaleProps) {
+export function PrimarySale({ collection, nftSalesData }: PrimarySaleProps) {
   return (
     <div className="flex gap-4 w-full sm:flex-row flex-col text-left">
       {collection.image ? (
@@ -37,9 +37,9 @@ export function PrimarySale({ collection, minting }: PrimarySaleProps) {
         </div>
         <div className="mt-auto mb-0 w-full pt-4">
           <MintedProgressBar
-            mintedPercentage={minting.percentage}
-            mintedValue={minting.value}
-            supplyValue={minting.total}
+            mintedPercentage={nftSalesData.percentage}
+            mintedValue={nftSalesData.value}
+            supplyValue={nftSalesData.total}
             showTotalMintedPercentage
           />
         </div>

@@ -6,8 +6,6 @@ import { NFT_TOKEN_CONTRACT_ABI } from "../config/nft-token/nftTokenContractAbi"
 
 import { calculateMintedPercentage, getSaleConfiguration } from "../helpers";
 
-// UI - Library
-
 interface GlobalSalesDetailsData {
   cost: bigint;
   endtime: bigint;
@@ -17,29 +15,21 @@ interface GlobalSalesDetailsData {
 }
 
 export function useNFTSales({ chainId }: { chainId?: number }) {
-  // Setup the sale configuration based on the chainId
   const saleConfiguration = useMemo(
     () => getSaleConfiguration(chainId),
     [chainId],
   );
-
-  // Fetch the contract info
-
-  // Fetch the currency data
-
-  // Fetch the token sale details data
-  const {
-    data: tokenSaleDetailsData,
-    // isLoading: tokenSaleDetailsDataIsLoading,
-  } = useReadContract({
+  const { data: tokenSaleDetailsResponse } = useReadContract({
     abi: SALES_CONTRACT_ABI,
     functionName: "globalSaleDetails",
     chainId: chainId,
     address: saleConfiguration.salesContractAddress,
   });
 
-  // Fetch the total minted NFTs
-  const { data: nftsMinted } = useReadContract({
+  const tokenSaleDetailsData =
+    tokenSaleDetailsResponse as GlobalSalesDetailsData;
+
+  const { data: nftsMinted, refetch: refetchTotalMinted } = useReadContract({
     abi: NFT_TOKEN_CONTRACT_ABI,
     functionName: "totalSupply",
     chainId: chainId,
@@ -56,8 +46,10 @@ export function useNFTSales({ chainId }: { chainId?: number }) {
   );
 
   return {
-    percentage: Number(totalMintedNftsPercentage),
+    percentage: totalMintedNftsPercentage,
     value: Number(nftsMinted),
     total: Number(totalSupply),
+    cost: tokenSaleDetailsData?.cost,
+    refetchTotalMinted,
   };
 }

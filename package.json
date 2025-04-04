@@ -21,7 +21,7 @@
     "@0xsequence/metadata": "2.3.7",
     "@0xsequence/network": "^2.3.7",
     "@tanstack/react-query": "^5.71.5",
-    "boilerplate-design-system": "github:0xsequence-demos/boilerplate-design-system#ee41a96d41ae0ae8048114c53bd8020136583556",
+    "boilerplate-design-system": "github:0xsequence-demos/boilerplate-design-system#42564000bc8653348b1fb7d25885908faa5fa355",
     "ethers": "6.13.5",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

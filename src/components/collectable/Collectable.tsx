@@ -2,8 +2,6 @@ import { BuyWithCryptoCardButton } from "../buy-with-crypto-card-button/BuyWithC
 import { useState } from "react";
 import { ContractInfo } from "@0xsequence/metadata";
 import { TokenMetadata } from "@0xsequence/metadata";
-import { NFT_TOKEN_CONTRACT_ABI } from "../../config/nft-token/nftTokenContractAbi";
-import { useReadContract } from "wagmi";
 import {
   UnpackedSaleConfigurationProps,
   formatPriceWithDecimals,
@@ -16,9 +14,7 @@ interface CollectibleProps {
   collectibleBalance: { [key: string]: any } | undefined;
   tokenMetadata: TokenMetadata;
   chainId: number;
-  currencyData: ContractInfo | undefined;
-  totalMintedNftsPercentage: number;
-  totalSupply: string | 0;
+  currencyInfo: ContractInfo | undefined;
   userPaymentCurrencyBalance: bigint | undefined;
   price: bigint;
   currencyDecimals: number | undefined;
@@ -31,7 +27,7 @@ export const Collectible = ({
   collectibleBalance,
   tokenMetadata,
   chainId,
-  currencyData,
+  currencyInfo,
   userPaymentCurrencyBalance,
   price,
   currencyDecimals,
@@ -41,18 +37,8 @@ export const Collectible = ({
 }: CollectibleProps) => {
   const [amount, setAmount] = useState(0);
   const [txExplorerUrl, setTxExplorerUrl] = useState("");
-  const logoURI = currencyData?.logoURI;
-
-  const {
-    // isLoading: nftsMintedIsLoading,
-    refetch: refetchNftsMinted,
-  } = useReadContract({
-    abi: NFT_TOKEN_CONTRACT_ABI,
-    functionName: "tokenSupply",
-    chainId: chainId,
-    address: saleConfiguration.nftTokenAddress,
-    args: [BigInt(tokenMetadata?.tokenId)],
-  });
+  const logoURI = currencyInfo?.logoURI;
+  console.log(logoURI);
 
   const amountOwned: string = collectibleBalance?.balance || "0";
 
@@ -72,6 +58,7 @@ export const Collectible = ({
   const formattedPrice = currencyDecimals
     ? formatPriceWithDecimals(price, currencyDecimals)
     : 0;
+  console.log(price, currencyDecimals);
 
   return (
     <div className="bg-grey-900 p-4 text-left rounded-[1rem] flex flex-col gap-3">
@@ -98,13 +85,9 @@ export const Collectible = ({
             <span className="text-14 font-bold inline-flex items-center gap-1">
               {!logoURI ? (
                 <span className="size-4 bg-grey-800"></span>
-              ) : // <TokenImage
-              //   // src="https://metadata.sequence.app/projects/30957/collections/690/image.png"
-              //   withNetwork="amoy"
-              //   symbol="matic"
-              //   style={{ width: 20, height: 20 }}
-              // />
-              null}
+              ) : (
+                <Image src={logoURI} style={{ width: 20, height: 20 }} />
+              )}
               {formattedPrice}
             </span>
           </div>
@@ -150,10 +133,9 @@ export const Collectible = ({
             setTxExplorerUrl={setTxExplorerUrl}
             userPaymentCurrencyBalance={userPaymentCurrencyBalance}
             price={price}
-            currencyData={currencyData}
+            currencyInfo={currencyInfo}
             refetchCollectionBalance={refetchCollectionBalance}
             refetchTotalMinted={refetchTotalMinted}
-            refetchNftsMinted={refetchNftsMinted}
           />
         </Form>
         {txExplorerUrl && (

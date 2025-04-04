@@ -9,12 +9,10 @@ import { TokenMetadata } from "@0xsequence/metadata";
 interface ItemsForSaleProps {
   collectionAddress: string;
   chainId: number;
-  totalSupply: string | 0;
-  totalMintedNftsPercentage: number;
   userPaymentCurrencyBalance: bigint | undefined;
   price: bigint;
   currencyDecimals: number | undefined;
-  currencyData: ContractInfo | undefined;
+  currencyInfo: ContractInfo | undefined;
   currencyIsLoading: boolean;
   saleConfiguration: UnpackedSaleConfigurationProps;
   refetchTotalMinted: () => void;
@@ -23,12 +21,10 @@ interface ItemsForSaleProps {
 export const ItemsForSale = ({
   collectionAddress,
   chainId,
-  totalSupply,
-  totalMintedNftsPercentage,
   userPaymentCurrencyBalance,
   price,
   currencyDecimals,
-  currencyData,
+  currencyInfo,
   currencyIsLoading,
   saleConfiguration,
   refetchTotalMinted,
@@ -76,9 +72,7 @@ export const ItemsForSale = ({
                 collectibleBalance={collectibleBalance}
                 tokenMetadata={tokenMetadata}
                 chainId={chainId}
-                currencyData={currencyData}
-                totalMintedNftsPercentage={totalMintedNftsPercentage}
-                totalSupply={totalSupply}
+                currencyInfo={currencyInfo}
                 userPaymentCurrencyBalance={userPaymentCurrencyBalance}
                 price={price}
                 currencyDecimals={currencyDecimals}

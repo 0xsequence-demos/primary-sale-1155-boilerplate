@@ -1,5 +1,5 @@
-import { Address, Chain } from "viem";
-import { getDefaultChains } from "@0xsequence/connect";
+import { Address, Chain, formatUnits } from "viem";
+import { formatDisplay, getDefaultChains } from "@0xsequence/connect";
 import { defaultChainId, salesConfigs } from "../config/sales/salesConfigs";
 
 import type { Chain as ChainType } from "wagmi/chains";
@@ -56,20 +56,14 @@ export function getSaleConfiguration(
 
 export const formatPriceWithDecimals = (
   price: bigint,
-  tokenDecimals: number,
+  tokenDecimals: number = 0,
 ): string => {
-  const divisor = BigInt(10 ** tokenDecimals);
-
-  const integerPart = price / divisor;
-  const decimalPart = price % divisor;
-
-  let formattedDecimal = decimalPart.toString().padStart(tokenDecimals, "0");
-
-  formattedDecimal = formattedDecimal.replace(/0+$/, "");
-
-  return formattedDecimal
-    ? `${integerPart.toString()}.${formattedDecimal}`
-    : integerPart.toString();
+  const formattedPrice = formatUnits(price, tokenDecimals);
+  return formatDisplay(formattedPrice, {
+    disableScientificNotation: true,
+    disableCompactNotation: true,
+    significantDigits: 6,
+  });
 };
 
 export function getChainConfig(chainId: number): Chain {
