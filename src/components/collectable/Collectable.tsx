@@ -38,7 +38,6 @@ export const Collectible = ({
   const [amount, setAmount] = useState(0);
   const [txExplorerUrl, setTxExplorerUrl] = useState("");
   const logoURI = currencyInfo?.logoURI;
-  console.log(logoURI);
 
   const amountOwned: string = collectibleBalance?.balance || "0";
 
@@ -58,7 +57,6 @@ export const Collectible = ({
   const formattedPrice = currencyDecimals
     ? formatPriceWithDecimals(price, currencyDecimals)
     : 0;
-  console.log(price, currencyDecimals);
 
   return (
     <div className="bg-grey-900 p-4 text-left rounded-[1rem] flex flex-col gap-3">
