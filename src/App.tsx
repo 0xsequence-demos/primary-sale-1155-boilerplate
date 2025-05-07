@@ -1,34 +1,16 @@
 import {
-  getDefaultWaasConnectors,
-  SequenceConnectProvider,
+  createConfig,
+  SequenceConnect
 } from "@0xsequence/connect";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { createConfig, http, WagmiProvider } from "wagmi";
-import { chains } from "./helpers";
 import { SequenceCheckoutProvider } from "@0xsequence/checkout";
+import { SequenceHooksProvider } from "@0xsequence/hooks";
 
-import { Chain, Transport } from "viem";
-import { allNetworks, findNetworkConfig } from "@0xsequence/network";
 import { defaultChainId } from "./config/sales/salesConfigs";
 
 import { Toaster } from "sonner";
 import Home from "./views/Home";
 import Contexts from "./views/Contexts";
-
-const queryClient = new QueryClient();
-
-function getTransportConfigs(
-  chains: [Chain, ...Chain[]],
-): Record<number, Transport> {
-  return chains.reduce(
-    (acc, chain) => {
-      const network = findNetworkConfig(allNetworks, chain.id);
-      if (network) acc[chain.id] = http(network.rpcUrl);
-      return acc;
-    },
-    {} as Record<number, Transport>,
-  );
-}
+import { arbitrumSepolia, polygonAmoy } from "viem/chains";
 
 export default function App() {
   const projectAccessKey = import.meta.env.VITE_PROJECT_ACCESS_KEY;
@@ -38,42 +20,36 @@ export default function App() {
   const appleRedirectURI = window.location.origin + window.location.pathname;
   const walletConnectId = import.meta.env.VITE_WALLET_CONNECT_ID;
 
-  const connectors = getDefaultWaasConnectors({
-    walletConnectProjectId: walletConnectId,
-    waasConfigKey,
-    googleClientId,
-    // Notice: Apple Login only works if deployed on https (to support Apple redirects)
-    appleClientId,
-    appleRedirectURI,
+  const sequenceConfig = createConfig('waas', {
+    appName: 'Primary Sale 1155 Boilerplate',
+    chainIds: [polygonAmoy.id, arbitrumSepolia.id],
     defaultChainId,
-    appName: "Kit Starter",
+    waasConfigKey,
     projectAccessKey,
-  });
-
-  const transports = getTransportConfigs(chains);
-
-  const config = createConfig({
-    transports,
-    connectors,
-    chains,
-  });
-
-  const kitConfig = {
-    projectAccessKey,
-  };
+    google: {
+      clientId: googleClientId,
+    },
+    apple: {
+      clientId: appleClientId,
+      redirectURI: appleRedirectURI,
+    },
+    walletConnect: {
+      projectId: walletConnectId,
+    },
+  })
 
   return (
-    <WagmiProvider config={config}>
-      <QueryClientProvider client={queryClient}>
-        <SequenceConnectProvider config={kitConfig}>
-          <SequenceCheckoutProvider>
-            <Toaster />
-            <Contexts>
-              <Home />
-            </Contexts>
-          </SequenceCheckoutProvider>
-        </SequenceConnectProvider>
-      </QueryClientProvider>
-    </WagmiProvider>
+    <SequenceConnect config={sequenceConfig}>
+      <SequenceHooksProvider
+        config={{ projectAccessKey }}
+      >
+        <SequenceCheckoutProvider>
+          <Toaster />
+          <Contexts>
+            <Home />
+          </Contexts>
+        </SequenceCheckoutProvider>
+      </SequenceHooksProvider>
+    </SequenceConnect>
   );
 }
