@@ -1,4 +1,4 @@
-import { Image } from "boilerplate-design-system";
+import { Image } from "@0xsequence-demos/boilerplate-design-system";
 import { MintedProgressBar } from "../minted-progress-bar/MintedProgressBar";
 import { useContractInfo } from "../../hooks/data";
 import { useSalesConfig } from "../../contexts/SalesConfigContext";

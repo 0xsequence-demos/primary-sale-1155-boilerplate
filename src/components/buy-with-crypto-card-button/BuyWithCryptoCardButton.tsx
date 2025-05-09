@@ -1,6 +1,6 @@
 import { usePublicClient, useWalletClient, useAccount } from "wagmi";
 import { getChain } from "../../config/ERC20/getChain";
-import { Button } from "boilerplate-design-system";
+import { Button } from "@0xsequence-demos/boilerplate-design-system";
 import { useERC1155SaleContractCheckout } from "@0xsequence/checkout";
 import { useSalesCurrency } from "../../contexts/SalesCurrencyContext";
 import { useSalesConfig } from "../../contexts/SalesConfigContext";

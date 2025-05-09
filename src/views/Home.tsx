@@ -1,14 +1,16 @@
-import { SequenceBoilerplate } from "boilerplate-design-system";
+import { SequenceBoilerplate } from "@0xsequence-demos/boilerplate-design-system";
 import { useAccount, useDisconnect, useSwitchChain } from "wagmi";
 
 import Connected from "./Connected";
 import { NotConnected } from "./NotConnected";
 import { useUserPaymentCurrencyBalancePretty } from "../hooks/useUserPaymentCurrencyBalancePretty";
 
+import { useOpenWalletModal } from "@0xsequence/wallet-widget";
 export default function Home() {
   const { isConnected, address, chainId } = useAccount();
 
   const balance = useUserPaymentCurrencyBalancePretty({ address });
+  const { setOpenWalletModal } = useOpenWalletModal();
 
   return (
     <SequenceBoilerplate
@@ -19,6 +21,7 @@ export default function Home() {
       wagmi={{ useAccount, useDisconnect, useSwitchChain }}
       faucetUrl="https://faucet.circle.com/"
       balance={balance ? `$${balance}` : false}
+      walletCallback={() => setOpenWalletModal(true)}
     >
       {isConnected && address && chainId ? (
         <Connected userAddress={address} chainId={chainId} />
