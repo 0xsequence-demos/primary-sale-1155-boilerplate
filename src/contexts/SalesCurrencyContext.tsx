@@ -33,6 +33,7 @@ export function SalesCurrencyProvider({ children }: { children: ReactNode }) {
   return (
     <SalesCurrencyContext.Provider
       value={{
+        // @ts-expect-error ContractInfo extensions.link mismatch
         info: currencyContractInfo,
         isLoading: currencyContractInfoIsLoading || paymentTokenIsLoading,
       }}
