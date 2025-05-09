@@ -3,7 +3,7 @@ import { useState } from "react";
 import { TokenMetadata } from "@0xsequence/metadata";
 import { formatPriceWithDecimals } from "../../helpers";
 
-import { Form, Svg, Image } from "boilerplate-design-system";
+import { Form, Svg, Image } from "@0xsequence-demos/boilerplate-design-system";
 import { useSalesCurrency } from "../../contexts/SalesCurrencyContext";
 
 interface CollectibleProps {

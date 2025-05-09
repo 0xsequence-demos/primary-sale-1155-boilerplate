@@ -1,4 +1,8 @@
-import { Card, Divider, Group } from "boilerplate-design-system";
+import {
+  Card,
+  Divider,
+  Group,
+} from "@0xsequence-demos/boilerplate-design-system";
 import { ItemsForSale } from "../components/items-for-sale/ItemsForSale";
 import { AddressList } from "../components/address-list/AddressList";
 import { AddressListItem } from "../components/address-list/AddressListItem";
