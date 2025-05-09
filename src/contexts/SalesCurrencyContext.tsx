@@ -1,7 +1,7 @@
 import { useReadContract } from "wagmi";
 
 import { SALES_CONTRACT_ABI } from "../config/sales/salesContractAbi";
-import { ContractInfo } from "@0xsequence/indexer";
+import { ContractInfo } from "@0xsequence/metadata";
 import { createContext, ReactNode } from "react";
 import { useContractInfo } from "../hooks/data";
 import useCustomContext from "./useCustomContext";
@@ -33,7 +33,6 @@ export function SalesCurrencyProvider({ children }: { children: ReactNode }) {
   return (
     <SalesCurrencyContext.Provider
       value={{
-        // @ts-expect-error ContractInfo extensions.link mismatch
         info: currencyContractInfo,
         isLoading: currencyContractInfoIsLoading || paymentTokenIsLoading,
       }}
